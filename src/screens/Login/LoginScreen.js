@@ -49,9 +49,9 @@ const LoginScreen = ({ navigation }) => {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
-      <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
+      <Image source={require('../../../assets/images/Stealed_logo.jpg')} style={styles.logo} />
 
-      <Text style={styles.title}>Bienvenido</Text>
+      <Text style={styles.title}>PetCare</Text>
 
       <TextInput
         style={styles.input}
