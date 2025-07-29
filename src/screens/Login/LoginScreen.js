@@ -1,33 +1,18 @@
-// import React, { useState, useContext } from "react";
-// import { View, TextInput, Button, Text } from "react-native";
-// import { AuthContext } from "../contexts/AuthContext";
-
-// export default function LoginScreen() {
-//   const { loginUser } = useContext(AuthContext);
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-
-//   const handleLogin = async () => {
-//     const res = await loginUser(email, password);
-//     if (!res.success) alert("Error: " + res.message);
-//   };
-
-//   return (
-//     <View>
-//       <Text>Email</Text>
-//       <TextInput value={email} onChangeText={setEmail} autoCapitalize="none" />
-//       <Text>Password</Text>
-//       <TextInput value={password} onChangeText={setPassword} secureTextEntry />
-//       <Button title="Login" onPress={handleLogin} />
-//     </View>
-//   );
-// }
-
-// src/screens/LoginScreen.js
-
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, ActivityIndicator } from 'react-native';
-import { loginUser } from '../../api/auth'; // Asegúrate de que la ruta sea correcta
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Alert,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import { loginUser } from '../../api/auth';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -47,12 +32,10 @@ const LoginScreen = ({ navigation }) => {
 
       if (response.success) {
         Alert.alert('¡Login exitoso!', `Bienvenido ${response.user.name}`);
-        // Aquí podrías guardar el token o navegar
-        navigation.navigate('Home'); // Asegúrate de tener un screen "Home"
+        navigation.navigate('Home');
       } else {
         Alert.alert('Error de autenticación', response.message);
       }
-
     } catch (error) {
       Alert.alert('Error', 'Ocurrió un problema inesperado');
       console.error('Login error:', error);
@@ -62,12 +45,18 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Iniciar sesión</Text>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
+
+      <Text style={styles.title}>Bienvenido</Text>
 
       <TextInput
         style={styles.input}
         placeholder="Correo electrónico"
+        placeholderTextColor="#888"
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -77,6 +66,7 @@ const LoginScreen = ({ navigation }) => {
       <TextInput
         style={styles.input}
         placeholder="Contraseña"
+        placeholderTextColor="#888"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -85,16 +75,19 @@ const LoginScreen = ({ navigation }) => {
       {loading ? (
         <ActivityIndicator size="large" color="#00d4ff" />
       ) : (
-        <Button title="Ingresar" onPress={handleLogin} />
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Iniciar sesión</Text>
+        </TouchableOpacity>
       )}
 
-      <Text
-        style={styles.link}
-        onPress={() => navigation.navigate('Register')}
-      >
-        ¿No tienes cuenta? Regístrate
-      </Text>
-    </View>
+      <TouchableOpacity style={styles.googleButton} onPress={() => Alert.alert('Google login no implementado aún')}>
+        <Text style={styles.googleButtonText}>Ingresar con Google</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+        <Text style={styles.registerLink}>¿No tienes cuenta? Regístrate</Text>
+      </TouchableOpacity>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -103,28 +96,60 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    justifyContent: 'center',
     backgroundColor: '#121212',
+    paddingHorizontal: 30,
+    justifyContent: 'center',
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    alignSelf: 'center',
+    marginBottom: 25,
   },
   title: {
-    fontSize: 24,
-    marginBottom: 30,
-    textAlign: 'center',
+    fontSize: 28,
     color: '#fff',
+    textAlign: 'center',
+    marginBottom: 30,
+    fontWeight: '600',
   },
   input: {
     backgroundColor: '#1e1e1e',
-    borderColor: '#333',
+    borderColor: '#2a2a2a',
     borderWidth: 1,
-    padding: 10,
+    padding: 12,
+    borderRadius: 8,
     marginBottom: 15,
     color: '#fff',
-    borderRadius: 5,
   },
-  link: {
+  button: {
+    backgroundColor: '#00d4ff',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#121212',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  googleButton: {
+    backgroundColor: '#ffffff10',
+    borderColor: '#00d4ff',
+    borderWidth: 1,
+    padding: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 15,
+  },
+  googleButtonText: {
     color: '#00d4ff',
-    marginTop: 20,
+    fontSize: 16,
+  },
+  registerLink: {
+    color: '#00d4ff',
     textAlign: 'center',
+    marginTop: 25,
   },
 });
