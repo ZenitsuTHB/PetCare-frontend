@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import { logoutUser } from '../api/auth';
+import { logoutUser } from '../../api/auth';
 
 const HomeScreen = ({ navigation }) => {
   const handleLogout = async () => {

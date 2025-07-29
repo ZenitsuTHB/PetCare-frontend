@@ -27,7 +27,7 @@
 
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, ActivityIndicator } from 'react-native';
-import { loginUser } from '../api/auth'; // Asegúrate de que la ruta sea correcta
+import { loginUser } from '../../api/auth'; // Asegúrate de que la ruta sea correcta
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
