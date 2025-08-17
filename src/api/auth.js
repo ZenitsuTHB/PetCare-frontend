@@ -24,6 +24,18 @@ export const loginUser = async (email, password) => {
   });
 };
 
+export const logoutUser = async () => {
+  // Simulación de retardo de red
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        success: true,
+        message: "Sesión cerrada correctamente"
+      });
+    }, 500); // simula una llamada de red
+  });
+};
+
 // import { API_URL } from "../config";
 
 // // Registro de usuario
