@@ -16,7 +16,7 @@ const RegisterScreen = () => {
         {
           text: 'OK',
           onPress: () => {
-            // Reset form or navigate to another screen
+            navigation.navigate('Home');
             console.log('Registration successful');
           }
         }
