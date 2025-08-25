@@ -3,16 +3,16 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   TouchableOpacity,
   StyleSheet,
-  Image,
   Alert,
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  StatusBar,
 } from 'react-native';
 import { loginUser } from '../../api/auth';
+import Header from '../../components/Header';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -45,49 +45,81 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      <Image source={require('../../../assets/images/Stealed_logo.jpg')} style={styles.logo} />
-
-      <Text style={styles.title}>PetCare</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Correo electrónico"
-        placeholderTextColor="#888"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
+    <View style={styles.container}>
+      <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
+      
+      {/* Header Component */}
+      <Header
+        title="Iniciar Sesión"
+        subtitle="Inicia sesión y sigue cuidando a quienes más quieres."
+        showBackButton={true}
+        backButtonText="← Inicio"
+        onBackPress={() => navigation.goBack()}
       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        placeholderTextColor="#888"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
+      {/* Form Section */}
+      <KeyboardAvoidingView
+        style={styles.formSection}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <View style={styles.formContainer}>
+          <View style={styles.inputsContainer}>
+            {/* Email Input */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Correo</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Introduce tu correo"
+                placeholderTextColor="#62748E"
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+              />
+            </View>
 
-      {loading ? (
-        <ActivityIndicator size="large" color="#00d4ff" />
-      ) : (
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Iniciar sesión</Text>
-        </TouchableOpacity>
-      )}
+            {/* Password Input */}
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputLabel}>Contraseña</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Introduce tu contraseña"
+                placeholderTextColor="#62748E"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+              />
+            </View>
 
-      <TouchableOpacity style={styles.googleButton} onPress={() => Alert.alert('Google login no implementado aún')}>
-        <Text style={styles.googleButtonText}>Ingresar con Google</Text>
-      </TouchableOpacity>
+            <TouchableOpacity style={styles.forgotPassword}>
+              <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
+            </TouchableOpacity>
+          </View>
 
-      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-        <Text style={styles.registerLink}>¿No tienes cuenta? Regístrate</Text>
-      </TouchableOpacity>
-    </KeyboardAvoidingView>
+          {/* Login Button */}
+          <View style={styles.buttonContainer}>
+            {loading ? (
+              <ActivityIndicator size="large" color="#FA8081" />
+            ) : (
+              <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                <Text style={styles.loginButtonText}>Iniciar sesión</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {/* Register Link */}
+          <TouchableOpacity 
+            style={styles.registerContainer}
+            onPress={() => navigation.navigate('Register')}
+          >
+            <Text style={styles.registerText}>
+              ¿Todavía no tienes cuenta?{' '}
+              <Text style={styles.registerLink}>Regístrate ahora</Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 
@@ -96,60 +128,80 @@ export default LoginScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#FB999A',
+  },
+  formSection: {
+    flex: 1,
+    backgroundColor: '#FFF8F4',
+    borderTopRightRadius: 40,
+  },
+  formContainer: {
+    flex: 1,
     paddingHorizontal: 30,
-    justifyContent: 'center',
+    paddingVertical: 40,
+    gap: 24,
   },
-  logo: {
-    width: 100,
-    height: 100,
-    alignSelf: 'center',
-    marginBottom: 25,
+  inputsContainer: {
+    gap: 18,
   },
-  title: {
-    fontSize: 28,
-    color: '#fff',
-    textAlign: 'center',
-    marginBottom: 30,
-    fontWeight: '600',
+  inputGroup: {
+    gap: 4,
+  },
+  inputLabel: {
+    color: '#020618',
+    fontSize: 14,
+    fontWeight: '500',
+    lineHeight: 20,
   },
   input: {
-    backgroundColor: '#1e1e1e',
-    borderColor: '#2a2a2a',
+    height: 40,
+    backgroundColor: 'white',
+    borderRadius: 6,
     borderWidth: 1,
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 15,
-    color: '#fff',
+    borderColor: '#E2E8F0',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    fontSize: 14,
+    color: '#020618',
   },
-  button: {
-    backgroundColor: '#00d4ff',
-    padding: 15,
-    borderRadius: 8,
+  forgotPassword: {
+    alignSelf: 'flex-end',
+  },
+  forgotPasswordText: {
+    color: '#FA8081',
+    fontSize: 14,
+    fontWeight: '400',
+    lineHeight: 21,
+  },
+  buttonContainer: {
+    gap: 10,
+  },
+  loginButton: {
+    backgroundColor: '#FA8081',
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    borderRadius: 18,
     alignItems: 'center',
-    marginTop: 10,
   },
-  buttonText: {
+  loginButtonText: {
+    color: '#FFF8F4',
+    fontSize: 16,
+    fontWeight: '600',
+    lineHeight: 25.6,
+  },
+  registerContainer: {
+    alignItems: 'center',
+  },
+  registerText: {
     color: '#121212',
     fontSize: 16,
-    fontWeight: 'bold',
-  },
-  googleButton: {
-    backgroundColor: '#ffffff10',
-    borderColor: '#00d4ff',
-    borderWidth: 1,
-    padding: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 15,
-  },
-  googleButtonText: {
-    color: '#00d4ff',
-    fontSize: 16,
+    fontWeight: '400',
+    lineHeight: 25.6,
+    textAlign: 'center',
   },
   registerLink: {
-    color: '#00d4ff',
-    textAlign: 'center',
-    marginTop: 25,
+    color: '#FA8081',
+    fontWeight: '600',
+    textDecorationLine: 'underline',
   },
 });
