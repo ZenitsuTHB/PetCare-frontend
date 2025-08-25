@@ -10,6 +10,8 @@ import {
 import { logoutUser } from '../../api/auth';
 import Footer from '../../components/Footer';
 
+
+
 const HomeScreen = ({ navigation }) => {
   const handleLogout = async () => {
     await logoutUser();
