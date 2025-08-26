@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Easing } from 'react-native';
 
 const NavItem = ({ tabName, label, icon, isActive, onPress }) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -25,6 +26,7 @@ const NavItem = ({ tabName, label, icon, isActive, onPress }) => {
     Animated.timing(underlineAnim, {
       toValue: isActive ? 1 : 0,
       duration: 250,
+      Easing: Easing.in(Easing.ease),
       useNativeDriver: false,
     }).start();
   }, [isActive]);
@@ -32,11 +34,19 @@ const NavItem = ({ tabName, label, icon, isActive, onPress }) => {
   return (
     <TouchableOpacity style={styles.navItem} onPress={onPress} activeOpacity={0.8}>
       <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-        <Icon 
-          name={icon} 
-          size={28} 
-          color={isActive ? '#FA8081' : '#494949'} 
-        />
+        
+        {icon === "customPet" ? ( 
+          <Image
+            source={require('../../assets/icons/vetPaw.png')}
+            style={{ width: 28, height: 28, tintColor: isActive ? '#FA8081' : '#494949' }}
+          />
+        ) : (
+          <Icon 
+            name={icon} 
+            size={28} 
+            color={isActive ? '#FA8081' : '#494949'} 
+          />
+        )}
       </Animated.View>
       <Text style={isActive ? styles.navTextActive : styles.navText}>{label}</Text>
       
@@ -62,7 +72,7 @@ const Footer = ({
       <NavItem 
         tabName="pets" 
         label="Mascotas" 
-        icon="pets"
+        icon="customPet"
         isActive={activeTab === 'pets'} 
         onPress={onPetsPress} 
       />

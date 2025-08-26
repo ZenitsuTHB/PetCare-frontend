@@ -55,7 +55,7 @@ const HomeScreen = ({ navigation }) => {
               <View style={styles.emptyImagePlaceholder}>
                 {/* Aquí puedes agregar una imagen de placeholder */}
                 <Image 
-                  source={{ uri: 'https://placehold.co/200x176' }}
+                  source={require('../../../assets/images/firulais1.png')}
                   style={styles.emptyImage}
                   resizeMode="contain"
                 />

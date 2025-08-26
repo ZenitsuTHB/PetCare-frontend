@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { registerUser } from '../../api/auth';
 import { RegisterScreen2 } from '../Register/RegisterScreen2';
+import Header from '../../components/Header';
 
 const RegisterScreen = ({ navigation }) => {
   const [firstName, setFirstName] = useState('');
@@ -79,24 +80,19 @@ const RegisterScreen = ({ navigation }) => {
     <View style={styles.container}>
       <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
       
-      {/* Header Section */}
-      <View style={styles.headerSection}>
-        <View style={styles.statusBar}>
-          <Text style={styles.timeText}>12:30</Text>
-        </View>
-        
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backButtonText}>← Inicio</Text>
-        </TouchableOpacity>
-        
-        <View style={styles.headerContent}>
-          <Text style={styles.title}>Registro</Text>
-          <Text style={styles.subtitle}>
-            Crea tu cuenta y empieza a organizar la información médica de tu mascota de forma{' '}
-            <Text style={styles.subtitleBold}>sencilla y segura</Text>.
-          </Text>
-        </View>
-      </View>
+      {/* Header Component */}
+      <Header
+  title="Registro"
+  subtitle={
+    <>
+      Crea tu cuenta y empieza a organizar la información médica de tu mascota de forma{' '}
+      <Text style={styles.subtitleBold}>sencilla y segura</Text>.
+    </>
+  }
+  showBackButton={true}
+  backButtonText="← Inicio"
+  onBackPress={() => navigation.goBack()}
+/>
 
       {/* Form Section */}
       <KeyboardAvoidingView
@@ -199,53 +195,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FB999A',
-  },
-  statusBar: {
-    height: 24,
-    paddingHorizontal: 16,
-    justifyContent: 'center',
-  },
-  timeText: {
-    color: '#170E2B',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  headerSection: {
-    backgroundColor: '#FB999A',
-    paddingTop: 12,
-    paddingBottom: 40,
-    borderBottomLeftRadius: 40,
-  },
-  backButton: {
-    padding: 12,
-    marginLeft: 4,
-    borderRadius: 18,
-    alignSelf: 'flex-start',
-  },
-  backButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  headerContent: {
-    paddingHorizontal: 16,
-    marginTop: 8,
-  },
-  title: {
-    color: '#FFF2F2',
-    fontSize: 36,
-    fontWeight: '900',
-    letterSpacing: 0.72,
-    textShadowColor: '#FA8081',
-    textShadowOffset: { width: 4, height: 4 },
-    textShadowRadius: 0,
-    marginBottom: 18,
-  },
-  subtitle: {
-    color: '#FFF8F4',
-    fontSize: 16,
-    fontWeight: '400',
-    lineHeight: 25.6,
   },
   subtitleBold: {
     fontWeight: '600',

@@ -20,11 +20,6 @@ const LandingScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
-      
-      {/* Status Bar */}
-      <View style={styles.statusBar}>
-        <Text style={styles.timeText}>12:30</Text>
-      </View>
 
       {/* Main Content */}
       <View style={styles.mainContent}>
@@ -75,19 +70,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FB999A',
     paddingHorizontal: 16,
     paddingVertical: 12,
-  },
-  statusBar: {
-    height: 24,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 0,
-  },
-  timeText: {
-    color: '#170E2B',
-    fontSize: 14,
-    fontWeight: '500',
-    letterSpacing: 0.01,
   },
   mainContent: {
     flex: 1,

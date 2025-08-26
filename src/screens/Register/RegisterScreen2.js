@@ -13,6 +13,8 @@ import {
   ScrollView,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import Header from '../../components/Header';
+import ProvincePicker from '../../components/ProvincePicker';
 
 const RegisterScreen2 = ({ navigation, route }) => {
   const [address, setAddress] = useState('');
@@ -25,17 +27,6 @@ const RegisterScreen2 = ({ navigation, route }) => {
 
   // Datos del formulario anterior
   const userBasicData = route?.params?.userBasicData || {};
-
-  // Lista de provincias españolas
-  const provinces = [
-    'Álava', 'Albacete', 'Alicante', 'Almería', 'Asturias', 'Ávila', 'Badajoz', 
-    'Barcelona', 'Burgos', 'Cáceres', 'Cádiz', 'Cantabria', 'Castellón', 'Ciudad Real',
-    'Córdoba', 'Cuenca', 'Girona', 'Granada', 'Guadalajara', 'Guipúzcoa', 'Huelva',
-    'Huesca', 'Islas Baleares', 'Jaén', 'La Coruña', 'La Rioja', 'Las Palmas', 'León',
-    'Lérida', 'Lugo', 'Madrid', 'Málaga', 'Murcia', 'Navarra', 'Orense', 'Palencia',
-    'Pontevedra', 'Salamanca', 'Santa Cruz de Tenerife', 'Segovia', 'Sevilla', 'Soria',
-    'Tarragona', 'Teruel', 'Toledo', 'Valencia', 'Valladolid', 'Vizcaya', 'Zamora', 'Zaragoza'
-  ];
 
   // Validar formulario
   useEffect(() => {
@@ -101,23 +92,18 @@ const RegisterScreen2 = ({ navigation, route }) => {
       <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
       
       {/* Header Section */}
-      <View style={styles.headerSection}>
-        <View style={styles.statusBar}>
-          <Text style={styles.timeText}>12:30</Text>
-        </View>
-        
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backButtonText}>← Atrás</Text>
-        </TouchableOpacity>
-        
-        <View style={styles.headerContent}>
-          <Text style={styles.title}>Registro</Text>
-          <Text style={styles.subtitle}>
-            Crea tu cuenta y empieza a organizar la información médica de tu mascota de forma{' '}
-            <Text style={styles.subtitleBold}>sencilla y segura</Text>.
-          </Text>
-        </View>
-      </View>
+      <Header
+        title="Registro"
+        subtitle={
+        <>
+          Crea tu cuenta y empieza a organizar la información médica de tu mascota de forma{' '}
+          <Text style={styles.subtitleBold}>sencilla y segura</Text>.
+        </>
+        }
+        showBackButton={true}
+        backButtonText="← Inicio"
+        onBackPress={() => navigation.goBack()}
+      />
 
       {/* Form Section */}
       <KeyboardAvoidingView
@@ -170,23 +156,16 @@ const RegisterScreen2 = ({ navigation, route }) => {
                 />
               </View>
             </View>
-
+            
             {/* Province Picker */}
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Provincia</Text>
-              <View style={styles.pickerContainer}>
-                <Picker
-                  selectedValue={province}
-                  style={styles.picker}
-                  onValueChange={(itemValue) => setProvince(itemValue)}
-                >
-                  {provinces.map((prov) => (
-                    <Picker.Item key={prov} label={prov} value={prov} />
-                  ))}
-                </Picker>
-              </View>
+              <ProvincePicker
+                selectedProvince={province}
+                onChange={(value) => setProvince(value)}
+              />
             </View>
-
+            
             {/* Terms and Conditions Checkbox */}
             <TouchableOpacity style={styles.checkboxContainer} onPress={toggleTermsAccepted}>
               <View style={[styles.checkbox, termsAccepted && styles.checkboxChecked]}>
@@ -226,53 +205,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FB999A',
-  },
-  statusBar: {
-    height: 24,
-    paddingHorizontal: 16,
-    justifyContent: 'center',
-  },
-  timeText: {
-    color: '#170E2B',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  headerSection: {
-    backgroundColor: '#FB999A',
-    paddingTop: 12,
-    paddingBottom: 40,
-    borderBottomLeftRadius: 40,
-  },
-  backButton: {
-    padding: 12,
-    marginLeft: 4,
-    borderRadius: 18,
-    alignSelf: 'flex-start',
-  },
-  backButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  headerContent: {
-    paddingHorizontal: 16,
-    marginTop: 8,
-  },
-  title: {
-    color: '#FFF2F2',
-    fontSize: 36,
-    fontWeight: '900',
-    letterSpacing: 0.72,
-    textShadowColor: '#FA8081',
-    textShadowOffset: { width: 4, height: 4 },
-    textShadowRadius: 0,
-    marginBottom: 18,
-  },
-  subtitle: {
-    color: '#FFF8F4',
-    fontSize: 16,
-    fontWeight: '400',
-    lineHeight: 25.6,
   },
   subtitleBold: {
     fontWeight: '600',

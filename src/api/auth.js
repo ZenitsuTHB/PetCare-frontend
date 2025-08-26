@@ -4,13 +4,13 @@ export const loginUser = async (email, password) => {
   // Simulación de retardo de red
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      if (email === "test@example.com" && password === "123456") {
+      if (email === "test" && password === "12") {
         resolve({
           success: true,
           token: "fake_jwt_token_123456",
           user: {
             id: 1,
-            email: "test@example.com",
+            email: "test",
             name: "Test User"
           }
         });
