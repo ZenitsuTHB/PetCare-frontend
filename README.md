@@ -1,6 +1,7 @@
 This is the structure exemple we are using in the app
 
 
+```
 my-app/
 ├── android/               # Native Android code
 ├── ios/                   # Native iOS code
@@ -34,4 +35,4 @@ my-app/
 ├── babel.config.js        # Babel configuration
 ├── package.json
 └── tsconfig.json          # TypeScript config (if using TS)
-
+```
