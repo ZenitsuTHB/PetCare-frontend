@@ -14,10 +14,6 @@ const NotificationsScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#FFF8F4" barStyle="dark-content" />
-      
-      <View style={styles.statusBar}>
-        <Text style={styles.timeText}>12:30</Text>
-      </View>
 
       <View style={styles.mainContent}>
         <View style={styles.content}>

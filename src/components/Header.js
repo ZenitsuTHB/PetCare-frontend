@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const Header = ({ 
-  title, 
-  subtitle, 
-  showBackButton = false, 
-  backButtonText = "← Atrás", 
+const Header = ({
+  title,
+  subtitle,
+  showBackButton = false,
+  backButtonText = "← Atrás",
   onBackPress,
   backgroundColor = '#FB999A',
 }) => {
@@ -17,7 +17,7 @@ const Header = ({
           <Text style={styles.backButtonText}>{backButtonText}</Text>
         </TouchableOpacity>
       )}
-      
+
       {(title || subtitle) && (
         <View style={styles.headerContent}>
           {title && <Text style={styles.title}>{title}</Text>}

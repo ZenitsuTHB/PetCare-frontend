@@ -11,6 +11,7 @@ import {
   Platform,
   StatusBar,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
 import { registerUser } from '../../api/auth';
 import { RegisterScreen2 } from '../Register/RegisterScreen2';
@@ -54,7 +55,7 @@ const RegisterScreen = ({ navigation }) => {
 
       if (response.success) {
         Alert.alert(
-          '¡Registro exitoso!', 
+          '¡Registro exitoso!',
           `Bienvenido ${response.user.name}`,
           [
             {
@@ -77,29 +78,29 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
-      
+
       {/* Header Component */}
       <Header
-  title="Registro"
-  subtitle={
-    <>
-      Crea tu cuenta y empieza a organizar la información médica de tu mascota de forma{' '}
-      <Text style={styles.subtitleBold}>sencilla y segura</Text>.
-    </>
-  }
-  showBackButton={true}
-  backButtonText="← Inicio"
-  onBackPress={() => navigation.goBack()}
-/>
+        title="Registro"
+        subtitle={
+          <>
+            Crea tu cuenta y empieza a organizar la información médica de tu mascota de forma{' '}
+            <Text style={styles.subtitleBold}>sencilla y segura</Text>.
+          </>
+        }
+        showBackButton={true}
+        backButtonText="← Inicio"
+        onBackPress={() => navigation.goBack()}
+      />
 
       {/* Form Section */}
       <KeyboardAvoidingView
         style={styles.formSection}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <ScrollView 
+        <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.formContainer}
           showsVerticalScrollIndicator={false}
@@ -118,7 +119,7 @@ const RegisterScreen = ({ navigation }) => {
                   autoCapitalize="words"
                 />
               </View>
-              
+
               <View style={styles.nameInputGroup}>
                 <Text style={styles.inputLabel}>Apellidos</Text>
                 <TextInput
@@ -185,7 +186,7 @@ const RegisterScreen = ({ navigation }) => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </View>
+    </SafeAreaView>
   );
 };
 
