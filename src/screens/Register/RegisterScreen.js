@@ -78,7 +78,7 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#FB999A' }}>
       <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
 
       {/* Header Component */}
@@ -94,98 +94,99 @@ const RegisterScreen = ({ navigation }) => {
         backButtonText="← Inicio"
         onBackPress={() => navigation.goBack()}
       />
-
-      {/* Form Section */}
-      <KeyboardAvoidingView
-        style={styles.formSection}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.formContainer}
-          showsVerticalScrollIndicator={false}
+      <View style={styles.container}>
+        {/* Form Section */}
+        <KeyboardAvoidingView
+          style={styles.formSection}
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
         >
-          <View style={styles.inputsContainer}>
-            {/* Name Row */}
-            <View style={styles.nameRow}>
-              <View style={styles.nameInputGroup}>
-                <Text style={styles.inputLabel}>Nombre</Text>
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.formContainer}
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.inputsContainer}>
+              {/* Name Row */}
+              <View style={styles.nameRow}>
+                <View style={styles.nameInputGroup}>
+                  <Text style={styles.inputLabel}>Nombre</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Nombre"
+                    placeholderTextColor="#62748E"
+                    value={firstName}
+                    onChangeText={setFirstName}
+                    autoCapitalize="words"
+                  />
+                </View>
+
+                <View style={styles.nameInputGroup}>
+                  <Text style={styles.inputLabel}>Apellidos</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Apellidos"
+                    placeholderTextColor="#62748E"
+                    value={lastName}
+                    onChangeText={setLastName}
+                    autoCapitalize="words"
+                  />
+                </View>
+              </View>
+
+              {/* Email Input */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Correo</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="Nombre"
+                  placeholder="Tu correo electrónico"
                   placeholderTextColor="#62748E"
-                  value={firstName}
-                  onChangeText={setFirstName}
-                  autoCapitalize="words"
+                  value={email}
+                  onChangeText={setEmail}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
                 />
               </View>
 
-              <View style={styles.nameInputGroup}>
-                <Text style={styles.inputLabel}>Apellidos</Text>
+              {/* Password Input */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Contraseña</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="Apellidos"
+                  placeholder="Mínimo 8 caracteres"
                   placeholderTextColor="#62748E"
-                  value={lastName}
-                  onChangeText={setLastName}
-                  autoCapitalize="words"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry
+                />
+              </View>
+
+              {/* Confirm Password Input */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Confirmación de contraseña</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Que coincida con las contraseñas"
+                  placeholderTextColor="#62748E"
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                  secureTextEntry
                 />
               </View>
             </View>
 
-            {/* Email Input */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Correo</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Tu correo electrónico"
-                placeholderTextColor="#62748E"
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
-              />
+            {/* Register Button */}
+            <View style={styles.buttonContainer}>
+              {loading ? (
+                <ActivityIndicator size="large" color="#FA8081" />
+              ) : (
+                <TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate('Register2')}>
+                  <Text style={styles.registerButtonText}>Siguiente</Text>
+                </TouchableOpacity>
+              )}
             </View>
-
-            {/* Password Input */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Contraseña</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Mínimo 8 caracteres"
-                placeholderTextColor="#62748E"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-              />
-            </View>
-
-            {/* Confirm Password Input */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Confirmación de contraseña</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Que coincida con las contraseñas"
-                placeholderTextColor="#62748E"
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                secureTextEntry
-              />
-            </View>
-          </View>
-
-          {/* Register Button */}
-          <View style={styles.buttonContainer}>
-            {loading ? (
-              <ActivityIndicator size="large" color="#FA8081" />
-            ) : (
-              <TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate('Register2')}>
-                <Text style={styles.registerButtonText}>Siguiente</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
     </SafeAreaView>
   );
 };
@@ -196,6 +197,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FB999A',
+    borderTopRightRadius: 40,
+    marginTop: -40,
+    overflow: 'hidden',
   },
   subtitleBold: {
     fontWeight: '600',

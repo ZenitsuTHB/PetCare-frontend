@@ -5,7 +5,7 @@ const Header = ({
   title,
   subtitle,
   showBackButton = false,
-  backButtonText = "← Atrás",
+  backButtonText = "← Back",
   onBackPress,
   backgroundColor = '#FB999A',
 }) => {

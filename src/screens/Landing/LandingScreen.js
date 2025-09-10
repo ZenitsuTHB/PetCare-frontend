@@ -27,15 +27,15 @@ const LandingScreen = ({ navigation }) => {
         <View style={styles.logoSection}>
           <View style={styles.logoContainer}>
             <View style={styles.logoPlaceholder}>
-              {/* Aquí puedes agregar tu logo */}
-              <Image 
-                source={require('../../../assets/images/Bonvet_logo.png')} // Ajusta la ruta según tu logo
+              {/* Aquí se agrega el logo */}
+              <Image
+                source={require('../../../assets/images/logoBlanco.png')}
                 style={styles.logo}
                 resizeMode="contain"
               />
             </View>
           </View>
-          
+
           <View style={styles.descriptionContainer}>
             <Text style={styles.descriptionText}>
               Accede a tu espacio seguro y lleva el control de la salud de tu mascota en un solo lugar.
@@ -48,7 +48,7 @@ const LandingScreen = ({ navigation }) => {
           <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
             <Text style={styles.registerButtonText}>REGISTRO</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
             <Text style={styles.loginButtonText}>INICIO SESIÓN</Text>
           </TouchableOpacity>
