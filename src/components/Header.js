@@ -32,7 +32,6 @@ export default Header;
 
 const styles = StyleSheet.create({
   headerSection: {
-    backgroundColor: '#FB999A',
     paddingTop: 12,
     paddingBottom: 40,
     borderBottomLeftRadius: 40,

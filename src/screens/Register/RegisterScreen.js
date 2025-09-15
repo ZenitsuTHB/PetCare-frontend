@@ -14,8 +14,8 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { registerUser } from '../../api/auth';
-import { RegisterScreen2 } from '../Register/RegisterScreen2';
 import Header from '../../components/Header';
+import  LinearGradient  from '../../components/LinearGradient';
 
 const RegisterScreen = ({ navigation }) => {
   const [firstName, setFirstName] = useState('');
@@ -78,7 +78,8 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#FB999A' }}>
+    <LinearGradient>
+    <SafeAreaView style={{ flex: 1 }}>
       <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
 
       {/* Header Component */}
@@ -93,6 +94,7 @@ const RegisterScreen = ({ navigation }) => {
         showBackButton={true}
         backButtonText="← Inicio"
         onBackPress={() => navigation.goBack()}
+        // backgroundColor="transparent"
       />
       <View style={styles.container}>
         {/* Form Section */}
@@ -106,10 +108,9 @@ const RegisterScreen = ({ navigation }) => {
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.inputsContainer}>
-              {/* Name Row */}
-              <View style={styles.nameRow}>
-                <View style={styles.nameInputGroup}>
-                  <Text style={styles.inputLabel}>Nombre</Text>
+              {/* first name */}
+              <View style={styles.nameInputGroup}>
+                <Text style={styles.inputLabel}>Nombre</Text>
                   <TextInput
                     style={styles.input}
                     placeholder="Nombre"
@@ -118,10 +119,11 @@ const RegisterScreen = ({ navigation }) => {
                     onChangeText={setFirstName}
                     autoCapitalize="words"
                   />
-                </View>
+              </View>
 
-                <View style={styles.nameInputGroup}>
-                  <Text style={styles.inputLabel}>Apellidos</Text>
+              {/* Last Name */}
+              <View style={styles.nameInputGroup}>
+                <Text style={styles.inputLabel}>Apellidos</Text>
                   <TextInput
                     style={styles.input}
                     placeholder="Apellidos"
@@ -131,7 +133,6 @@ const RegisterScreen = ({ navigation }) => {
                     autoCapitalize="words"
                   />
                 </View>
-              </View>
 
               {/* Email Input */}
               <View style={styles.inputGroup}>
@@ -188,6 +189,7 @@ const RegisterScreen = ({ navigation }) => {
         </KeyboardAvoidingView>
       </View>
     </SafeAreaView>
+    </LinearGradient>
   );
 };
 
@@ -196,9 +198,8 @@ export default RegisterScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FB999A',
     borderTopRightRadius: 40,
-    marginTop: -40,
+    marginTop: 0,
     overflow: 'hidden',
   },
   subtitleBold: {
