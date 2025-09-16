@@ -12,7 +12,7 @@ import {
   StatusBar,
 } from 'react-native';
 import { loginUser } from '../../api/auth';
-import Header from '../../components/headers/Header';
+import Header from '../../components/Headers/Header';
 import  LinearGradient  from '../../components/LinearGradient';
 import { SafeAreaView } from 'react-native';
 
