@@ -17,9 +17,9 @@ import {
 import { Ionicons } from '@expo/vector-icons'; // si no usas Expo, reemplaza por texto "←" / "📷"
 
 const COLORS = {
-  bg: '#F5F6EE',          // fondo general verdoso muy claro del mock
-  header: '#FA8081',      // rosado principal
-  card: '#FFEFEA',        // panel pálido
+  bg: '#F5F6EE', // fondo general verdoso muy claro del mock
+  header: '#FA8081', // rosado principal
+  card: '#FFEFEA', // panel pálido
   text: '#121212',
   sub: '#6B6B6B',
   inputBg: '#FFFFFF',
@@ -30,10 +30,10 @@ const COLORS = {
 
 const initial = {
   name: '',
-  species: '',     // select
+  species: '', // select
   breed: '',
-  birthdate: '',   // dd/mm/aaaa
-  gender: '',      // select
+  birthdate: '', // dd/mm/aaaa
+  gender: '', // select
   weight: '',
   chip: '',
   notes: '',
@@ -60,8 +60,10 @@ export default function NewPetFormScreen({ navigation }) {
     if (!v.species.trim()) e.species = 'Obligatorio';
     if (!v.gender.trim()) e.gender = 'Obligatorio';
     if (!v.weight.trim()) e.weight = 'Obligatorio';
-    if (v.birthdate && !/^\d{2}\/\d{2}\/\d{4}$/.test(v.birthdate)) e.birthdate = 'Usa dd/mm/aaaa';
-    if (v.weight && isNaN(Number(v.weight.replace(',', '.')))) e.weight = 'Numérico';
+    if (v.birthdate && !/^\d{2}\/\d{2}\/\d{4}$/.test(v.birthdate))
+      e.birthdate = 'Usa dd/mm/aaaa';
+    if (v.weight && isNaN(Number(v.weight.replace(',', '.'))))
+      e.weight = 'Numérico';
     if (v.chip && v.chip.length < 5) e.chip = 'Muy corto';
     if (!v.consent) e.consent = 'Requerido';
     return e;
@@ -92,15 +94,23 @@ export default function NewPetFormScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: COLORS.bg }}
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: COLORS.bg }}
       behavior={Platform.select({ ios: 'padding', android: undefined })}
     >
       <StatusBar barStyle="light-content" />
       {/* Header rosado con borde inferior curvo */}
       <View style={styles.header}>
         <View style={styles.headerBar}>
-          <TouchableOpacity style={styles.backBtn} onPress={() => navigation?.goBack?.()}>
-            {Ionicons ? <Ionicons name="chevron-back" size={22} color="#fff" /> : <Text style={{color:'#fff'}}>←</Text>}
+          <TouchableOpacity
+            style={styles.backBtn}
+            onPress={() => navigation?.goBack?.()}
+          >
+            {Ionicons ? (
+              <Ionicons name="chevron-back" size={22} color="#fff" />
+            ) : (
+              <Text style={{ color: '#fff' }}>←</Text>
+            )}
             <Text style={styles.backTxt}>Atrás</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Nueva mascota</Text>
@@ -114,134 +124,151 @@ export default function NewPetFormScreen({ navigation }) {
           </View>
           <TouchableOpacity
             style={styles.camBtn}
-            onPress={() => Alert.alert('Imagen', 'Conecta aquí tu selector de imágenes')}
+            onPress={() =>
+              Alert.alert('Imagen', 'Conecta aquí tu selector de imágenes')
+            }
           >
-            {Ionicons ? <Ionicons name="camera" size={18} color="#fff" /> : <Text style={{color:'#fff'}}>📷</Text>}
+            {Ionicons ? (
+              <Ionicons name="camera" size={18} color="#fff" />
+            ) : (
+              <Text style={{ color: '#fff' }}>📷</Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>
 
-
-<View style={styles.formSection}>
-      {/* Tarjeta pálida con inputs */}
-      <ScrollView contentContainerStyle={styles.card} keyboardShouldPersistTaps="handled">
-        <Field
-          label="Nombre de tu mascota *"
-          placeholder="Nombre completo"
-          value={v.name}
-          onChangeText={onChange('name')}
-          onBlur={onBlur('name')}
-          error={touched.name && errors.name}
-        />
-
-        <Select
-          label="Especie *"
-          placeholder="Tipo"
-          value={v.species}
-          error={touched.species && errors.species}
-          onPress={() => openSelect('species')}
-        />
-
-        <Row>
-          <Field
-            style={{ flex: 1, marginRight: 8 }}
-            label="Raza"
-            placeholder="Indique raza específica"
-            value={v.breed}
-            onChangeText={onChange('breed')}
-            onBlur={onBlur('breed')}
-          />
-          <Field
-            style={{ flex: 1, marginLeft: 8 }}
-            label="Fecha de nacimiento"
-            placeholder="dd/mm/aaaa"
-            value={v.birthdate}
-            onChangeText={onChange('birthdate')}
-            onBlur={onBlur('birthdate')}
-            error={touched.birthdate && errors.birthdate}
-          />
-        </Row>
-
-        <Row>
-          <Select
-            style={{ flex: 1, marginRight: 8 }}
-            label="Género *"
-            placeholder="Macho o hembra"
-            value={v.gender}
-            error={touched.gender && errors.gender}
-            onPress={() => openSelect('gender')}
-          />
-          <Field
-            style={{ flex: 1, marginLeft: 8 }}
-            label="Peso *"
-            placeholder="Ej. 7.8"
-            keyboardType="numeric"
-            value={v.weight}
-            onChangeText={onChange('weight')}
-            onBlur={onBlur('weight')}
-            error={touched.weight && errors.weight}
-          />
-        </Row>
-
-        <Field
-          label="Chip"
-          placeholder="15 dígitos del número del chip"
-          value={v.chip}
-          onChangeText={onChange('chip')}
-          onBlur={onBlur('chip')}
-          error={touched.chip && errors.chip}
-        />
-
-        <Field
-          label="Observaciones"
-          placeholder="Apunta lo que quieras aquí"
-          value={v.notes}
-          onChangeText={onChange('notes')}
-          onBlur={onBlur('notes')}
-          multiline
-          numberOfLines={4}
-          style={{ height: 110, textAlignVertical: 'top' }}
-        />
-
-        {/* Checkbox de consentimiento */}
-        <TouchableOpacity
-          style={styles.checkRow}
-          activeOpacity={0.8}
-          onPress={() => setV((s) => ({ ...s, consent: !s.consent }))}
+      <View style={styles.formSection}>
+        {/* Tarjeta pálida con inputs */}
+        <ScrollView
+          contentContainerStyle={styles.card}
+          keyboardShouldPersistTaps="handled"
         >
-          <View style={[styles.checkbox, v.consent && styles.checkboxOn]}>
-            {v.consent && <Text style={{ color: '#fff', fontWeight: '900' }}>✓</Text>}
-          </View>
-          <Text style={styles.checkText}>
-            Autorizo el uso y cesión de los datos de mi mascota según la política de privacidad.
-          </Text>
-        </TouchableOpacity>
-        {touched.consent && errors.consent ? (
-          <Text style={styles.errorSmall}>{errors.consent}</Text>
-        ) : null}
+          <Field
+            label="Nombre de tu mascota *"
+            placeholder="Nombre completo"
+            value={v.name}
+            onChangeText={onChange('name')}
+            onBlur={onBlur('name')}
+            error={touched.name && errors.name}
+          />
 
-        {/* CTA */}
-        <TouchableOpacity style={styles.cta} onPress={submit}>
-          <Text style={styles.ctaText}>Crear mascota</Text>
-        </TouchableOpacity>
+          <Select
+            label="Especie *"
+            placeholder="Tipo"
+            value={v.species}
+            error={touched.species && errors.species}
+            onPress={() => openSelect('species')}
+          />
 
-        <View style={{ height: 24 }} />
-      </ScrollView>
-</View>
+          <Row>
+            <Field
+              style={{ flex: 1, marginRight: 8 }}
+              label="Raza"
+              placeholder="Indique raza específica"
+              value={v.breed}
+              onChangeText={onChange('breed')}
+              onBlur={onBlur('breed')}
+            />
+            <Field
+              style={{ flex: 1, marginLeft: 8 }}
+              label="Fecha de nacimiento"
+              placeholder="dd/mm/aaaa"
+              value={v.birthdate}
+              onChangeText={onChange('birthdate')}
+              onBlur={onBlur('birthdate')}
+              error={touched.birthdate && errors.birthdate}
+            />
+          </Row>
+
+          <Row>
+            <Select
+              style={{ flex: 1, marginRight: 8 }}
+              label="Género *"
+              placeholder="Macho o hembra"
+              value={v.gender}
+              error={touched.gender && errors.gender}
+              onPress={() => openSelect('gender')}
+            />
+            <Field
+              style={{ flex: 1, marginLeft: 8 }}
+              label="Peso *"
+              placeholder="Ej. 7.8"
+              keyboardType="numeric"
+              value={v.weight}
+              onChangeText={onChange('weight')}
+              onBlur={onBlur('weight')}
+              error={touched.weight && errors.weight}
+            />
+          </Row>
+
+          <Field
+            label="Chip"
+            placeholder="15 dígitos del número del chip"
+            value={v.chip}
+            onChangeText={onChange('chip')}
+            onBlur={onBlur('chip')}
+            error={touched.chip && errors.chip}
+          />
+
+          <Field
+            label="Observaciones"
+            placeholder="Apunta lo que quieras aquí"
+            value={v.notes}
+            onChangeText={onChange('notes')}
+            onBlur={onBlur('notes')}
+            multiline
+            numberOfLines={4}
+            style={{ height: 110, textAlignVertical: 'top' }}
+          />
+
+          {/* Checkbox de consentimiento */}
+          <TouchableOpacity
+            style={styles.checkRow}
+            activeOpacity={0.8}
+            onPress={() => setV((s) => ({ ...s, consent: !s.consent }))}
+          >
+            <View style={[styles.checkbox, v.consent && styles.checkboxOn]}>
+              {v.consent && (
+                <Text style={{ color: '#fff', fontWeight: '900' }}>✓</Text>
+              )}
+            </View>
+            <Text style={styles.checkText}>
+              Autorizo el uso y cesión de los datos de mi mascota según la
+              política de privacidad.
+            </Text>
+          </TouchableOpacity>
+          {touched.consent && errors.consent ? (
+            <Text style={styles.errorSmall}>{errors.consent}</Text>
+          ) : null}
+
+          {/* CTA */}
+          <TouchableOpacity style={styles.cta} onPress={submit}>
+            <Text style={styles.ctaText}>Crear mascota</Text>
+          </TouchableOpacity>
+
+          <View style={{ height: 24 }} />
+        </ScrollView>
+      </View>
       {/* Modales de selección */}
       <OptionsModal
         visible={selectOpen === 'species'}
         title="Selecciona especie"
         options={SPECIES}
         onClose={closeSelect}
-        onSelect={(val) => { setV((s) => ({ ...s, species: val })); closeSelect(); }}
+        onSelect={(val) => {
+          setV((s) => ({ ...s, species: val }));
+          closeSelect();
+        }}
       />
       <OptionsModal
         visible={selectOpen === 'gender'}
         title="Selecciona género"
         options={GENDERS}
         onClose={closeSelect}
-        onSelect={(val) => { setV((s) => ({ ...s, gender: val })); closeSelect(); }}
+        onSelect={(val) => {
+          setV((s) => ({ ...s, gender: val }));
+          closeSelect();
+        }}
       />
     </KeyboardAvoidingView>
   );
@@ -256,7 +283,11 @@ function Field({ label, error, style, ...inputProps }) {
       <TextInput
         {...inputProps}
         placeholderTextColor="#B9B9B9"
-        style={[styles.input, !!error && styles.inputError, inputProps.multiline && { paddingTop: 12 }]}
+        style={[
+          styles.input,
+          !!error && styles.inputError,
+          inputProps.multiline && { paddingTop: 12 },
+        ]}
       />
       {!!error && <Text style={styles.errorSmall}>{error}</Text>}
     </View>
@@ -267,7 +298,10 @@ function Select({ label, value, placeholder, onPress, error, style }) {
   return (
     <View style={[styles.field, style]}>
       <Text style={styles.label}>{label}</Text>
-      <TouchableOpacity style={[styles.input, styles.select, !!error && styles.inputError]} onPress={onPress}>
+      <TouchableOpacity
+        style={[styles.input, styles.select, !!error && styles.inputError]}
+        onPress={onPress}
+      >
         <Text style={[styles.selectText, !value && { color: '#B9B9B9' }]}>
           {value || placeholder}
         </Text>
@@ -284,17 +318,31 @@ function Row({ children }) {
 
 function OptionsModal({ visible, title, options, onClose, onSelect }) {
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+    >
       <Pressable style={styles.modalBackdrop} onPress={onClose}>
         <View style={styles.modalCard}>
           <Text style={styles.modalTitle}>{title}</Text>
           {options.map((opt) => (
-            <TouchableOpacity key={opt} style={styles.modalItem} onPress={() => onSelect(opt)}>
+            <TouchableOpacity
+              key={opt}
+              style={styles.modalItem}
+              onPress={() => onSelect(opt)}
+            >
               <Text style={styles.modalItemText}>{opt}</Text>
             </TouchableOpacity>
           ))}
-          <TouchableOpacity style={[styles.modalItem, { marginTop: 8 }]} onPress={onClose}>
-            <Text style={[styles.modalItemText, { color: COLORS.sub }]}>Cancelar</Text>
+          <TouchableOpacity
+            style={[styles.modalItem, { marginTop: 8 }]}
+            onPress={onClose}
+          >
+            <Text style={[styles.modalItemText, { color: COLORS.sub }]}>
+              Cancelar
+            </Text>
           </TouchableOpacity>
         </View>
       </Pressable>
@@ -310,17 +358,17 @@ const styles = StyleSheet.create({
     paddingTop: Platform.select({ ios: 56, android: 24 }),
     paddingBottom: 40,
     borderBottomLeftRadius: 40,
-    overflow:'hidden',
+    overflow: 'hidden',
   },
   container: {
-   flex: 1,
-   backgroundColor: COLORS.header, // igual que Login: fondo rosado detrás del panel
-},
-formSection: {
-   flex: 1,
-  backgroundColor: '#FFF8F4',  
-  borderTopRightRadius: 40,     
- },
+    flex: 1,
+    backgroundColor: COLORS.header, // igual que Login: fondo rosado detrás del panel
+  },
+  formSection: {
+    flex: 1,
+    backgroundColor: '#FFF8F4',
+    borderTopRightRadius: 40,
+  },
   headerBar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -345,7 +393,7 @@ formSection: {
     top: Platform.select({ ios: 120, android: 105 }),
   },
   avatar: {
-    marginTop:25,
+    marginTop: 25,
     width: 120,
     height: 120,
     borderRadius: 60,
@@ -373,7 +421,12 @@ formSection: {
   },
 
   field: { marginBottom: 14 },
-  label: { color: COLORS.text, fontSize: 13, fontWeight: '700', marginBottom: 6 },
+  label: {
+    color: COLORS.text,
+    fontSize: 13,
+    fontWeight: '700',
+    marginBottom: 6,
+  },
   input: {
     backgroundColor: COLORS.inputBg,
     borderWidth: 1,
@@ -386,15 +439,24 @@ formSection: {
   },
   inputError: { borderColor: COLORS.danger },
 
-  select: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  select: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   selectText: { fontSize: 16, color: COLORS.text },
   caret: { fontSize: 16, color: '#9B9B9B' },
 
   checkRow: { flexDirection: 'row', alignItems: 'center', marginTop: 6 },
   checkbox: {
-    width: 20, height: 20, borderRadius: 4,
-    borderWidth: 1, borderColor: COLORS.border,
-    backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center',
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 10,
   },
   checkboxOn: { backgroundColor: COLORS.cta, borderColor: COLORS.cta },
@@ -425,7 +487,12 @@ formSection: {
     borderRadius: 16,
     padding: 12,
   },
-  modalTitle: { fontSize: 16, fontWeight: '800', margin: 8, textAlign: 'center' },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    margin: 8,
+    textAlign: 'center',
+  },
   modalItem: {
     paddingVertical: 12,
     paddingHorizontal: 12,

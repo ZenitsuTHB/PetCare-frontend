@@ -47,7 +47,7 @@ const LoginScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
-      
+
       {/* Header Component */}
       <Header
         title="Iniciar Sesión"
@@ -60,7 +60,7 @@ const LoginScreen = ({ navigation }) => {
       {/* Form Section */}
       <KeyboardAvoidingView
         style={styles.formSection}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <View style={styles.formContainer}>
           <View style={styles.inputsContainer}>
@@ -92,7 +92,9 @@ const LoginScreen = ({ navigation }) => {
             </View>
 
             <TouchableOpacity style={styles.forgotPassword}>
-              <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
+              <Text style={styles.forgotPasswordText}>
+                ¿Olvidaste tu contraseña?
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -101,14 +103,17 @@ const LoginScreen = ({ navigation }) => {
             {loading ? (
               <ActivityIndicator size="large" color="#FA8081" />
             ) : (
-              <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+              <TouchableOpacity
+                style={styles.loginButton}
+                onPress={handleLogin}
+              >
                 <Text style={styles.loginButtonText}>Iniciar sesión</Text>
               </TouchableOpacity>
             )}
           </View>
 
           {/* Register Link */}
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.registerContainer}
             onPress={() => navigation.navigate('Register')}
           >

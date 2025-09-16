@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { registerUser } from '../../api/auth';
 import Header from '../../components/Header';
-import  LinearGradient  from '../../components/LinearGradient';
+import LinearGradient from '../../components/LinearGradient';
 
 const RegisterScreen = ({ navigation }) => {
   const [firstName, setFirstName] = useState('');
@@ -54,18 +54,14 @@ const RegisterScreen = ({ navigation }) => {
       const response = await registerUser(formData);
 
       if (response.success) {
-        Alert.alert(
-          '¡Registro exitoso!',
-          `Bienvenido ${response.user.name}`,
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                navigation.navigate('Home');
-              }
-            }
-          ]
-        );
+        Alert.alert('¡Registro exitoso!', `Bienvenido ${response.user.name}`, [
+          {
+            text: 'OK',
+            onPress: () => {
+              navigation.navigate('Home');
+            },
+          },
+        ]);
       } else {
         Alert.alert('Error de registro', response.message);
       }
@@ -79,38 +75,39 @@ const RegisterScreen = ({ navigation }) => {
 
   return (
     <LinearGradient>
-    <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
+      <SafeAreaView style={{ flex: 1 }}>
+        <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
 
-      {/* Header Component */}
-      <Header
-        title="Registro"
-        subtitle={
-          <>
-            Crea tu cuenta y empieza a organizar la información médica de tu mascota de forma{' '}
-            <Text style={styles.subtitleBold}>sencilla y segura</Text>.
-          </>
-        }
-        showBackButton={true}
-        backButtonText="← Inicio"
-        onBackPress={() => navigation.goBack()}
-        // backgroundColor="transparent"
-      />
-      <View style={styles.container}>
-        {/* Form Section */}
-        <KeyboardAvoidingView
-          style={styles.formSection}
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-        >
-          <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.formContainer}
-            showsVerticalScrollIndicator={false}
+        {/* Header Component */}
+        <Header
+          title="Registro"
+          subtitle={
+            <>
+              Crea tu cuenta y empieza a organizar la información médica de tu
+              mascota de forma{' '}
+              <Text style={styles.subtitleBold}>sencilla y segura</Text>.
+            </>
+          }
+          showBackButton={true}
+          backButtonText="← Inicio"
+          onBackPress={() => navigation.goBack()}
+          // backgroundColor="transparent"
+        />
+        <View style={styles.container}>
+          {/* Form Section */}
+          <KeyboardAvoidingView
+            style={styles.formSection}
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           >
-            <View style={styles.inputsContainer}>
-              {/* first name */}
-              <View style={styles.nameInputGroup}>
-                <Text style={styles.inputLabel}>Nombre</Text>
+            <ScrollView
+              style={styles.scrollView}
+              contentContainerStyle={styles.formContainer}
+              showsVerticalScrollIndicator={false}
+            >
+              <View style={styles.inputsContainer}>
+                {/* first name */}
+                <View style={styles.nameInputGroup}>
+                  <Text style={styles.inputLabel}>Nombre</Text>
                   <TextInput
                     style={styles.input}
                     placeholder="Nombre"
@@ -119,11 +116,11 @@ const RegisterScreen = ({ navigation }) => {
                     onChangeText={setFirstName}
                     autoCapitalize="words"
                   />
-              </View>
+                </View>
 
-              {/* Last Name */}
-              <View style={styles.nameInputGroup}>
-                <Text style={styles.inputLabel}>Apellidos</Text>
+                {/* Last Name */}
+                <View style={styles.nameInputGroup}>
+                  <Text style={styles.inputLabel}>Apellidos</Text>
                   <TextInput
                     style={styles.input}
                     placeholder="Apellidos"
@@ -134,61 +131,66 @@ const RegisterScreen = ({ navigation }) => {
                   />
                 </View>
 
-              {/* Email Input */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Correo</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Tu correo electrónico"
-                  placeholderTextColor="#62748E"
-                  value={email}
-                  onChangeText={setEmail}
-                  autoCapitalize="none"
-                  keyboardType="email-address"
-                />
+                {/* Email Input */}
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>Correo</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Tu correo electrónico"
+                    placeholderTextColor="#62748E"
+                    value={email}
+                    onChangeText={setEmail}
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                  />
+                </View>
+
+                {/* Password Input */}
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>Contraseña</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Mínimo 8 caracteres"
+                    placeholderTextColor="#62748E"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                  />
+                </View>
+
+                {/* Confirm Password Input */}
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>
+                    Confirmación de contraseña
+                  </Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Que coincida con las contraseñas"
+                    placeholderTextColor="#62748E"
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    secureTextEntry
+                  />
+                </View>
               </View>
 
-              {/* Password Input */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Contraseña</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Mínimo 8 caracteres"
-                  placeholderTextColor="#62748E"
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry
-                />
+              {/* Register Button */}
+              <View style={styles.buttonContainer}>
+                {loading ? (
+                  <ActivityIndicator size="large" color="#FA8081" />
+                ) : (
+                  <TouchableOpacity
+                    style={styles.registerButton}
+                    onPress={() => navigation.navigate('Register2')}
+                  >
+                    <Text style={styles.registerButtonText}>Siguiente</Text>
+                  </TouchableOpacity>
+                )}
               </View>
-
-              {/* Confirm Password Input */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Confirmación de contraseña</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Que coincida con las contraseñas"
-                  placeholderTextColor="#62748E"
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                  secureTextEntry
-                />
-              </View>
-            </View>
-
-            {/* Register Button */}
-            <View style={styles.buttonContainer}>
-              {loading ? (
-                <ActivityIndicator size="large" color="#FA8081" />
-              ) : (
-                <TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate('Register2')}>
-                  <Text style={styles.registerButtonText}>Siguiente</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </View>
-    </SafeAreaView>
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </View>
+      </SafeAreaView>
     </LinearGradient>
   );
 };

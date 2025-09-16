@@ -5,13 +5,12 @@ const Header = ({
   title,
   subtitle,
   showBackButton = false,
-  backButtonText = "← Back",
+  backButtonText = '← Back',
   onBackPress,
   backgroundColor = '#FB999A',
 }) => {
   return (
     <View style={[styles.headerSection, { backgroundColor }]}>
-
       {showBackButton && (
         <TouchableOpacity style={styles.backButton} onPress={onBackPress}>
           <Text style={styles.backButtonText}>{backButtonText}</Text>

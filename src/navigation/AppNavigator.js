@@ -15,7 +15,10 @@ const Stack = createNativeStackNavigator();
 const AppNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Landing" screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        initialRouteName="Landing"
+        screenOptions={{ headerShown: false }}
+      >
         <Stack.Screen name="Landing" component={LandingScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
@@ -24,10 +27,10 @@ const AppNavigator = () => {
         <Stack.Screen name="Notifications" component={NotificationsScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen
-        name="NewPetForm"
-        component={NewPetFormScreen}
-        options={{ title: 'Nueva Mascota' }}
-      />
+          name="NewPetForm"
+          component={NewPetFormScreen}
+          options={{ title: 'Nueva Mascota' }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

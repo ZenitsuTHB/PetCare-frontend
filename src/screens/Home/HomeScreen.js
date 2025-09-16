@@ -1,16 +1,14 @@
 import React from 'react';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  StyleSheet, 
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
   StatusBar,
-  Image 
+  Image,
 } from 'react-native';
 import { logoutUser } from '../../api/auth';
 import Footer from '../../components/Footer';
-
-
 
 const HomeScreen = ({ navigation }) => {
   const handleLogout = async () => {
@@ -19,9 +17,9 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleNewPet = () => {
-  console.log('Nueva mascota pressed');
-  navigation.navigate('NewPetForm');
-};
+    console.log('Nueva mascota pressed');
+    navigation.navigate('NewPetForm');
+  };
 
   const handleNotifications = () => {
     console.log('Notificaciones pressed');
@@ -53,13 +51,13 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.emptyStateContainer}>
               <View style={styles.emptyImagePlaceholder}>
                 {/* Aquí puedes agregar una imagen de placeholder */}
-                <Image 
+                <Image
                   source={require('../../../assets/images/firulais1.png')}
                   style={styles.emptyImage}
                   resizeMode="contain"
                 />
               </View>
-              
+
               <View style={styles.emptyTextContainer}>
                 <Text style={styles.emptyTitle}>Tu lista está vacía</Text>
                 <Text style={styles.emptyDescription}>
@@ -71,7 +69,10 @@ const HomeScreen = ({ navigation }) => {
 
           {/* New Pet Button */}
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.newPetButton} onPress={handleNewPet}>
+            <TouchableOpacity
+              style={styles.newPetButton}
+              onPress={handleNewPet}
+            >
               <View style={styles.addIcon}>
                 <Text style={styles.addIconText}>+</Text>
               </View>

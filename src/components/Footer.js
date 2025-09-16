@@ -1,5 +1,12 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
+  Image,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Easing } from 'react-native';
 
@@ -32,63 +39,72 @@ const NavItem = ({ tabName, label, icon, isActive, onPress }) => {
   }, [isActive]);
 
   return (
-    <TouchableOpacity style={styles.navItem} onPress={onPress} activeOpacity={0.8}>
+    <TouchableOpacity
+      style={styles.navItem}
+      onPress={onPress}
+      activeOpacity={0.8}
+    >
       <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-        
-        {icon === "customPet" ? ( 
+        {icon === 'customPet' ? (
           <Image
             source={require('../../assets/icons/vetPaw.png')}
-            style={{ width: 28, height: 28, tintColor: isActive ? '#FA8081' : '#494949' }}
+            style={{
+              width: 28,
+              height: 28,
+              tintColor: isActive ? '#FA8081' : '#494949',
+            }}
           />
         ) : (
-          <Icon 
-            name={icon} 
-            size={28} 
-            color={isActive ? '#FA8081' : '#494949'} 
+          <Icon
+            name={icon}
+            size={28}
+            color={isActive ? '#FA8081' : '#494949'}
           />
         )}
       </Animated.View>
-      <Text style={isActive ? styles.navTextActive : styles.navText}>{label}</Text>
-      
+      <Text style={isActive ? styles.navTextActive : styles.navText}>
+        {label}
+      </Text>
+
       {/* Subrayado animado */}
-      <Animated.View 
+      <Animated.View
         style={[
           styles.underline,
-          { opacity: underlineAnim, transform: [{ scaleX: underlineAnim }] }
+          { opacity: underlineAnim, transform: [{ scaleX: underlineAnim }] },
         ]}
       />
     </TouchableOpacity>
   );
 };
 
-const Footer = ({ 
-  activeTab = 'pets', 
-  onPetsPress, 
-  onNotificationsPress, 
-  onProfilePress 
+const Footer = ({
+  activeTab = 'pets',
+  onPetsPress,
+  onNotificationsPress,
+  onProfilePress,
 }) => {
   return (
     <View style={styles.bottomNavigation}>
-      <NavItem 
-        tabName="pets" 
-        label="Mascotas" 
+      <NavItem
+        tabName="pets"
+        label="Mascotas"
         icon="customPet"
-        isActive={activeTab === 'pets'} 
-        onPress={onPetsPress} 
+        isActive={activeTab === 'pets'}
+        onPress={onPetsPress}
       />
-      <NavItem 
-        tabName="notifications" 
-        label="Notificaciones" 
+      <NavItem
+        tabName="notifications"
+        label="Notificaciones"
         icon="notifications"
-        isActive={activeTab === 'notifications'} 
-        onPress={onNotificationsPress} 
+        isActive={activeTab === 'notifications'}
+        onPress={onNotificationsPress}
       />
-      <NavItem 
-        tabName="profile" 
-        label="Perfil" 
+      <NavItem
+        tabName="profile"
+        label="Perfil"
         icon="person"
-        isActive={activeTab === 'profile'} 
-        onPress={onProfilePress} 
+        isActive={activeTab === 'profile'}
+        onPress={onProfilePress}
       />
     </View>
   );

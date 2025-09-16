@@ -4,20 +4,20 @@ export const loginUser = async (email, password) => {
   // Simulación de retardo de red
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      if (email === "test" && password === "12") {
+      if (email === 'test' && password === '12') {
         resolve({
           success: true,
-          token: "fake_jwt_token_123456",
+          token: 'fake_jwt_token_123456',
           user: {
             id: 1,
-            email: "test",
-            name: "Test User"
-          }
+            email: 'test',
+            name: 'Test User',
+          },
         });
       } else {
         resolve({
           success: false,
-          message: "Credenciales incorrectas"
+          message: 'Credenciales incorrectas',
         });
       }
     }, 1000); // simula una llamada de red
@@ -30,7 +30,7 @@ export const logoutUser = async () => {
     setTimeout(() => {
       resolve({
         success: true,
-        message: "Sesión cerrada correctamente"
+        message: 'Sesión cerrada correctamente',
       });
     }, 500); // simula una llamada de red
   });

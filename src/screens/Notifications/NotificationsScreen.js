@@ -18,7 +18,9 @@ const NotificationsScreen = ({ navigation }) => {
       <View style={styles.mainContent}>
         <View style={styles.content}>
           <Text style={styles.title}>Notificaciones</Text>
-          <Text style={styles.subtitle}>Aquí aparecerán tus notificaciones</Text>
+          <Text style={styles.subtitle}>
+            Aquí aparecerán tus notificaciones
+          </Text>
         </View>
 
         <Footer

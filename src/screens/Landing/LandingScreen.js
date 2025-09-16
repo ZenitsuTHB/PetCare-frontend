@@ -38,14 +38,18 @@ const LandingScreen = ({ navigation }) => {
 
           <View style={styles.descriptionContainer}>
             <Text style={styles.descriptionText}>
-              Accede a tu espacio seguro y lleva el control de la salud de tu mascota en un solo lugar.
+              Accede a tu espacio seguro y lleva el control de la salud de tu
+              mascota en un solo lugar.
             </Text>
           </View>
         </View>
 
         {/* Buttons Section */}
         <View style={styles.buttonsSection}>
-          <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+          <TouchableOpacity
+            style={styles.registerButton}
+            onPress={handleRegister}
+          >
             <Text style={styles.registerButtonText}>REGISTRO</Text>
           </TouchableOpacity>
 
@@ -56,8 +60,7 @@ const LandingScreen = ({ navigation }) => {
       </View>
 
       {/* Bottom Navigation Indicator */}
-      <View style={styles.bottomIndicator}>
-      </View>
+      <View style={styles.bottomIndicator}></View>
     </View>
   );
 };

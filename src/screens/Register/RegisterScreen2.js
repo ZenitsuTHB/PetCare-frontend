@@ -30,17 +30,21 @@ const RegisterScreen2 = ({ navigation, route }) => {
 
   // Validar formulario
   useEffect(() => {
-    const isValid = address.trim() !== '' && 
-                   city.trim() !== '' && 
-                   postalCode.trim() !== '' && 
-                   province !== '' && 
-                   termsAccepted;
+    const isValid =
+      address.trim() !== '' &&
+      city.trim() !== '' &&
+      postalCode.trim() !== '' &&
+      province !== '' &&
+      termsAccepted;
     setIsFormValid(isValid);
   }, [address, city, postalCode, province, termsAccepted]);
 
   const handleRegistration = async () => {
     if (!isFormValid) {
-      Alert.alert('Error', 'Por favor completa todos los campos y acepta los términos y condiciones');
+      Alert.alert(
+        'Error',
+        'Por favor completa todos los campos y acepta los términos y condiciones'
+      );
       return;
     }
 
@@ -53,7 +57,7 @@ const RegisterScreen2 = ({ navigation, route }) => {
         city,
         postalCode,
         province,
-        termsAccepted
+        termsAccepted,
       };
 
       // Aquí llamarías a tu API de registro
@@ -63,19 +67,18 @@ const RegisterScreen2 = ({ navigation, route }) => {
       setTimeout(() => {
         setLoading(false);
         Alert.alert(
-          '¡Registro exitoso!', 
+          '¡Registro exitoso!',
           'Tu cuenta ha sido creada correctamente',
           [
             {
               text: 'OK',
               onPress: () => {
                 navigation.navigate('Login');
-              }
-            }
+              },
+            },
           ]
         );
       }, 2000);
-
     } catch (error) {
       setLoading(false);
       Alert.alert('Error', 'Ocurrió un problema inesperado');
@@ -90,15 +93,16 @@ const RegisterScreen2 = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
-      
+
       {/* Header Section */}
       <Header
         title="Registro"
         subtitle={
-        <>
-          Crea tu cuenta y empieza a organizar la información médica de tu mascota de forma{' '}
-          <Text style={styles.subtitleBold}>sencilla y segura</Text>.
-        </>
+          <>
+            Crea tu cuenta y empieza a organizar la información médica de tu
+            mascota de forma{' '}
+            <Text style={styles.subtitleBold}>sencilla y segura</Text>.
+          </>
         }
         showBackButton={true}
         backButtonText="← Inicio"
@@ -108,9 +112,9 @@ const RegisterScreen2 = ({ navigation, route }) => {
       {/* Form Section */}
       <KeyboardAvoidingView
         style={styles.formSection}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <ScrollView 
+        <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.formContainer}
           showsVerticalScrollIndicator={false}
@@ -142,7 +146,7 @@ const RegisterScreen2 = ({ navigation, route }) => {
                   autoCapitalize="words"
                 />
               </View>
-              
+
               <View style={styles.postalInputGroup}>
                 <Text style={styles.inputLabel}>C.P</Text>
                 <TextInput
@@ -156,7 +160,7 @@ const RegisterScreen2 = ({ navigation, route }) => {
                 />
               </View>
             </View>
-            
+
             {/* Province Picker */}
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>Provincia</Text>
@@ -165,14 +169,25 @@ const RegisterScreen2 = ({ navigation, route }) => {
                 onChange={(value) => setProvince(value)}
               />
             </View>
-            
+
             {/* Terms and Conditions Checkbox */}
-            <TouchableOpacity style={styles.checkboxContainer} onPress={toggleTermsAccepted}>
-              <View style={[styles.checkbox, termsAccepted && styles.checkboxChecked]}>
+            <TouchableOpacity
+              style={styles.checkboxContainer}
+              onPress={toggleTermsAccepted}
+            >
+              <View
+                style={[
+                  styles.checkbox,
+                  termsAccepted && styles.checkboxChecked,
+                ]}
+              >
                 {termsAccepted && <Text style={styles.checkmark}>✓</Text>}
               </View>
               <Text style={styles.checkboxText}>
-                Acepto los <Text style={styles.checkboxTextBold}>términos y las condiciones</Text>
+                Acepto los{' '}
+                <Text style={styles.checkboxTextBold}>
+                  términos y las condiciones
+                </Text>
               </Text>
             </TouchableOpacity>
           </View>
@@ -182,12 +197,20 @@ const RegisterScreen2 = ({ navigation, route }) => {
             {loading ? (
               <ActivityIndicator size="large" color="#FA8081" />
             ) : (
-              <TouchableOpacity 
-                style={[styles.registerButton, !isFormValid && styles.registerButtonDisabled]} 
+              <TouchableOpacity
+                style={[
+                  styles.registerButton,
+                  !isFormValid && styles.registerButtonDisabled,
+                ]}
                 onPress={handleRegistration}
                 disabled={!isFormValid}
               >
-                <Text style={[styles.registerButtonText, !isFormValid && styles.registerButtonTextDisabled]}>
+                <Text
+                  style={[
+                    styles.registerButtonText,
+                    !isFormValid && styles.registerButtonTextDisabled,
+                  ]}
+                >
                   Registrarse
                 </Text>
               </TouchableOpacity>

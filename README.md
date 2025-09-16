@@ -1,8 +1,11 @@
 ## React Native Project Structure
+
 This document outlines the recommended structure for a React Native project, which helps in maintaining a clean and organized codebase. The structure is designed to facilitate scalability, reusability, and ease of navigation within the project.
 
 ### Project Structure Overview
+
 The following is a high-level overview of the recommended project structure for a React Native application:
+
 ```
 my-app/
 ├── android/                 # Native Android code (auto-generated)
@@ -41,7 +44,9 @@ my-app/
 ```
 
 ### Google sign-in integration
+
 To integrate Google sign-in in your React Native project, follow these steps:
+
 1. **Install Dependencies**: Use the following command to install the necessary packages:
    ```bash
    npm install @react-native-google-signin/google-signin
@@ -63,3 +68,4 @@ To integrate Google sign-in in your React Native project, follow these steps:
          ...
          <meta-data
              android:name="com.google.android.gms.auth.api.signin.API_KEY"
+     ```

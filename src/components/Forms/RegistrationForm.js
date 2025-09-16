@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet,
-Alert, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
 import { validateRegistrationForm } from '../../utils/validation';
 import { FORM_FIELDS, FORM_LABELS } from '../../constants/formConstants';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 const RegistrationForm = ({ onSubmit }) => {
-
   const navigation = useNavigation(); // Assuming you are using React Navigation
   const [formData, setFormData] = useState({
     [FORM_FIELDS.NOMBRE]: '',
@@ -27,7 +36,7 @@ const RegistrationForm = ({ onSubmit }) => {
       ...formData,
       [name]: value,
     });
-    
+
     if (errors[name]) {
       setErrors({
         ...errors,
@@ -48,7 +57,7 @@ const RegistrationForm = ({ onSubmit }) => {
     };
 
     const validation = validateRegistrationForm(sanitizedData);
-    
+
     if (validation.isValid) {
       setLoading(true);
       try {
@@ -83,33 +92,40 @@ const RegistrationForm = ({ onSubmit }) => {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <TouchableOpacity 
-        style={styles.backButton} 
+      <TouchableOpacity
+        style={styles.backButton}
         onPress={() => navigation.navigate('Login')}
       >
         <Ionicons name="arrow-back" size={24} color="#00d4ff" />
         <Text style={styles.backText}>Volver</Text>
       </TouchableOpacity>
-      
+
       <Text style={styles.title}>Registro de Usuario</Text>
-  
-      <ScrollView 
+
+      <ScrollView
         style={styles.formContainer}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
         {renderInput(FORM_FIELDS.NOMBRE)}
         {renderInput(FORM_FIELDS.APELLIDOS)}
-        {renderInput(FORM_FIELDS.CORREO, { keyboardType: 'email-address', autoCapitalize: 'none' })}
+        {renderInput(FORM_FIELDS.CORREO, {
+          keyboardType: 'email-address',
+          autoCapitalize: 'none',
+        })}
         {renderInput(FORM_FIELDS.CONTRASEÑA, { secureTextEntry: true })}
         {renderInput(FORM_FIELDS.DOMICILIO)}
         {renderInput(FORM_FIELDS.CIUDAD)}
         {renderInput(FORM_FIELDS.PROVINCIA)}
-  
+
         {loading ? (
-          <ActivityIndicator size="large" color="#00d4ff" style={styles.loader} />
+          <ActivityIndicator
+            size="large"
+            color="#00d4ff"
+            style={styles.loader}
+          />
         ) : (
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Registrarse</Text>
