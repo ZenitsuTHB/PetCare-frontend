@@ -13,13 +13,13 @@ import {
   Pressable,
   Alert,
   StatusBar,
+  SafeAreaView,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // si no usas Expo, reemplaza por texto "←" / "📷"
+import { Ionicons } from '@expo/vector-icons';
+import LinearGradient from '../../../components/LinearGradient';
 
 const COLORS = {
-  bg: '#F5F6EE', // fondo general verdoso muy claro del mock
-  header: '#FA8081', // rosado principal
-  card: '#FFEFEA', // panel pálido
+  header: '#FB999A',
   text: '#121212',
   sub: '#6B6B6B',
   inputBg: '#FFFFFF',
@@ -30,10 +30,10 @@ const COLORS = {
 
 const initial = {
   name: '',
-  species: '', // select
+  species: '',
   breed: '',
-  birthdate: '', // dd/mm/aaaa
-  gender: '', // select
+  birthdate: '',
+  gender: '',
   weight: '',
   chip: '',
   notes: '',
@@ -46,11 +46,10 @@ const GENDERS = ['Macho', 'Hembra'];
 export default function NewPetFormScreen({ navigation }) {
   const [v, setV] = useState(initial);
   const [touched, setTouched] = useState({});
+  const [selectOpen, setSelectOpen] = useState(null);
 
-  const [selectOpen, setSelectOpen] = useState(null); // 'species' | 'gender' | null
   const openSelect = (k) => setSelectOpen(k);
   const closeSelect = () => setSelectOpen(null);
-
   const onChange = (k) => (text) => setV((s) => ({ ...s, [k]: text }));
   const onBlur = (k) => () => setTouched((s) => ({ ...s, [k]: true }));
 
@@ -81,196 +80,188 @@ export default function NewPetFormScreen({ navigation }) {
       notes: true,
       consent: true,
     });
-
     if (Object.keys(errors).length) {
       Alert.alert('Revisa los campos', 'Hay datos obligatorios o inválidos.');
       return;
     }
-
-    // TODO: reemplaza por tu llamada a API
     Alert.alert('¡Mascota creada!', 'Guardamos los datos correctamente.', [
       { text: 'OK', onPress: () => navigation?.goBack?.() },
     ]);
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: COLORS.bg }}
-      behavior={Platform.select({ ios: 'padding', android: undefined })}
-    >
-      <StatusBar barStyle="light-content" />
-      {/* Header rosado con borde inferior curvo */}
-      <View style={styles.header}>
-        <View style={styles.headerBar}>
-          <TouchableOpacity
-            style={styles.backBtn}
-            onPress={() => navigation?.goBack?.()}
-          >
-            {Ionicons ? (
-              <Ionicons name="chevron-back" size={22} color="#fff" />
-            ) : (
-              <Text style={{ color: '#fff' }}>←</Text>
-            )}
-            <Text style={styles.backTxt}>Atrás</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>Nueva mascota</Text>
-          <View style={{ width: 48 }} />
-        </View>
+    <LinearGradient>
+      <SafeAreaView style={{ flex: 1 }}>
+        <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
 
-        {/* Avatar + botón cámara flotante */}
-        <View style={styles.avatarWrap}>
+        {/* Header (rosado) sobre el gradient. SIN fondos extra que tapen el gradiente */}
+        <View style={styles.header}>
+          <View style={styles.headerBar}>
+            <TouchableOpacity
+              style={styles.backBtn}
+              onPress={() => navigation?.goBack?.()}
+            >
+              <Ionicons name="chevron-back" size={22} color="#fff" />
+              <Text style={styles.backTxt}>Atrás</Text>
+            </TouchableOpacity>
+            <Text style={styles.title}>Nueva mascota</Text>
+            <View style={{ width: 48 }} />
+          </View>
+
+          {/* Avatar (posición normal, no absoluta, para evitar solapes) */}
           <View style={styles.avatar}>
             <Text style={{ fontSize: 44 }}>🐾</Text>
-          </View>
-          <TouchableOpacity
-            style={styles.camBtn}
-            onPress={() =>
-              Alert.alert('Imagen', 'Conecta aquí tu selector de imágenes')
-            }
-          >
-            {Ionicons ? (
+            <TouchableOpacity
+              style={styles.camBtn}
+              onPress={() =>
+                Alert.alert('Imagen', 'Conecta aquí tu selector de imágenes')
+              }
+            >
               <Ionicons name="camera" size={18} color="#fff" />
-            ) : (
-              <Text style={{ color: '#fff' }}>📷</Text>
-            )}
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
 
-      <View style={styles.formSection}>
-        {/* Tarjeta pálida con inputs */}
-        <ScrollView
-          contentContainerStyle={styles.card}
-          keyboardShouldPersistTaps="handled"
-        >
-          <Field
-            label="Nombre de tu mascota *"
-            placeholder="Nombre completo"
-            value={v.name}
-            onChangeText={onChange('name')}
-            onBlur={onBlur('name')}
-            error={touched.name && errors.name}
-          />
-
-          <Select
-            label="Especie *"
-            placeholder="Tipo"
-            value={v.species}
-            error={touched.species && errors.species}
-            onPress={() => openSelect('species')}
-          />
-
-          <Row>
-            <Field
-              style={{ flex: 1, marginRight: 8 }}
-              label="Raza"
-              placeholder="Indique raza específica"
-              value={v.breed}
-              onChangeText={onChange('breed')}
-              onBlur={onBlur('breed')}
-            />
-            <Field
-              style={{ flex: 1, marginLeft: 8 }}
-              label="Fecha de nacimiento"
-              placeholder="dd/mm/aaaa"
-              value={v.birthdate}
-              onChangeText={onChange('birthdate')}
-              onBlur={onBlur('birthdate')}
-              error={touched.birthdate && errors.birthdate}
-            />
-          </Row>
-
-          <Row>
-            <Select
-              style={{ flex: 1, marginRight: 8 }}
-              label="Género *"
-              placeholder="Macho o hembra"
-              value={v.gender}
-              error={touched.gender && errors.gender}
-              onPress={() => openSelect('gender')}
-            />
-            <Field
-              style={{ flex: 1, marginLeft: 8 }}
-              label="Peso *"
-              placeholder="Ej. 7.8"
-              keyboardType="numeric"
-              value={v.weight}
-              onChangeText={onChange('weight')}
-              onBlur={onBlur('weight')}
-              error={touched.weight && errors.weight}
-            />
-          </Row>
-
-          <Field
-            label="Chip"
-            placeholder="15 dígitos del número del chip"
-            value={v.chip}
-            onChangeText={onChange('chip')}
-            onBlur={onBlur('chip')}
-            error={touched.chip && errors.chip}
-          />
-
-          <Field
-            label="Observaciones"
-            placeholder="Apunta lo que quieras aquí"
-            value={v.notes}
-            onChangeText={onChange('notes')}
-            onBlur={onBlur('notes')}
-            multiline
-            numberOfLines={4}
-            style={{ height: 110, textAlignVertical: 'top' }}
-          />
-
-          {/* Checkbox de consentimiento */}
-          <TouchableOpacity
-            style={styles.checkRow}
-            activeOpacity={0.8}
-            onPress={() => setV((s) => ({ ...s, consent: !s.consent }))}
+        {/* PANEL inferior con borde superior derecho redondeado (igual que Register) */}
+        <View style={styles.container}>
+          <KeyboardAvoidingView
+            style={styles.formSection}
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           >
-            <View style={[styles.checkbox, v.consent && styles.checkboxOn]}>
-              {v.consent && (
-                <Text style={{ color: '#fff', fontWeight: '900' }}>✓</Text>
-              )}
-            </View>
-            <Text style={styles.checkText}>
-              Autorizo el uso y cesión de los datos de mi mascota según la
-              política de privacidad.
-            </Text>
-          </TouchableOpacity>
-          {touched.consent && errors.consent ? (
-            <Text style={styles.errorSmall}>{errors.consent}</Text>
-          ) : null}
+            <ScrollView
+              contentContainerStyle={styles.card}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
+              <Field
+                label="Nombre de tu mascota *"
+                placeholder="Nombre completo"
+                value={v.name}
+                onChangeText={onChange('name')}
+                onBlur={onBlur('name')}
+                error={touched.name && errors.name}
+              />
 
-          {/* CTA */}
-          <TouchableOpacity style={styles.cta} onPress={submit}>
-            <Text style={styles.ctaText}>Crear mascota</Text>
-          </TouchableOpacity>
+              <Select
+                label="Especie *"
+                placeholder="Tipo"
+                value={v.species}
+                error={touched.species && errors.species}
+                onPress={() => openSelect('species')}
+              />
 
-          <View style={{ height: 24 }} />
-        </ScrollView>
-      </View>
-      {/* Modales de selección */}
-      <OptionsModal
-        visible={selectOpen === 'species'}
-        title="Selecciona especie"
-        options={SPECIES}
-        onClose={closeSelect}
-        onSelect={(val) => {
-          setV((s) => ({ ...s, species: val }));
-          closeSelect();
-        }}
-      />
-      <OptionsModal
-        visible={selectOpen === 'gender'}
-        title="Selecciona género"
-        options={GENDERS}
-        onClose={closeSelect}
-        onSelect={(val) => {
-          setV((s) => ({ ...s, gender: val }));
-          closeSelect();
-        }}
-      />
-    </KeyboardAvoidingView>
+              <Row>
+                <Field
+                  style={{ flex: 1, marginRight: 8 }}
+                  label="Raza"
+                  placeholder="Indique raza específica"
+                  value={v.breed}
+                  onChangeText={onChange('breed')}
+                  onBlur={onBlur('breed')}
+                />
+                <Field
+                  style={{ flex: 1, marginLeft: 8 }}
+                  label="Fecha de nacimiento"
+                  placeholder="dd/mm/aaaa"
+                  value={v.birthdate}
+                  onChangeText={onChange('birthdate')}
+                  onBlur={onBlur('birthdate')}
+                  error={touched.birthdate && errors.birthdate}
+                />
+              </Row>
+
+              <Row>
+                <Select
+                  style={{ flex: 1, marginRight: 8 }}
+                  label="Género *"
+                  placeholder="Macho o hembra"
+                  value={v.gender}
+                  error={touched.gender && errors.gender}
+                  onPress={() => openSelect('gender')}
+                />
+                <Field
+                  style={{ flex: 1, marginLeft: 8 }}
+                  label="Peso *"
+                  placeholder="Ej. 7.8"
+                  keyboardType="numeric"
+                  value={v.weight}
+                  onChangeText={onChange('weight')}
+                  onBlur={onBlur('weight')}
+                  error={touched.weight && errors.weight}
+                />
+              </Row>
+
+              <Field
+                label="Chip"
+                placeholder="15 dígitos del número del chip"
+                value={v.chip}
+                onChangeText={onChange('chip')}
+                onBlur={onBlur('chip')}
+                error={touched.chip && errors.chip}
+              />
+
+              <Field
+                label="Observaciones"
+                placeholder="Apunta lo que quieras aquí"
+                value={v.notes}
+                onChangeText={onChange('notes')}
+                onBlur={onBlur('notes')}
+                multiline
+                numberOfLines={4}
+                style={{ height: 110, textAlignVertical: 'top' }}
+              />
+
+              <TouchableOpacity
+                style={styles.checkRow}
+                activeOpacity={0.8}
+                onPress={() => setV((s) => ({ ...s, consent: !s.consent }))}
+              >
+                <View style={[styles.checkbox, v.consent && styles.checkboxOn]}>
+                  {v.consent && (
+                    <Text style={{ color: '#fff', fontWeight: '900' }}>✓</Text>
+                  )}
+                </View>
+                <Text style={styles.checkText}>
+                  Autorizo el uso y cesión de los datos de mi mascota según la
+                  política de privacidad.
+                </Text>
+              </TouchableOpacity>
+              {touched.consent && errors.consent ? (
+                <Text style={styles.errorSmall}>{errors.consent}</Text>
+              ) : null}
+
+              <TouchableOpacity style={styles.cta} onPress={submit}>
+                <Text style={styles.ctaText}>Crear mascota</Text>
+              </TouchableOpacity>
+
+              <View style={{ height: 24 }} />
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </View>
+
+        {/* Modales de selección */}
+        <OptionsModal
+          visible={selectOpen === 'species'}
+          title="Selecciona especie"
+          options={SPECIES}
+          onClose={closeSelect}
+          onSelect={(val) => {
+            setV((s) => ({ ...s, species: val }));
+            closeSelect();
+          }}
+        />
+        <OptionsModal
+          visible={selectOpen === 'gender'}
+          title="Selecciona género"
+          options={GENDERS}
+          onClose={closeSelect}
+          onSelect={(val) => {
+            setV((s) => ({ ...s, gender: val }));
+            closeSelect();
+          }}
+        />
+      </SafeAreaView>
+    </LinearGradient>
   );
 }
 
@@ -353,21 +344,13 @@ function OptionsModal({ visible, title, options, onClose, onSelect }) {
 /* ------------------------- styles ------------------------- */
 
 const styles = StyleSheet.create({
+  // Header rosado con curva inferior
   header: {
     backgroundColor: COLORS.header,
     paddingTop: Platform.select({ ios: 56, android: 24 }),
-    paddingBottom: 40,
-    borderBottomLeftRadius: 40,
+    paddingBottom: 24,
+    borderBottomLeftRadius: 40, // curva inferior izquierda
     overflow: 'hidden',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.header, // igual que Login: fondo rosado detrás del panel
-  },
-  formSection: {
-    flex: 1,
-    backgroundColor: '#FFF8F4',
-    borderTopRightRadius: 40,
   },
   headerBar: {
     flexDirection: 'row',
@@ -375,25 +358,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     justifyContent: 'space-between',
   },
-  backBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    padding: 4,
-  },
+  backBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, padding: 4 },
   backTxt: { color: '#fff', fontWeight: '600', fontSize: 14 },
-  title: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: '900',
-  },
-  avatarWrap: {
-    position: 'static',
-    alignSelf: 'center',
-    top: Platform.select({ ios: 120, android: 105 }),
-  },
+  title: { color: '#fff', fontSize: 20, fontWeight: '900' },
+
+  // Avatar centrado bajo el título (sin position absolute para no solapar)
   avatar: {
-    marginTop: 25,
+    alignSelf: 'center',
+    marginTop: 18,
+    marginBottom: 8,
     width: 120,
     height: 120,
     borderRadius: 60,
@@ -403,8 +376,8 @@ const styles = StyleSheet.create({
   },
   camBtn: {
     position: 'absolute',
-    right: 6,
-    bottom: 6,
+    right: -6,
+    bottom: -6,
     width: 34,
     height: 34,
     borderRadius: 18,
@@ -414,10 +387,22 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
 
+  // Panel inferior como en Register
+  container: {
+    flex: 1,
+    borderTopRightRadius: 40,
+    marginTop: 0,
+    overflow: 'hidden',
+  },
+  formSection: {
+    flex: 1,
+    backgroundColor: '#FFF8F4',
+    borderTopRightRadius: 40,
+  },
   card: {
-    paddingTop: 30, // para que quede debajo del avatar
     paddingHorizontal: 16,
-    backgroundColor: COLORS.bg,
+    paddingTop: 24,
+    paddingBottom: 24,
   },
 
   field: { marginBottom: 14 },
