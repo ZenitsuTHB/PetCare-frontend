@@ -15,6 +15,8 @@ import {
 import { Picker } from '@react-native-picker/picker';
 import Header from '../../components/Header';
 import ProvincePicker from '../../components/ProvincePicker';
+import { SafeAreaView } from 'react-native-web';
+import  LinearGradient  from '../../components/LinearGradient';
 
 const RegisterScreen2 = ({ navigation, route }) => {
   const [address, setAddress] = useState('');
@@ -88,7 +90,8 @@ const RegisterScreen2 = ({ navigation, route }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient>
+    <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
       
       {/* Header Section */}
@@ -195,7 +198,8 @@ const RegisterScreen2 = ({ navigation, route }) => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </View>
+    </SafeAreaView>
+    </LinearGradient>
   );
 };
 

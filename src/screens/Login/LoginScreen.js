@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import { loginUser } from '../../api/auth';
 import Header from '../../components/Header';
+import  LinearGradient  from '../../components/LinearGradient';
+import { SafeAreaView } from 'react-native-web';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -45,12 +47,13 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
-      
-      {/* Header Component */}
-      <Header
-        title="Iniciar Sesión"
+    <LinearGradient>
+      <SafeAreaView style={styles.container}>
+        <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
+
+        {/* Header Component */}
+        <Header
+          title="Iniciar Sesión"
         subtitle="Inicia sesión y sigue cuidando a quienes más quieres."
         showBackButton={true}
         backButtonText="← Inicio"
@@ -119,7 +122,8 @@ const LoginScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
-    </View>
+    </SafeAreaView>
+    </LinearGradient>
   );
 };
 
