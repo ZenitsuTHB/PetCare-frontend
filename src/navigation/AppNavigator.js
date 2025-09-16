@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import NewPetFormScreen from '../screens/Forms/NewPetForm/NewPetFormScreen';
 import LandingScreen from '../screens/Landing/LandingScreen';
 import LoginScreen from '../screens/Login/LoginScreen';
 import RegisterScreen from '../screens/Register/RegisterScreen';
@@ -23,6 +23,11 @@ const AppNavigator = () => {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen
+        name="NewPetForm"
+        component={NewPetFormScreen}
+        options={{ title: 'Nueva Mascota' }}
+      />
       </Stack.Navigator>
     </NavigationContainer>
   );

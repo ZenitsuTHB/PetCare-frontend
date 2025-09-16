@@ -19,10 +19,9 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleNewPet = () => {
-    // Navegar a la pantalla de alta de mascota
-    console.log('Nueva mascota pressed');
-    //navigation.navigate('NewPet');
-  };
+  console.log('Nueva mascota pressed');
+  navigation.navigate('NewPetForm');
+};
 
   const handleNotifications = () => {
     console.log('Notificaciones pressed');
