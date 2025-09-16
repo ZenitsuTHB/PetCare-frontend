@@ -9,7 +9,15 @@ module.exports = (() => {
   config.transformer = {
     ...transformer,
     babelTransformerPath: require.resolve("react-native-svg-transformer"),
+    // Mejorar source maps para mejor debugging
+    minifierConfig: {
+      keep_fnames: true, // Mantener nombres de funciones
+      mangle: {
+        keep_fnames: true, // No ofuscar nombres de funciones
+      },
+    },
   };
+  
   config.resolver = {
     ...resolver,
     assetExts: resolver.assetExts.filter((ext) => ext !== "svg"),

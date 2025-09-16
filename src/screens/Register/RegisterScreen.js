@@ -14,7 +14,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { registerUser } from '../../api/auth';
-import Header from '../../components/Header';
+import Header from '../../components/Headers/Header';
 import  LinearGradient  from '../../components/LinearGradient';
 
 const RegisterScreen = ({ navigation }) => {

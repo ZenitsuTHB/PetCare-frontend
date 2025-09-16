@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, StatusBar } from 'react-native';
 import Footer from '../../components/Footer';
+import PetCard from '../../components/PetCard';
 
 const NotificationsScreen = ({ navigation }) => {
   const handlePets = () => {
@@ -20,6 +21,8 @@ const NotificationsScreen = ({ navigation }) => {
           <Text style={styles.title}>Notificaciones</Text>
           <Text style={styles.subtitle}>Aquí aparecerán tus notificaciones</Text>
         </View>
+
+        <PetCard />
 
         <Footer
           activeTab="notifications"

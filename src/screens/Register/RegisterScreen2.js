@@ -13,7 +13,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import Header from '../../components/Header';
+import Header from '../../components/headers/Header';
 import ProvincePicker from '../../components/ProvincePicker';
 import { SafeAreaView } from 'react-native-web';
 import  LinearGradient  from '../../components/LinearGradient';

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, StatusBar } from 'react-native';
 import Footer from '../../components/Footer';
+import ButtonExamples from '../../components/Button/ButtonExamples';
 
 const ProfileScreen = ({ navigation }) => {
   const handlePets = () => {
@@ -14,11 +15,8 @@ const ProfileScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#FFF8F4" barStyle="dark-content" />
-      
-      <View style={styles.statusBar}>
-        <Text style={styles.timeText}>12:30</Text>
-      </View>
 
+      <ButtonExamples />
       <View style={styles.mainContent}>
         <View style={styles.content}>
           <Text style={styles.title}>Perfil</Text>
@@ -44,12 +42,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF8F4',
     paddingHorizontal: 16,
     paddingVertical: 12,
-  },
-  statusBar: {
-    height: 24,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
   },
   timeText: {
     color: '#170E2B',

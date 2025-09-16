@@ -29,7 +29,7 @@ const LandingScreen = ({ navigation }) => {
             <View style={styles.logoPlaceholder}>
               {/* Aquí se agrega el logo */}
               <Image
-                source={require('../../../assets/images/logoBlanco.png')}
+                source={require('../../assets/images/logoBlanco.png')}
                 style={styles.logo}
                 resizeMode="contain"
               />
