@@ -18,8 +18,9 @@ import {
   Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import LinearGradient from '../LinearGradient';
+import LinearGradient from '../Utils/LinearGradient';
 import * as ImagePicker from 'expo-image-picker';
+import { usePets } from '../../contexts/PetContext';
 
 const PINK = '#FB999A'; // unificamos rosa para gradient y header
 
@@ -38,6 +39,7 @@ const SPECIES = ['Perro', 'Gato', 'Conejo', 'Ave', 'Otro'];
 export default function NewPetFormScreen({ navigation, route }) {
   const pet = route?.params?.pet || null;
   const isEdit = !!pet;
+  const { addPet, updatePet } = usePets();
 
   const [values, setValues] = useState({
     photoUri: pet?.photoUri || '',
@@ -116,17 +118,25 @@ export default function NewPetFormScreen({ navigation, route }) {
     try {
       setSubmitting(true);
 
-      const payload = { ...values };
+      const payload = { 
+        name: values.name,
+        species: values.species,
+        breed: values.breed,
+        birthdate: values.birthdate,
+        chip: values.chip,
+        notes: values.notes,
+        photoUri: values.photoUri,
+      };
 
       if (isEdit) {
-        // await updatePet(pet.id, payload);
+        await updatePet(pet.id, payload);
         Alert.alert('¡Guardado!', 'Los cambios se han actualizado.', [
           { text: 'OK', onPress: () => navigation.goBack() },
         ]);
       } else {
-        // await createPet(payload);
+        await addPet(payload);
         Alert.alert('¡Mascota creada!', 'Guardamos los datos correctamente.', [
-          { text: 'OK', onPress: () => navigation.goBack() },
+          { text: 'OK', onPress: () => navigation.navigate('Home') },
         ]);
       }
     } catch (err) {

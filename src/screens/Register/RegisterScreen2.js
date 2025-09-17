@@ -14,9 +14,9 @@ import {
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Header from '../../components/Headers/Header';
-import ProvincePicker from '../../components/ProvincePicker';
+import ProvincePicker from '../../components/Utils/ProvincePicker';
 import { SafeAreaView } from 'react-native-web';
-import  LinearGradient  from '../../components/LinearGradient';
+import  LinearGradient  from '../../components/Utils/LinearGradient';
 
 const RegisterScreen2 = ({ navigation, route }) => {
   const [address, setAddress] = useState('');

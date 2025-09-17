@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, StatusBar } from 'react-native';
-import Footer from '../../components/Footer';
+import Footer from '../../components/Utils/Footer';
 import PetCard from '../../components/Cards/PetCard';
 
 const NotificationsScreen = ({ navigation }) => {
