@@ -1,5 +1,6 @@
 // screens/Forms/NewPetForm/NewPetFormScreen.js
 import React, { useMemo, useState } from 'react';
+
 import {
   View,
   Text,
@@ -14,12 +15,16 @@ import {
   Alert,
   StatusBar,
   SafeAreaView,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import LinearGradient from '../../../components/LinearGradient';
+import * as ImagePicker from 'expo-image-picker';
+
+const PINK = '#FB999A'; // unificamos rosa para gradient y header
 
 const COLORS = {
-  header: '#FB999A',
+  header: PINK,
   text: '#121212',
   sub: '#6B6B6B',
   inputBg: '#FFFFFF',
@@ -28,101 +33,204 @@ const COLORS = {
   cta: '#FA8081',
 };
 
-const initial = {
-  name: '',
-  species: '',
-  breed: '',
-  birthdate: '',
-  gender: '',
-  weight: '',
-  chip: '',
-  notes: '',
-  consent: false,
-};
-
 const SPECIES = ['Perro', 'Gato', 'Conejo', 'Ave', 'Otro'];
-const GENDERS = ['Macho', 'Hembra'];
 
-export default function NewPetFormScreen({ navigation }) {
-  const [v, setV] = useState(initial);
+export default function NewPetFormScreen({ navigation, route }) {
+  const pet = route?.params?.pet || null;
+  const isEdit = !!pet;
+
+  const [values, setValues] = useState({
+    photoUri: pet?.photoUri || '',
+    name: pet?.name || '',
+    species: pet?.species || '',
+    breed: pet?.breed || '',
+    birthdate: pet?.birthdate || '', // dd/mm/aaaa
+    chip: pet?.chip || '',
+    notes: pet?.notes || '',
+    consent: !!pet?.consent,
+  });
   const [touched, setTouched] = useState({});
-  const [selectOpen, setSelectOpen] = useState(null);
+  const [selectOpen, setSelectOpen] = useState(null); // 'species' | null
+  const [submitting, setSubmitting] = useState(false);
 
-  const openSelect = (k) => setSelectOpen(k);
-  const closeSelect = () => setSelectOpen(null);
-  const onChange = (k) => (text) => setV((s) => ({ ...s, [k]: text }));
+  const onChange = (k) => (text) => setValues((s) => ({ ...s, [k]: text }));
   const onBlur = (k) => () => setTouched((s) => ({ ...s, [k]: true }));
 
   const errors = useMemo(() => {
     const e = {};
-    if (!v.name.trim()) e.name = 'Obligatorio';
-    if (!v.species.trim()) e.species = 'Obligatorio';
-    if (!v.gender.trim()) e.gender = 'Obligatorio';
-    if (!v.weight.trim()) e.weight = 'Obligatorio';
-    if (v.birthdate && !/^\d{2}\/\d{2}\/\d{4}$/.test(v.birthdate))
+    if (!values.name.trim()) e.name = 'Obligatorio';
+    if (!values.species.trim()) e.species = 'Obligatorio';
+    if (!values.breed.trim()) e.breed = 'Obligatorio';
+    if (!values.birthdate.trim()) e.birthdate = 'Obligatorio';
+    else if (!/^\d{2}\/\d{2}\/\d{4}$/.test(values.birthdate))
       e.birthdate = 'Usa dd/mm/aaaa';
-    if (v.weight && isNaN(Number(v.weight.replace(',', '.'))))
-      e.weight = 'Numérico';
-    if (v.chip && v.chip.length < 5) e.chip = 'Muy corto';
-    if (!v.consent) e.consent = 'Requerido';
+    if (!values.chip.trim()) {
+      e.chip = 'Obligatorio';
+    } else if (!/^\d{15}$/.test(values.chip)) {
+      e.chip = 'Debe contener exactamente 15 dígitos numéricos';
+    } else {
+      const prefix = parseInt(values.chip.substring(0, 3), 10);
+      if (prefix < 900 || prefix > 985) {
+        e.chip = 'Los 3 primeros dígitos deben estar entre 900 y 985';
+      }
+    }
+    if (!values.consent) e.consent = 'Debes aceptar la política de privacidad';
     return e;
-  }, [v]);
+  }, [values]);
 
-  const submit = () => {
+  const pickImage = async () => {
+    // Ejemplo con expo-image-picker (descomenta imports si lo usas)
+    // const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    // if (status !== 'granted') {
+    //   Alert.alert('Permisos', 'Se necesita permiso para acceder a tus fotos.');
+    //   return;
+    // }
+    // const result = await ImagePicker.launchImageLibraryAsync({ allowsEditing: true, quality: 0.8 });
+    // if (!result.canceled) {
+    //   setValues((s) => ({ ...s, photoUri: result.assets[0].uri }));
+    // }
+    Alert.alert('Imagen', 'Conecta aquí tu selector de imágenes');
+  };
+
+  const submit = async () => {
+    // marcar todo como tocado para mostrar errores
     setTouched({
+      photoUri: true,
       name: true,
       species: true,
       breed: true,
       birthdate: true,
-      gender: true,
-      weight: true,
       chip: true,
       notes: true,
       consent: true,
     });
+
     if (Object.keys(errors).length) {
-      Alert.alert('Revisa los campos', 'Hay datos obligatorios o inválidos.');
+      Alert.alert(
+        'Revisa los campos',
+        'Hay datos obligatorios o con formato incorrecto.'
+      );
       return;
     }
-    Alert.alert('¡Mascota creada!', 'Guardamos los datos correctamente.', [
-      { text: 'OK', onPress: () => navigation?.goBack?.() },
-    ]);
+
+    try {
+      setSubmitting(true);
+
+      const payload = { ...values };
+
+      if (isEdit) {
+        // await updatePet(pet.id, payload);
+        Alert.alert('¡Guardado!', 'Los cambios se han actualizado.', [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ]);
+      } else {
+        // await createPet(payload);
+        Alert.alert('¡Mascota creada!', 'Guardamos los datos correctamente.', [
+          { text: 'OK', onPress: () => navigation.goBack() },
+        ]);
+      }
+    } catch (err) {
+      Alert.alert('Ups', 'No se pudo guardar. Intenta nuevamente.');
+      console.error(err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const [photoModal, setPhotoModal] = useState(false);
+
+  const requestCamera = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    return status === 'granted';
+  };
+
+  const requestLibrary = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    return status === 'granted';
+  };
+
+  const openCameraAsync = async () => {
+    const ok = await requestCamera();
+    if (!ok) {
+      Alert.alert(
+        'Permiso requerido',
+        'Activa el acceso a la cámara para continuar.'
+      );
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      quality: 0.85,
+      aspect: [1, 1],
+    });
+    if (!result.canceled) {
+      setValues((s) => ({ ...s, photoUri: result.assets[0].uri }));
+    }
+    setPhotoModal(false);
+  };
+
+  const openLibraryAsync = async () => {
+    const ok = await requestLibrary();
+    if (!ok) {
+      Alert.alert(
+        'Permiso requerido',
+        'Activa el acceso a tus fotos para continuar.'
+      );
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 0.85,
+      aspect: [1, 1],
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    });
+    if (!result.canceled) {
+      setValues((s) => ({ ...s, photoUri: result.assets[0].uri }));
+    }
+    setPhotoModal(false);
   };
 
   return (
     <LinearGradient>
       <SafeAreaView style={{ flex: 1 }}>
-        <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
+        <StatusBar backgroundColor={PINK} barStyle="dark-content" />
 
-        {/* Header (rosado) sobre el gradient. SIN fondos extra que tapen el gradiente */}
+        {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerBar}>
             <TouchableOpacity
               style={styles.backBtn}
-              onPress={() => navigation?.goBack?.()}
+              onPress={() => navigation.goBack()}
             >
               <Ionicons name="chevron-back" size={22} color="#fff" />
               <Text style={styles.backTxt}>Atrás</Text>
             </TouchableOpacity>
-            <Text style={styles.title}>Nueva mascota</Text>
+            <Text style={styles.title}>
+              {isEdit ? 'Editar mascota' : 'Nueva mascota'}
+            </Text>
             <View style={{ width: 48 }} />
           </View>
 
-          {/* Avatar (posición normal, no absoluta, para evitar solapes) */}
+          {/* Foto + botón cámara */}
           <View style={styles.avatar}>
-            <Text style={{ fontSize: 44 }}>🐾</Text>
+            {values.photoUri ? (
+              <Image
+                source={{ uri: values.photoUri }}
+                style={styles.avatarImg}
+              />
+            ) : (
+              <Text style={{ fontSize: 44 }}>🐾</Text>
+            )}
             <TouchableOpacity
               style={styles.camBtn}
-              onPress={() =>
-                Alert.alert('Imagen', 'Conecta aquí tu selector de imágenes')
-              }
+              onPress={() => setPhotoModal(true)}
             >
               <Ionicons name="camera" size={18} color="#fff" />
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* PANEL inferior con borde superior derecho redondeado (igual que Register) */}
+        {/* Panel inferior (igual que Register) */}
         <View style={styles.container}>
           <KeyboardAvoidingView
             style={styles.formSection}
@@ -131,12 +239,11 @@ export default function NewPetFormScreen({ navigation }) {
             <ScrollView
               contentContainerStyle={styles.card}
               keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
             >
               <Field
-                label="Nombre de tu mascota *"
+                label="Nombre *"
                 placeholder="Nombre completo"
-                value={v.name}
+                value={values.name}
                 onChangeText={onChange('name')}
                 onBlur={onBlur('name')}
                 error={touched.name && errors.name}
@@ -145,93 +252,83 @@ export default function NewPetFormScreen({ navigation }) {
               <Select
                 label="Especie *"
                 placeholder="Tipo"
-                value={v.species}
+                value={values.species}
                 error={touched.species && errors.species}
-                onPress={() => openSelect('species')}
+                onPress={() => setSelectOpen('species')}
               />
 
-              <Row>
-                <Field
-                  style={{ flex: 1, marginRight: 8 }}
-                  label="Raza"
-                  placeholder="Indique raza específica"
-                  value={v.breed}
-                  onChangeText={onChange('breed')}
-                  onBlur={onBlur('breed')}
-                />
-                <Field
-                  style={{ flex: 1, marginLeft: 8 }}
-                  label="Fecha de nacimiento"
-                  placeholder="dd/mm/aaaa"
-                  value={v.birthdate}
-                  onChangeText={onChange('birthdate')}
-                  onBlur={onBlur('birthdate')}
-                  error={touched.birthdate && errors.birthdate}
-                />
-              </Row>
-
-              <Row>
-                <Select
-                  style={{ flex: 1, marginRight: 8 }}
-                  label="Género *"
-                  placeholder="Macho o hembra"
-                  value={v.gender}
-                  error={touched.gender && errors.gender}
-                  onPress={() => openSelect('gender')}
-                />
-                <Field
-                  style={{ flex: 1, marginLeft: 8 }}
-                  label="Peso *"
-                  placeholder="Ej. 7.8"
-                  keyboardType="numeric"
-                  value={v.weight}
-                  onChangeText={onChange('weight')}
-                  onBlur={onBlur('weight')}
-                  error={touched.weight && errors.weight}
-                />
-              </Row>
+              <Field
+                label="Raza *"
+                placeholder="Indique raza específica"
+                value={values.breed}
+                onChangeText={onChange('breed')}
+                onBlur={onBlur('breed')}
+                error={touched.breed && errors.breed}
+              />
 
               <Field
-                label="Chip"
+                label="Fecha de nacimiento *"
+                placeholder="dd/mm/aaaa"
+                value={values.birthdate}
+                onChangeText={onChange('birthdate')}
+                onBlur={onBlur('birthdate')}
+                error={touched.birthdate && errors.birthdate}
+              />
+
+              <Field
+                label="Chip *"
                 placeholder="15 dígitos del número del chip"
-                value={v.chip}
+                value={values.chip}
                 onChangeText={onChange('chip')}
                 onBlur={onBlur('chip')}
                 error={touched.chip && errors.chip}
+                keyboardType="numeric"
+                maxLength={15}
               />
-
               <Field
                 label="Observaciones"
-                placeholder="Apunta lo que quieras aquí"
-                value={v.notes}
+                placeholder="Apunta lo que quieras aquí (opcional)"
+                value={values.notes}
                 onChangeText={onChange('notes')}
                 onBlur={onBlur('notes')}
                 multiline
                 numberOfLines={4}
                 style={{ height: 110, textAlignVertical: 'top' }}
               />
-
               <TouchableOpacity
                 style={styles.checkRow}
-                activeOpacity={0.8}
-                onPress={() => setV((s) => ({ ...s, consent: !s.consent }))}
+                activeOpacity={0.7}
+                onPress={() => {
+                  setValues((s) => ({ ...s, consent: !s.consent }));
+                  setTouched((t) => ({ ...t, consent: true })); // opcional: marcarlo al tocar
+                }}
               >
-                <View style={[styles.checkbox, v.consent && styles.checkboxOn]}>
-                  {v.consent && (
-                    <Text style={{ color: '#fff', fontWeight: '900' }}>✓</Text>
-                  )}
+                <View
+                  style={[styles.checkbox, values.consent && styles.checkboxOn]}
+                >
+                  {values.consent && <Text style={styles.checkMark}>✓</Text>}
                 </View>
                 <Text style={styles.checkText}>
                   Autorizo el uso y cesión de los datos de mi mascota según la
-                  política de privacidad.
+                  política de privacidad. *
                 </Text>
               </TouchableOpacity>
-              {touched.consent && errors.consent ? (
-                <Text style={styles.errorSmall}>{errors.consent}</Text>
-              ) : null}
 
-              <TouchableOpacity style={styles.cta} onPress={submit}>
-                <Text style={styles.ctaText}>Crear mascota</Text>
+              {touched.consent && errors.consent && (
+                <Text style={styles.errorSmall}>{errors.consent}</Text>
+              )}
+
+              <TouchableOpacity
+                style={[
+                  styles.cta,
+                  (!values.consent || submitting) && { opacity: 0.5 },
+                ]}
+                onPress={submit}
+                disabled={!values.consent || submitting}
+              >
+                <Text style={styles.ctaText}>
+                  {isEdit ? 'Guardar cambios' : 'Crear mascota'}
+                </Text>
               </TouchableOpacity>
 
               <View style={{ height: 24 }} />
@@ -239,33 +336,57 @@ export default function NewPetFormScreen({ navigation }) {
           </KeyboardAvoidingView>
         </View>
 
-        {/* Modales de selección */}
+        {/* Select especie */}
         <OptionsModal
           visible={selectOpen === 'species'}
           title="Selecciona especie"
           options={SPECIES}
-          onClose={closeSelect}
+          onClose={() => setSelectOpen(null)}
           onSelect={(val) => {
-            setV((s) => ({ ...s, species: val }));
-            closeSelect();
+            setValues((s) => ({ ...s, species: val }));
+            setSelectOpen(null);
           }}
         />
-        <OptionsModal
-          visible={selectOpen === 'gender'}
-          title="Selecciona género"
-          options={GENDERS}
-          onClose={closeSelect}
-          onSelect={(val) => {
-            setV((s) => ({ ...s, gender: val }));
-            closeSelect();
-          }}
-        />
+        <Modal
+          visible={photoModal}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setPhotoModal(false)}
+        >
+          <Pressable
+            style={styles.modalBackdrop}
+            onPress={() => setPhotoModal(false)}
+          >
+            <View style={styles.photoCard}>
+              <View style={styles.photoHeaderIcon}>
+                <Ionicons name="image-outline" size={28} color="#FA8081" />
+              </View>
+              <Text style={styles.photoTitle}>Cambiar foto</Text>
+
+              <TouchableOpacity
+                style={styles.photoPrimary}
+                onPress={openCameraAsync}
+              >
+                <Text style={styles.photoPrimaryText}>Tomar foto</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.photoSecondary}
+                onPress={openLibraryAsync}
+              >
+                <Text style={styles.photoSecondaryText}>
+                  Subir desde la galería
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Modal>
       </SafeAreaView>
     </LinearGradient>
   );
 }
 
-/* -------------------- UI components -------------------- */
+/* ---------- UI helpers ---------- */
 
 function Field({ label, error, style, ...inputProps }) {
   return (
@@ -303,10 +424,6 @@ function Select({ label, value, placeholder, onPress, error, style }) {
   );
 }
 
-function Row({ children }) {
-  return <View style={{ flexDirection: 'row' }}>{children}</View>;
-}
-
 function OptionsModal({ visible, title, options, onClose, onSelect }) {
   return (
     <Modal
@@ -341,15 +458,38 @@ function OptionsModal({ visible, title, options, onClose, onSelect }) {
   );
 }
 
-/* ------------------------- styles ------------------------- */
+/* ---------- styles ---------- */
 
 const styles = StyleSheet.create({
-  // Header rosado con curva inferior
+  checkRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginTop: 12,
+    marginBottom: 12,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  checkboxOn: {
+    backgroundColor: COLORS.cta,
+    borderColor: COLORS.cta,
+  },
+  checkMark: { color: '#fff', fontWeight: '900', fontSize: 12 },
+  checkText: { flex: 1, color: COLORS.sub, fontSize: 12, lineHeight: 16 },
   header: {
     backgroundColor: COLORS.header,
     paddingTop: Platform.select({ ios: 56, android: 24 }),
     paddingBottom: 24,
-    borderBottomLeftRadius: 40, // curva inferior izquierda
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
     overflow: 'hidden',
   },
   headerBar: {
@@ -362,7 +502,6 @@ const styles = StyleSheet.create({
   backTxt: { color: '#fff', fontWeight: '600', fontSize: 14 },
   title: { color: '#fff', fontSize: 20, fontWeight: '900' },
 
-  // Avatar centrado bajo el título (sin position absolute para no solapar)
   avatar: {
     alignSelf: 'center',
     marginTop: 18,
@@ -374,6 +513,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  avatarImg: { width: '100%', height: '100%', borderRadius: 60 },
   camBtn: {
     position: 'absolute',
     right: -6,
@@ -387,7 +527,6 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
 
-  // Panel inferior como en Register
   container: {
     flex: 1,
     borderTopRightRadius: 40,
@@ -432,21 +571,6 @@ const styles = StyleSheet.create({
   selectText: { fontSize: 16, color: COLORS.text },
   caret: { fontSize: 16, color: '#9B9B9B' },
 
-  checkRow: { flexDirection: 'row', alignItems: 'center', marginTop: 6 },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 10,
-  },
-  checkboxOn: { backgroundColor: COLORS.cta, borderColor: COLORS.cta },
-  checkText: { color: COLORS.sub, flex: 1, fontSize: 12, lineHeight: 18 },
-
   cta: {
     marginTop: 16,
     backgroundColor: COLORS.cta,
@@ -461,11 +585,57 @@ const styles = StyleSheet.create({
 
   modalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.25)',
+    backgroundColor: 'rgba(0,0,0,0.35)',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
   },
+
+  photoCard: {
+    alignSelf: 'stretch',
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    gap: 12,
+  },
+
+  photoHeaderIcon: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: '#FFF1F1',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  photoTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#FA8081',
+    marginTop: 4,
+  },
+
+  photoPrimary: {
+    alignSelf: 'stretch',
+    backgroundColor: '#FA8081',
+    paddingVertical: 14,
+    borderRadius: 14,
+    alignItems: 'center',
+    marginTop: 6,
+  },
+  photoPrimaryText: { color: '#fff', fontWeight: '700', fontSize: 16 },
+
+  photoSecondary: {
+    alignSelf: 'stretch',
+    paddingVertical: 14,
+    borderRadius: 14,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#EADAD6',
+  },
+  photoSecondaryText: { color: '#3A3A3A', fontWeight: '600', fontSize: 16 },
+
   modalCard: {
     alignSelf: 'stretch',
     backgroundColor: '#fff',
