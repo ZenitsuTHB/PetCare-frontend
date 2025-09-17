@@ -18,7 +18,7 @@ import {
   Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import LinearGradient from '../../../components/LinearGradient';
+import LinearGradient from '../LinearGradient';
 import * as ImagePicker from 'expo-image-picker';
 
 const PINK = '#FB999A'; // unificamos rosa para gradient y header
