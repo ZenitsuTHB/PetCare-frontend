@@ -47,12 +47,8 @@ const NavItem = ({ tabName, label, icon, isActive, onPress }) => {
       <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
         {icon === 'customPet' ? (
           <Image
-            source={require('../../assets/icons/vetPaw.png')}
-            style={{
-              width: 28,
-              height: 28,
-              tintColor: isActive ? '#FA8081' : '#494949',
-            }}
+            source={require('../assets/icons/vetPaw.png')}
+            style={{ width: 28, height: 28, tintColor: isActive ? '#FA8081' : '#494949' }}
           />
         ) : (
           <Icon

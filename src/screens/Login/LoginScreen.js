@@ -12,7 +12,9 @@ import {
   StatusBar,
 } from 'react-native';
 import { loginUser } from '../../api/auth';
-import Header from '../../components/Header';
+import Header from '../../components/Headers/Header';
+import  LinearGradient  from '../../components/LinearGradient';
+import { SafeAreaView } from 'react-native';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -45,12 +47,13 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
+    <LinearGradient>
+      <SafeAreaView style={{ flex: 1 }}>
+        <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
 
-      {/* Header Component */}
-      <Header
-        title="Iniciar Sesión"
+        {/* Header Component */}
+        <Header
+          title="Iniciar Sesión"
         subtitle="Inicia sesión y sigue cuidando a quienes más quieres."
         showBackButton={true}
         backButtonText="← Inicio"
@@ -124,17 +127,14 @@ const LoginScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
-    </View>
+    </SafeAreaView>
+    </LinearGradient>
   );
 };
 
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FB999A',
-  },
   formSection: {
     flex: 1,
     backgroundColor: '#FFF8F4',
@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 40,
     gap: 24,
+    minHeight: '100%',
   },
   inputsContainer: {
     gap: 18,
