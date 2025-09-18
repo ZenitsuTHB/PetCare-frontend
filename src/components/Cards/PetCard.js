@@ -36,12 +36,8 @@ const PetCard = ({
   ];
 
   const handleDropdownSelect = (option) => {
-  console.log(deleteModalVisible);
-
-    setDropdownVisible(false);
     if (option.onPress) {
-      setTimeout(() => {option.onPress()}, 0);
-      // Cerrar el dropdown después de un pequeño retraso para permitir la animación
+      option.onPress();
     }
   };
 
@@ -51,7 +47,6 @@ const PetCard = ({
     }
   };
   return (
-    console.log("DELETE MODAL:", deleteModalVisible),
     <View style={styles.cardContainer}>
       <View style={styles.card}>
         {/* Imagen redonda */}

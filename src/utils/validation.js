@@ -1,4 +1,4 @@
-import { VALIDATION_MESSAGES } from '../constants/formConstants';
+import { VALIDATION_MESSAGES } from '../Constants/formConstants';
 
 export const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
