@@ -16,25 +16,19 @@ import {
   StatusBar,
   SafeAreaView,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import LinearGradient from '../Utils/LinearGradient';
 import * as ImagePicker from 'expo-image-picker';
 import { usePets } from '../../contexts/PetContext';
-
-const PINK = '#FB999A'; // unificamos rosa para gradient y header
-
-const COLORS = {
-  header: PINK,
-  text: '#121212',
-  sub: '#6B6B6B',
-  inputBg: '#FFFFFF',
-  border: '#EADAD6',
-  danger: '#FF6B6B',
-  cta: '#FA8081',
-};
-
-const SPECIES = ['Perro', 'Gato', 'Conejo', 'Ave', 'Otro'];
+import { validatePetForm } from '../../utils/validation';
+import { 
+  SPECIES_OPTIONS, 
+  THEME_COLORS, 
+  IMAGE_PICKER_CONFIG, 
+  PERMISSION_MESSAGES 
+} from '../../constants/formConstants';
 
 export default function NewPetFormScreen({ navigation, route }) {
   const pet = route?.params?.pet || null;
@@ -58,27 +52,8 @@ export default function NewPetFormScreen({ navigation, route }) {
   const onChange = (k) => (text) => setValues((s) => ({ ...s, [k]: text }));
   const onBlur = (k) => () => setTouched((s) => ({ ...s, [k]: true }));
 
-  const errors = useMemo(() => {
-    const e = {};
-    if (!values.name.trim()) e.name = 'Obligatorio';
-    if (!values.species.trim()) e.species = 'Obligatorio';
-    if (!values.breed.trim()) e.breed = 'Obligatorio';
-    if (!values.birthdate.trim()) e.birthdate = 'Obligatorio';
-    else if (!/^\d{2}\/\d{2}\/\d{4}$/.test(values.birthdate))
-      e.birthdate = 'Usa dd/mm/aaaa';
-    if (!values.chip.trim()) {
-      e.chip = 'Obligatorio';
-    } else if (!/^\d{15}$/.test(values.chip)) {
-      e.chip = 'Debe contener exactamente 15 dígitos numéricos';
-    } else {
-      const prefix = parseInt(values.chip.substring(0, 3), 10);
-      if (prefix < 900 || prefix > 985) {
-        e.chip = 'Los 3 primeros dígitos deben estar entre 900 y 985';
-      }
-    }
-    if (!values.consent) e.consent = 'Debes aceptar la política de privacidad';
-    return e;
-  }, [values]);
+  const validationResult = useMemo(() => validatePetForm(values), [values]);
+  const errors = validationResult.errors;
 
   const pickImage = async () => {
     // Ejemplo con expo-image-picker (descomenta imports si lo usas)
@@ -135,9 +110,17 @@ export default function NewPetFormScreen({ navigation, route }) {
         ]);
       } else {
         await addPet(payload);
-        Alert.alert('¡Mascota creada!', 'Guardamos los datos correctamente.', [
-          { text: 'OK', onPress: () => navigation.navigate('Home') },
-        ]);
+        
+        // Navegación inmediata sin alert para mejor UX
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        });
+        
+        // Mostrar mensaje de éxito después de navegar
+        setTimeout(() => {
+          Alert.alert('¡Mascota creada!', 'Guardamos los datos correctamente.');
+        }, 500);
       }
     } catch (err) {
       Alert.alert('Ups', 'No se pudo guardar. Intenta nuevamente.');
@@ -163,15 +146,14 @@ export default function NewPetFormScreen({ navigation, route }) {
     const ok = await requestCamera();
     if (!ok) {
       Alert.alert(
-        'Permiso requerido',
-        'Activa el acceso a la cámara para continuar.'
+        PERMISSION_MESSAGES.CAMERA_REQUIRED.title,
+        PERMISSION_MESSAGES.CAMERA_REQUIRED.message
       );
       return;
     }
     const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      quality: 0.85,
-      aspect: [1, 1],
+      ...IMAGE_PICKER_CONFIG,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
     });
     if (!result.canceled) {
       setValues((s) => ({ ...s, photoUri: result.assets[0].uri }));
@@ -183,15 +165,13 @@ export default function NewPetFormScreen({ navigation, route }) {
     const ok = await requestLibrary();
     if (!ok) {
       Alert.alert(
-        'Permiso requerido',
-        'Activa el acceso a tus fotos para continuar.'
+        PERMISSION_MESSAGES.LIBRARY_REQUIRED.title,
+        PERMISSION_MESSAGES.LIBRARY_REQUIRED.message
       );
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      quality: 0.85,
-      aspect: [1, 1],
+      ...IMAGE_PICKER_CONFIG,
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
     });
     if (!result.canceled) {
@@ -203,7 +183,7 @@ export default function NewPetFormScreen({ navigation, route }) {
   return (
     <LinearGradient>
       <SafeAreaView style={{ flex: 1 }}>
-        <StatusBar backgroundColor={PINK} barStyle="dark-content" />
+        <StatusBar backgroundColor={THEME_COLORS.PRIMARY_PINK} barStyle="dark-content" />
 
         {/* Header */}
         <View style={styles.header}>
@@ -331,14 +311,18 @@ export default function NewPetFormScreen({ navigation, route }) {
               <TouchableOpacity
                 style={[
                   styles.cta,
-                  (!values.consent || submitting) && { opacity: 0.5 },
+                  (!values.consent || submitting) && styles.ctaDisabled,
                 ]}
                 onPress={submit}
                 disabled={!values.consent || submitting}
               >
-                <Text style={styles.ctaText}>
-                  {isEdit ? 'Guardar cambios' : 'Crear mascota'}
-                </Text>
+                {submitting ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <Text style={styles.ctaText}>
+                    {isEdit ? 'Guardar cambios' : 'Crear mascota'}
+                  </Text>
+                )}
               </TouchableOpacity>
 
               <View style={{ height: 24 }} />
@@ -350,7 +334,7 @@ export default function NewPetFormScreen({ navigation, route }) {
         <OptionsModal
           visible={selectOpen === 'species'}
           title="Selecciona especie"
-          options={SPECIES}
+          options={SPECIES_OPTIONS}
           onClose={() => setSelectOpen(null)}
           onSelect={(val) => {
             setValues((s) => ({ ...s, species: val }));
@@ -458,7 +442,7 @@ function OptionsModal({ visible, title, options, onClose, onSelect }) {
             style={[styles.modalItem, { marginTop: 8 }]}
             onPress={onClose}
           >
-            <Text style={[styles.modalItemText, { color: COLORS.sub }]}>
+            <Text style={[styles.modalItemText, { color: THEME_COLORS.TEXT_SECONDARY }]}>
               Cancelar
             </Text>
           </TouchableOpacity>
@@ -482,20 +466,20 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: THEME_COLORS.BORDER_DEFAULT,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
   },
   checkboxOn: {
-    backgroundColor: COLORS.cta,
-    borderColor: COLORS.cta,
+    backgroundColor: THEME_COLORS.CTA_BUTTON,
+    borderColor: THEME_COLORS.CTA_BUTTON,
   },
   checkMark: { color: '#fff', fontWeight: '900', fontSize: 12 },
-  checkText: { flex: 1, color: COLORS.sub, fontSize: 12, lineHeight: 16 },
+  checkText: { flex: 1, color: THEME_COLORS.TEXT_SECONDARY, fontSize: 12, lineHeight: 16 },
   header: {
-    backgroundColor: COLORS.header,
+    backgroundColor: THEME_COLORS.PRIMARY_PINK,
     paddingTop: Platform.select({ ios: 56, android: 24 }),
     paddingBottom: 24,
     borderBottomLeftRadius: 40,
@@ -531,7 +515,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 18,
-    backgroundColor: COLORS.cta,
+    backgroundColor: THEME_COLORS.CTA_BUTTON,
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 3,
@@ -545,7 +529,7 @@ const styles = StyleSheet.create({
   },
   formSection: {
     flex: 1,
-    backgroundColor: '#FFF8F4',
+    backgroundColor: THEME_COLORS.FORM_BACKGROUND,
     borderTopRightRadius: 40,
   },
   card: {
@@ -556,42 +540,47 @@ const styles = StyleSheet.create({
 
   field: { marginBottom: 14 },
   label: {
-    color: COLORS.text,
+    color: THEME_COLORS.TEXT_PRIMARY,
     fontSize: 13,
     fontWeight: '700',
     marginBottom: 6,
   },
   input: {
-    backgroundColor: COLORS.inputBg,
+    backgroundColor: THEME_COLORS.INPUT_BACKGROUND,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: THEME_COLORS.BORDER_DEFAULT,
     borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 12,
     fontSize: 16,
-    color: COLORS.text,
+    color: THEME_COLORS.TEXT_PRIMARY,
   },
-  inputError: { borderColor: COLORS.danger },
+  inputError: { borderColor: THEME_COLORS.BORDER_ERROR },
 
   select: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  selectText: { fontSize: 16, color: COLORS.text },
+  selectText: { fontSize: 16, color: THEME_COLORS.TEXT_PRIMARY },
   caret: { fontSize: 16, color: '#9B9B9B' },
 
   cta: {
     marginTop: 16,
-    backgroundColor: COLORS.cta,
+    backgroundColor: THEME_COLORS.CTA_BUTTON,
     paddingVertical: 14,
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight: 48,
+  },
+  ctaDisabled: {
+    backgroundColor: '#E2E8F0',
+    opacity: 0.6,
   },
   ctaText: { color: '#fff', fontWeight: '800', fontSize: 16 },
 
-  errorSmall: { color: COLORS.danger, fontSize: 12, marginTop: 6 },
+  errorSmall: { color: THEME_COLORS.BORDER_ERROR, fontSize: 12, marginTop: 6 },
 
   modalBackdrop: {
     flex: 1,
@@ -663,8 +652,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: COLORS.border,
+    borderColor: THEME_COLORS.BORDER_DEFAULT,
     marginTop: 8,
   },
-  modalItemText: { fontSize: 16, color: COLORS.text, textAlign: 'center' },
+  modalItemText: { fontSize: 16, color: THEME_COLORS.TEXT_PRIMARY, textAlign: 'center' },
 });

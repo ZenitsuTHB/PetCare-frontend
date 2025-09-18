@@ -5,9 +5,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Animated,
-  Image,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { Easing } from 'react-native';
 
 const NavItem = ({ tabName, label, icon, isActive, onPress }) => {
@@ -45,17 +44,14 @@ const NavItem = ({ tabName, label, icon, isActive, onPress }) => {
       activeOpacity={0.8}
     >
       <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-        {icon === 'customPet' ? (
-          <Image
-            source={require('../../assets/icons/vetPaw.png')}
-            style={{
-              width: 28,
-              height: 28,
-              tintColor: isActive ? '#FA8081' : '#494949',
-            }}
+        {icon === 'notifications-outline' || icon === 'person-outline' ? (
+          <Ionicons
+            name={icon}
+            size={28}
+            color={isActive ? '#FA8081' : '#494949'}
           />
         ) : (
-          <Icon
+          <MaterialIcons
             name={icon}
             size={28}
             color={isActive ? '#FA8081' : '#494949'}
@@ -88,21 +84,21 @@ const Footer = ({
       <NavItem
         tabName="pets"
         label="Mascotas"
-        icon="customPet"
+        icon="pets"
         isActive={activeTab === 'pets'}
         onPress={onPetsPress}
       />
       <NavItem
         tabName="notifications"
         label="Notificaciones"
-        icon="notifications"
+        icon="notifications-outline"
         isActive={activeTab === 'notifications'}
         onPress={onNotificationsPress}
       />
       <NavItem
         tabName="profile"
         label="Perfil"
-        icon="person"
+        icon="person-outline"
         isActive={activeTab === 'profile'}
         onPress={onProfilePress}
       />
@@ -123,10 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
   },
   navItem: {
     flex: 1,

@@ -1,5 +1,32 @@
 // auth.js (versión mock solo para login)
+// mock de autenticación para desarrollo sin backend
+// En producción, reemplazar con llamadas reales a la API
 
+// Registro de usuario
+export const registerUser = async (firstName, lastName, email, password) => {
+  // Simulación de retardo de red
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (email === 'test') {
+        resolve({
+          success: false,
+          message: 'El correo ya está registrado',
+        });
+      } else {
+        resolve({
+          success: true,
+          user: {
+            id: 1,
+            email,
+            name: `${firstName} ${lastName}`,
+          },
+        });
+      }
+    }, 1000); // simula una llamada de red
+  });
+};
+
+// Login
 export const loginUser = async (email, password) => {
   // Simulación de retardo de red
   return new Promise((resolve, reject) => {

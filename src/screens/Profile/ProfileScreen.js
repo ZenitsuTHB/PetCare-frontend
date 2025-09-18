@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, StatusBar } from 'react-native';
 import Footer from '../../components/Utils/Footer';
-import ButtonExamples from '../../components/Button/ButtonExamples';
 
 const ProfileScreen = ({ navigation }) => {
   const handlePets = () => {
@@ -16,7 +15,7 @@ const ProfileScreen = ({ navigation }) => {
     <View style={styles.container}>
       <StatusBar backgroundColor="#FFF8F4" barStyle="dark-content" />
 
-      <ButtonExamples />
+  
       <View style={styles.mainContent}>
         <View style={styles.content}>
           <Text style={styles.title}>Perfil</Text>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,7 @@ import Header from '../../components/Headers/Header';
 import ProvincePicker from '../../components/Utils/ProvincePicker';
 import { SafeAreaView } from 'react-native-web';
 import LinearGradient from '../../components/Utils/LinearGradient';
+import { validateRegistrationCompleteForm } from '../../utils/validation';
 
 const RegisterScreen2 = ({ navigation, route }) => {
   const [address, setAddress] = useState('');
@@ -25,28 +26,19 @@ const RegisterScreen2 = ({ navigation, route }) => {
   const [province, setProvince] = useState('Barcelona');
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isFormValid, setIsFormValid] = useState(false);
 
   // Datos del formulario anterior
   const userBasicData = route?.params?.userBasicData || {};
 
-  // Validar formulario
-  useEffect(() => {
-    const isValid =
-      address.trim() !== '' &&
-      city.trim() !== '' &&
-      postalCode.trim() !== '' &&
-      province !== '' &&
-      termsAccepted;
-    setIsFormValid(isValid);
-  }, [address, city, postalCode, province, termsAccepted]);
+  // Usar la función de validación centralizada
+  const formData = { address, city, postalCode, province, termsAccepted };
+  const validationResult = useMemo(() => validateRegistrationCompleteForm(formData), [formData]);
+  const { errors, isValid } = validationResult;
 
   const handleRegistration = async () => {
-    if (!isFormValid) {
-      Alert.alert(
-        'Error',
-        'Por favor completa todos los campos y acepta los términos y condiciones'
-      );
+    if (!isValid) {
+      const errorMessages = Object.values(errors).join('\n');
+      Alert.alert('Error', errorMessages);
       return;
     }
 
@@ -94,7 +86,7 @@ const RegisterScreen2 = ({ navigation, route }) => {
 
   return (
     <LinearGradient>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={{ flex: 1 }}>
         <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
 
         {/* Header Section */}
@@ -112,11 +104,12 @@ const RegisterScreen2 = ({ navigation, route }) => {
           onBackPress={() => navigation.goBack()}
         />
 
-        {/* Form Section */}
-        <KeyboardAvoidingView
-          style={styles.formSection}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
+        <View style={styles.container}>
+          {/* Form Section */}
+          <KeyboardAvoidingView
+            style={styles.formSection}
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          >
           <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.formContainer}
@@ -197,30 +190,31 @@ const RegisterScreen2 = ({ navigation, route }) => {
 
             {/* Register Button */}
             <View style={styles.buttonContainer}>
-              {loading ? (
-                <ActivityIndicator size="large" color="#FA8081" />
-              ) : (
-                <TouchableOpacity
-                  style={[
-                    styles.registerButton,
-                    !isFormValid && styles.registerButtonDisabled,
-                  ]}
-                  onPress={handleRegistration}
-                  disabled={!isFormValid}
-                >
+              <TouchableOpacity
+                style={[
+                  styles.registerButton,
+                  (!isValid || loading) && styles.registerButtonDisabled,
+                ]}
+                onPress={handleRegistration}
+                disabled={!isValid || loading}
+              >
+                {loading ? (
+                  <ActivityIndicator size="small" color="#FFF8F4" />
+                ) : (
                   <Text
                     style={[
                       styles.registerButtonText,
-                      !isFormValid && styles.registerButtonTextDisabled,
+                      !isValid && styles.registerButtonTextDisabled,
                     ]}
                   >
                     Registrarse
                   </Text>
-                </TouchableOpacity>
-              )}
+                )}
+              </TouchableOpacity>
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
+        </View>
       </SafeAreaView>
     </LinearGradient>
   );
@@ -231,7 +225,9 @@ export default RegisterScreen2;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FB999A',
+    borderTopRightRadius: 40,
+    marginTop: 0,
+    overflow: 'hidden',
   },
   subtitleBold: {
     fontWeight: '600',
@@ -343,10 +339,11 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 18,
     alignItems: 'center',
+    minHeight: 48, // Altura mínima para mantener consistencia
   },
   registerButtonDisabled: {
-    backgroundColor: '#FA8081',
-    opacity: 0.5,
+    backgroundColor: '#E2E8F0',
+    opacity: 0.6,
   },
   registerButtonText: {
     color: '#FFF8F4',
