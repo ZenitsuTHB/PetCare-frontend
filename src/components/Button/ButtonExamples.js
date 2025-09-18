@@ -6,7 +6,6 @@ import Button from './Button';
 const ButtonExamples = () => {
   return (
     <View style={styles.container}>
-      
       {/* 1. Botón principal - Acción primaria */}
       <Button
         title="Nueva mascota"
@@ -99,7 +98,6 @@ const ButtonExamples = () => {
         textStyle={{ fontSize: 18, fontWeight: 'bold' }}
         onPress={() => console.log('Personalizado')}
       />
-
     </View>
   );
 };

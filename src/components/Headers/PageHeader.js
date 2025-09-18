@@ -1,25 +1,19 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const PageHeader = ({ 
-  title, 
-  subtitle, 
-  titleStyle, 
-  subtitleStyle, 
-  containerStyle 
+const PageHeader = ({
+  title,
+  subtitle,
+  titleStyle,
+  subtitleStyle,
+  containerStyle,
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
-      {title && (
-        <Text style={[styles.title, titleStyle]}>
-          {title}
-        </Text>
-      )}
-      
+      {title && <Text style={[styles.title, titleStyle]}>{title}</Text>}
+
       {subtitle && (
-        <Text style={[styles.subtitle, subtitleStyle]}>
-          {subtitle}
-        </Text>
+        <Text style={[styles.subtitle, subtitleStyle]}>{subtitle}</Text>
       )}
     </View>
   );

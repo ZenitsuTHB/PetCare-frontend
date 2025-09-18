@@ -1,11 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  StyleSheet, 
-  Modal, 
-  Dimensions 
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Modal,
+  Dimensions,
 } from 'react-native';
 import Button from '../Button/Button';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -41,11 +41,11 @@ const Dropdown = ({
             }}
             style={[
               styles.dropdownOption,
-              option.danger && styles.dangerOption
+              option.danger && styles.dangerOption,
             ]}
             textStyle={[
               styles.dropdownOptionText,
-              option.danger && styles.dangerText
+              option.danger && styles.dangerText,
             ]}
           />
         ))}
@@ -60,16 +60,20 @@ const Dropdown = ({
       animationType="fade"
       onRequestClose={onClose}
     >
-      <TouchableOpacity 
-        style={position === 'absolute' ? styles.absoluteOverlay : styles.overlay} 
-        activeOpacity={1} 
+      <TouchableOpacity
+        style={
+          position === 'absolute' ? styles.absoluteOverlay : styles.overlay
+        }
+        activeOpacity={1}
         onPress={onClose}
       >
-        <View style={[
-          position === 'absolute' ? styles.absoluteDropdown : styles.dropdown, 
-          position === 'absolute' && absolutePosition,
-          dropdownStyle
-        ]}>
+        <View
+          style={[
+            position === 'absolute' ? styles.absoluteDropdown : styles.dropdown,
+            position === 'absolute' && absolutePosition,
+            dropdownStyle,
+          ]}
+        >
           {options.map((option, index) => (
             <Button
               key={index}
@@ -85,11 +89,11 @@ const Dropdown = ({
               }}
               style={[
                 styles.dropdownOption,
-                option.danger && styles.dangerOption
+                option.danger && styles.dangerOption,
               ]}
               textStyle={[
                 styles.dropdownOptionText,
-                option.danger && styles.dangerText
+                option.danger && styles.dangerText,
               ]}
             />
           ))}

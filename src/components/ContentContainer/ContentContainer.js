@@ -3,26 +3,19 @@ import { View, StyleSheet } from 'react-native';
 import PageHeader from '../Headers/PageHeader';
 import EmptyState from '../EmptyState/EmptyState';
 
-const ContentContainer = ({ 
+const ContentContainer = ({
   title,
   subtitle,
   showEmptyState = false,
   emptyStateProps = {},
   children,
-  containerStyle 
+  containerStyle,
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
-      <PageHeader 
-        title={title}
-        subtitle={subtitle}
-      />
-      
-      {showEmptyState ? (
-        <EmptyState {...emptyStateProps} />
-      ) : (
-        children
-      )}
+      <PageHeader title={title} subtitle={subtitle} />
+
+      {showEmptyState ? <EmptyState {...emptyStateProps} /> : children}
     </View>
   );
 };

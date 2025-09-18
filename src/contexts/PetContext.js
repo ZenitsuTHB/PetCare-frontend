@@ -59,7 +59,7 @@ export const PetProvider = ({ children }) => {
 
   // Actualizar mascota existente
   const updatePet = async (petId, petData) => {
-    const updatedPets = pets.map(pet => 
+    const updatedPets = pets.map((pet) =>
       pet.id === petId ? { ...pet, ...petData } : pet
     );
     setPets(updatedPets);
@@ -68,7 +68,7 @@ export const PetProvider = ({ children }) => {
 
   // Eliminar mascota
   const deletePet = async (petId) => {
-    const updatedPets = pets.filter(pet => pet.id !== petId);
+    const updatedPets = pets.filter((pet) => pet.id !== petId);
     setPets(updatedPets);
     await savePets(updatedPets);
   };
@@ -82,9 +82,5 @@ export const PetProvider = ({ children }) => {
     refreshPets: loadPets,
   };
 
-  return (
-    <PetContext.Provider value={value}>
-      {children}
-    </PetContext.Provider>
-  );
+  return <PetContext.Provider value={value}>{children}</PetContext.Provider>;
 };

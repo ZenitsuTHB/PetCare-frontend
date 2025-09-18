@@ -1,12 +1,12 @@
 // Test simple para verificar que las exportaciones funcionan
-import { 
-  EmptyState, 
-  PageHeader, 
+import {
+  EmptyState,
+  PageHeader,
   ContentContainer,
   Footer,
   Header,
   ProvincePicker,
-  WaveBackground 
+  WaveBackground,
 } from '../index';
 
 // Verificar que todos los componentes se exportan correctamente

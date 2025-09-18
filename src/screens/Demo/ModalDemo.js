@@ -3,26 +3,25 @@ import { View, StyleSheet, ScrollView, Alert, StatusBar } from 'react-native';
 import PetCard from '../../components/Cards/PetCard';
 
 const ModalDemo = () => {
-  
   const pets = [
     {
       id: 1,
-      name: "Aperitivo :)",
-      type: "Hamster",
-      breed: "Ruso",
-      weight: "1 kg",
-      chipId: "981100002343567",
-      date: "15/09/2024"
+      name: 'Aperitivo :)',
+      type: 'Hamster',
+      breed: 'Ruso',
+      weight: '1 kg',
+      chipId: '981100002343567',
+      date: '15/09/2024',
     },
     {
       id: 2,
-      name: "Max",
-      type: "Perro", 
-      breed: "Golden Retriever",
-      weight: "25 kg",
-      chipId: "981100002343568",
-      date: "10/08/2024"
-    }
+      name: 'Max',
+      type: 'Perro',
+      breed: 'Golden Retriever',
+      weight: '25 kg',
+      chipId: '981100002343568',
+      date: '10/08/2024',
+    },
   ];
 
   const handleEditPet = (petName) => {
@@ -31,11 +30,9 @@ const ModalDemo = () => {
 
   const handleDeletePet = (petName) => {
     // Aquí simularías la eliminación real
-    Alert.alert(
-      'Eliminado', 
-      `${petName} ha sido eliminado correctamente`,
-      [{ text: 'OK' }]
-    );
+    Alert.alert('Eliminado', `${petName} ha sido eliminado correctamente`, [
+      { text: 'OK' },
+    ]);
   };
 
   const handleShowHistory = (petName) => {
@@ -49,13 +46,12 @@ const ModalDemo = () => {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#FFF8F4" barStyle="dark-content" />
-      
-      <ScrollView 
+
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        
         {pets.map((pet) => (
           <PetCard
             key={pet.id}
@@ -71,7 +67,6 @@ const ModalDemo = () => {
             onShowQR={() => handleShowQR(pet.name)}
           />
         ))}
-        
       </ScrollView>
     </View>
   );

@@ -48,7 +48,11 @@ const NavItem = ({ tabName, label, icon, isActive, onPress }) => {
         {icon === 'customPet' ? (
           <Image
             source={require('../../assets/icons/vetPaw.png')}
-            style={{ width: 28, height: 28, tintColor: isActive ? '#FA8081' : '#494949' }}
+            style={{
+              width: 28,
+              height: 28,
+              tintColor: isActive ? '#FA8081' : '#494949',
+            }}
           />
         ) : (
           <Icon

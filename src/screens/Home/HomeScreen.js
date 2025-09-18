@@ -1,11 +1,5 @@
 import React from 'react';
-import { 
-  View, 
-  StyleSheet, 
-  StatusBar,
-  ScrollView,
-  Alert,
-} from 'react-native';
+import { View, StyleSheet, StatusBar, ScrollView, Alert } from 'react-native';
 import { logoutUser } from '../../api/auth';
 import Footer from '../../components/Utils/Footer';
 import ContentContainer from '../../components/ContentContainer/ContentContainer';
@@ -46,10 +40,10 @@ const HomeScreen = ({ navigation }) => {
       '¿Estás seguro de que quieres eliminar esta mascota?',
       [
         { text: 'Cancelar', style: 'cancel' },
-        { 
-          text: 'Eliminar', 
+        {
+          text: 'Eliminar',
           style: 'destructive',
-          onPress: () => deletePet(petId) 
+          onPress: () => deletePet(petId),
         },
       ]
     );
@@ -68,8 +62,8 @@ const HomeScreen = ({ navigation }) => {
   // Configuración del empty state
   const emptyStateProps = {
     image: require('../../assets/images/chulo.png'),
-    title: "Tu lista está vacía",
-    description: "Registra tu mascota y guarda todos sus datos médicos."
+    title: 'Tu lista está vacía',
+    description: 'Registra tu mascota y guarda todos sus datos médicos.',
   };
 
   const showEmptyState = pets.length === 0;
@@ -90,7 +84,7 @@ const HomeScreen = ({ navigation }) => {
           >
             {/* Lista de mascotas cuando no está vacía */}
             {!showEmptyState && (
-              <ScrollView 
+              <ScrollView
                 style={styles.petList}
                 showsVerticalScrollIndicator={false}
               >

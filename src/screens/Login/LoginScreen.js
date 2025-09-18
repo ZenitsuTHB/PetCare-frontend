@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { loginUser } from '../../api/auth';
 import Header from '../../components/Headers/Header';
-import  LinearGradient  from '../../components/Utils/LinearGradient';
+import LinearGradient from '../../components/Utils/LinearGradient';
 import { SafeAreaView } from 'react-native';
 
 const LoginScreen = ({ navigation }) => {
@@ -54,80 +54,80 @@ const LoginScreen = ({ navigation }) => {
         {/* Header Component */}
         <Header
           title="Iniciar Sesión"
-        subtitle="Inicia sesión y sigue cuidando a quienes más quieres."
-        showBackButton={true}
-        backButtonText="← Inicio"
-        onBackPress={() => navigation.goBack()}
-      />
+          subtitle="Inicia sesión y sigue cuidando a quienes más quieres."
+          showBackButton={true}
+          backButtonText="← Inicio"
+          onBackPress={() => navigation.goBack()}
+        />
 
-      {/* Form Section */}
-      <KeyboardAvoidingView
-        style={styles.formSection}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <View style={styles.formContainer}>
-          <View style={styles.inputsContainer}>
-            {/* Email Input */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Correo</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Introduce tu correo"
-                placeholderTextColor="#62748E"
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
-              />
+        {/* Form Section */}
+        <KeyboardAvoidingView
+          style={styles.formSection}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        >
+          <View style={styles.formContainer}>
+            <View style={styles.inputsContainer}>
+              {/* Email Input */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Correo</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Introduce tu correo"
+                  placeholderTextColor="#62748E"
+                  value={email}
+                  onChangeText={setEmail}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                />
+              </View>
+
+              {/* Password Input */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Contraseña</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Introduce tu contraseña"
+                  placeholderTextColor="#62748E"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry
+                />
+              </View>
+
+              <TouchableOpacity style={styles.forgotPassword}>
+                <Text style={styles.forgotPasswordText}>
+                  ¿Olvidaste tu contraseña?
+                </Text>
+              </TouchableOpacity>
             </View>
 
-            {/* Password Input */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Contraseña</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Introduce tu contraseña"
-                placeholderTextColor="#62748E"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-              />
+            {/* Login Button */}
+            <View style={styles.buttonContainer}>
+              {loading ? (
+                <ActivityIndicator size="large" color="#FA8081" />
+              ) : (
+                <TouchableOpacity
+                  style={styles.loginButton}
+                  onPress={handleLogin}
+                >
+                  <Text style={styles.loginButtonText}>Iniciar sesión</Text>
+                </TouchableOpacity>
+              )}
             </View>
 
-            <TouchableOpacity style={styles.forgotPassword}>
-              <Text style={styles.forgotPasswordText}>
-                ¿Olvidaste tu contraseña?
+            {/* Register Link */}
+            <TouchableOpacity
+              style={styles.registerContainer}
+              onPress={() => navigation.navigate('Register')}
+            >
+              <Text style={styles.registerText}>
+                ¿Todavía no tienes cuenta?{' '}
+                <Text style={styles.registerLink}>Regístrate ahora</Text>
               </Text>
             </TouchableOpacity>
           </View>
-
-          {/* Login Button */}
-          <View style={styles.buttonContainer}>
-            {loading ? (
-              <ActivityIndicator size="large" color="#FA8081" />
-            ) : (
-              <TouchableOpacity
-                style={styles.loginButton}
-                onPress={handleLogin}
-              >
-                <Text style={styles.loginButtonText}>Iniciar sesión</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {/* Register Link */}
-          <TouchableOpacity
-            style={styles.registerContainer}
-            onPress={() => navigation.navigate('Register')}
-          >
-            <Text style={styles.registerText}>
-              ¿Todavía no tienes cuenta?{' '}
-              <Text style={styles.registerLink}>Regístrate ahora</Text>
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
     </LinearGradient>
   );
 };

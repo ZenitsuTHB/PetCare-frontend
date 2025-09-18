@@ -2,33 +2,29 @@ import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
 // Añadir displayName para mejor debugging
-const EmptyState = ({ 
-  image, 
-  title, 
-  description, 
+const EmptyState = ({
+  image,
+  title,
+  description,
   imageStyle,
   titleStyle,
   descriptionStyle,
-  containerStyle 
+  containerStyle,
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
       {image && (
         <View style={styles.imageContainer}>
-          <Image 
+          <Image
             source={image}
             style={[styles.image, imageStyle]}
             resizeMode="contain"
           />
         </View>
       )}
-      
-      {title && (
-        <Text style={[styles.title, titleStyle]}>
-          {title}
-        </Text>
-      )}
-      
+
+      {title && <Text style={[styles.title, titleStyle]}>{title}</Text>}
+
       {description && (
         <Text style={[styles.description, descriptionStyle]}>
           {description}

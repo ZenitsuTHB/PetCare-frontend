@@ -1,29 +1,35 @@
 import React from 'react';
-import { TouchableOpacity, Text, View, ActivityIndicator, StyleSheet } from 'react-native';
+import {
+  TouchableOpacity,
+  Text,
+  View,
+  ActivityIndicator,
+  StyleSheet,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Button = ({
   // Texto y contenido
   title,
-  
+
   // Funcionalidad
   onPress,
   disabled = false,
   loading = false,
-  
+
   // Variantes de diseño
   variant = 'primary', // 'primary', 'secondary', 'outline', 'ghost', 'danger'
   size = 'medium', // 'small', 'medium', 'large'
-  
+
   // Iconos
   iconName,
   iconPosition = 'left', // 'left', 'right', 'only'
   iconSize = 18,
-  
+
   // Estilos personalizados
   style,
   textStyle,
-  
+
   // Props adicionales
   fullWidth = false,
   ...props
@@ -48,12 +54,12 @@ const Button = ({
 
   const renderIcon = () => {
     if (!iconName) return null;
-    
+
     return (
-      <Icon 
-        name={iconName} 
-        size={iconSize} 
-        color={getIconColor(variant, disabled)} 
+      <Icon
+        name={iconName}
+        size={iconSize}
+        color={getIconColor(variant, disabled)}
       />
     );
   };
@@ -61,10 +67,7 @@ const Button = ({
   const renderContent = () => {
     if (loading) {
       return (
-        <ActivityIndicator 
-          size="small" 
-          color={getLoadingColor(variant)} 
-        />
+        <ActivityIndicator size="small" color={getLoadingColor(variant)} />
       );
     }
 
@@ -97,7 +100,7 @@ const Button = ({
 // Helper functions
 const getIconColor = (variant, disabled) => {
   if (disabled) return '#999';
-  
+
   const colors = {
     primary: '#FFF8F4',
     secondary: '#FA8081',
@@ -105,7 +108,7 @@ const getIconColor = (variant, disabled) => {
     ghost: '#FA8081',
     danger: '#FFF8F4',
   };
-  
+
   return colors[variant] || '#FA8081';
 };
 
@@ -117,7 +120,7 @@ const getLoadingColor = (variant) => {
     ghost: '#FA8081',
     danger: '#FFF8F4',
   };
-  
+
   return colors[variant] || '#FA8081';
 };
 
@@ -130,7 +133,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
   },
-  
+
   // Variantes
   button_primary: {
     backgroundColor: '#FA8081',
@@ -154,7 +157,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF4444',
     borderWidth: 0,
   },
-  
+
   // Tamaños
   button_small: {
     paddingHorizontal: 16,
@@ -171,7 +174,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     minHeight: 52,
   },
-  
+
   // Estados
   disabled: {
     opacity: 0.5,
@@ -182,20 +185,20 @@ const styles = StyleSheet.create({
   fullWidth: {
     alignSelf: 'stretch',
   },
-  
+
   // Contenido
   content: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
   },
-  
+
   // Texto base
   text: {
     fontWeight: '600',
     textAlign: 'center',
   },
-  
+
   // Texto por variante
   text_primary: {
     color: '#FFF8F4',
@@ -212,7 +215,7 @@ const styles = StyleSheet.create({
   text_danger: {
     color: '#FFF8F4',
   },
-  
+
   // Texto por tamaño
   text_small: {
     fontSize: 14,
@@ -226,7 +229,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 28,
   },
-  
+
   textDisabled: {
     opacity: 0.7,
   },

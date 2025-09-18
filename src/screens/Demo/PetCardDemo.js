@@ -3,35 +3,34 @@ import { View, StyleSheet, ScrollView, Alert, StatusBar } from 'react-native';
 import PetCard from '../../components/Cards/PetCard';
 
 const PetCardDemo = () => {
-  
   const pets = [
     {
       id: 1,
-      name: "Aperitivo :)",
-      type: "Hamster",
-      breed: "Ruso",
-      weight: "1 kg",
-      chipId: "981100002343567",
-      date: "15/09/2024"
+      name: 'Aperitivo :)',
+      type: 'Hamster',
+      breed: 'Ruso',
+      weight: '1 kg',
+      chipId: '981100002343567',
+      date: '15/09/2024',
     },
     {
       id: 2,
-      name: "Max",
-      type: "Perro",
-      breed: "Golden Retriever", 
-      weight: "25 kg",
-      chipId: "981100002343568",
-      date: "10/08/2024"
+      name: 'Max',
+      type: 'Perro',
+      breed: 'Golden Retriever',
+      weight: '25 kg',
+      chipId: '981100002343568',
+      date: '10/08/2024',
     },
     {
       id: 3,
-      name: "Luna",
-      type: "Gato",
-      breed: "Siamés",
-      weight: "4 kg",
-      chipId: "981100002343569", 
-      date: "22/07/2024"
-    }
+      name: 'Luna',
+      type: 'Gato',
+      breed: 'Siamés',
+      weight: '4 kg',
+      chipId: '981100002343569',
+      date: '22/07/2024',
+    },
   ];
 
   const handleEditPet = (petName) => {
@@ -53,13 +52,12 @@ const PetCardDemo = () => {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#FFF8F4" barStyle="dark-content" />
-      
-      <ScrollView 
+
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        
         {pets.map((pet) => (
           <PetCard
             key={pet.id}
@@ -75,7 +73,6 @@ const PetCardDemo = () => {
             onShowQR={() => handleShowQR(pet.name)}
           />
         ))}
-        
       </ScrollView>
     </View>
   );

@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { registerUser } from '../../../api/auth';
 import Header from '../../../components/Headers/Header';
-import  LinearGradient  from '../../../components/Utils/LinearGradient';
+import LinearGradient from '../../../components/Utils/LinearGradient';
 
 const RegisterScreen = ({ navigation }) => {
   const [firstName, setFirstName] = useState('');

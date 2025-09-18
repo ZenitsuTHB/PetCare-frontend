@@ -31,10 +31,10 @@ const PetSystemDemo = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#FFF8F4" barStyle="dark-content" />
-      
+
       <ScrollView style={styles.content}>
         <Text style={styles.title}>Demo del Sistema de Mascotas</Text>
-        
+
         <Text style={styles.description}>
           Este demo muestra cómo funciona el sistema completo:
         </Text>
@@ -42,38 +42,38 @@ const PetSystemDemo = ({ navigation }) => {
         <View style={styles.step}>
           <Text style={styles.stepNumber}>1.</Text>
           <Text style={styles.stepText}>
-            <Text style={styles.bold}>Agregar Mascota:</Text> Usa el botón "Nueva mascota" 
-            para ir al formulario de registro.
+            <Text style={styles.bold}>Agregar Mascota:</Text> Usa el botón
+            "Nueva mascota" para ir al formulario de registro.
           </Text>
         </View>
 
         <View style={styles.step}>
           <Text style={styles.stepNumber}>2.</Text>
           <Text style={styles.stepText}>
-            <Text style={styles.bold}>Llenar Formulario:</Text> Completa todos los campos 
-            obligatorios (nombre, especie, raza, fecha de nacimiento, chip).
+            <Text style={styles.bold}>Llenar Formulario:</Text> Completa todos
+            los campos obligatorios (nombre, especie, raza, fecha de nacimiento,
+            chip).
           </Text>
         </View>
 
         <View style={styles.step}>
           <Text style={styles.stepNumber}>3.</Text>
           <Text style={styles.stepText}>
-            <Text style={styles.bold}>Guardar:</Text> Al hacer clic en "Crear mascota", 
-            la app te llevará de vuelta al Home con la nueva mascota visible.
+            <Text style={styles.bold}>Guardar:</Text> Al hacer clic en "Crear
+            mascota", la app te llevará de vuelta al Home con la nueva mascota
+            visible.
           </Text>
         </View>
 
         <View style={styles.step}>
           <Text style={styles.stepNumber}>4.</Text>
           <Text style={styles.stepText}>
-            <Text style={styles.bold}>Gestionar:</Text> Usa el menú de tres puntos en cada 
-            tarjeta para editar o eliminar mascotas.
+            <Text style={styles.bold}>Gestionar:</Text> Usa el menú de tres
+            puntos en cada tarjeta para editar o eliminar mascotas.
           </Text>
         </View>
 
-        <Text style={styles.info}>
-          Mascotas actuales: {pets.length}
-        </Text>
+        <Text style={styles.info}>Mascotas actuales: {pets.length}</Text>
 
         <Button
           title="Agregar mascota de demo"

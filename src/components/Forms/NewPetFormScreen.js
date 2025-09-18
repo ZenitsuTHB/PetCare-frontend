@@ -118,7 +118,7 @@ export default function NewPetFormScreen({ navigation, route }) {
     try {
       setSubmitting(true);
 
-      const payload = { 
+      const payload = {
         name: values.name,
         species: values.species,
         breed: values.breed,

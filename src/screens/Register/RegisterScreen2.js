@@ -16,7 +16,7 @@ import { Picker } from '@react-native-picker/picker';
 import Header from '../../components/Headers/Header';
 import ProvincePicker from '../../components/Utils/ProvincePicker';
 import { SafeAreaView } from 'react-native-web';
-import  LinearGradient  from '../../components/Utils/LinearGradient';
+import LinearGradient from '../../components/Utils/LinearGradient';
 
 const RegisterScreen2 = ({ navigation, route }) => {
   const [address, setAddress] = useState('');
@@ -94,134 +94,134 @@ const RegisterScreen2 = ({ navigation, route }) => {
 
   return (
     <LinearGradient>
-    <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
+      <SafeAreaView style={styles.container}>
+        <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
 
-      {/* Header Section */}
-      <Header
-        title="Registro"
-        subtitle={
-          <>
-            Crea tu cuenta y empieza a organizar la información médica de tu
-            mascota de forma{' '}
-            <Text style={styles.subtitleBold}>sencilla y segura</Text>.
-          </>
-        }
-        showBackButton={true}
-        backButtonText="← Inicio"
-        onBackPress={() => navigation.goBack()}
-      />
+        {/* Header Section */}
+        <Header
+          title="Registro"
+          subtitle={
+            <>
+              Crea tu cuenta y empieza a organizar la información médica de tu
+              mascota de forma{' '}
+              <Text style={styles.subtitleBold}>sencilla y segura</Text>.
+            </>
+          }
+          showBackButton={true}
+          backButtonText="← Inicio"
+          onBackPress={() => navigation.goBack()}
+        />
 
-      {/* Form Section */}
-      <KeyboardAvoidingView
-        style={styles.formSection}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.formContainer}
-          showsVerticalScrollIndicator={false}
+        {/* Form Section */}
+        <KeyboardAvoidingView
+          style={styles.formSection}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-          <View style={styles.inputsContainer}>
-            {/* Address Input */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Domicilio</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Dirección completa"
-                placeholderTextColor="#62748E"
-                value={address}
-                onChangeText={setAddress}
-                autoCapitalize="words"
-              />
-            </View>
-
-            {/* City and Postal Code Row */}
-            <View style={styles.cityRow}>
-              <View style={styles.cityInputGroup}>
-                <Text style={styles.inputLabel}>Ciudad</Text>
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.formContainer}
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.inputsContainer}>
+              {/* Address Input */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Domicilio</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="Ciudad"
+                  placeholder="Dirección completa"
                   placeholderTextColor="#62748E"
-                  value={city}
-                  onChangeText={setCity}
+                  value={address}
+                  onChangeText={setAddress}
                   autoCapitalize="words"
                 />
               </View>
 
-              <View style={styles.postalInputGroup}>
-                <Text style={styles.inputLabel}>C.P</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Código postal"
-                  placeholderTextColor="#62748E"
-                  value={postalCode}
-                  onChangeText={setPostalCode}
-                  keyboardType="numeric"
-                  maxLength={5}
+              {/* City and Postal Code Row */}
+              <View style={styles.cityRow}>
+                <View style={styles.cityInputGroup}>
+                  <Text style={styles.inputLabel}>Ciudad</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Ciudad"
+                    placeholderTextColor="#62748E"
+                    value={city}
+                    onChangeText={setCity}
+                    autoCapitalize="words"
+                  />
+                </View>
+
+                <View style={styles.postalInputGroup}>
+                  <Text style={styles.inputLabel}>C.P</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Código postal"
+                    placeholderTextColor="#62748E"
+                    value={postalCode}
+                    onChangeText={setPostalCode}
+                    keyboardType="numeric"
+                    maxLength={5}
+                  />
+                </View>
+              </View>
+
+              {/* Province Picker */}
+              <View style={styles.inputGroup}>
+                <Text style={styles.inputLabel}>Provincia</Text>
+                <ProvincePicker
+                  selectedProvince={province}
+                  onChange={(value) => setProvince(value)}
                 />
               </View>
-            </View>
 
-            {/* Province Picker */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Provincia</Text>
-              <ProvincePicker
-                selectedProvince={province}
-                onChange={(value) => setProvince(value)}
-              />
-            </View>
-
-            {/* Terms and Conditions Checkbox */}
-            <TouchableOpacity
-              style={styles.checkboxContainer}
-              onPress={toggleTermsAccepted}
-            >
-              <View
-                style={[
-                  styles.checkbox,
-                  termsAccepted && styles.checkboxChecked,
-                ]}
-              >
-                {termsAccepted && <Text style={styles.checkmark}>✓</Text>}
-              </View>
-              <Text style={styles.checkboxText}>
-                Acepto los{' '}
-                <Text style={styles.checkboxTextBold}>
-                  términos y las condiciones
-                </Text>
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Register Button */}
-          <View style={styles.buttonContainer}>
-            {loading ? (
-              <ActivityIndicator size="large" color="#FA8081" />
-            ) : (
+              {/* Terms and Conditions Checkbox */}
               <TouchableOpacity
-                style={[
-                  styles.registerButton,
-                  !isFormValid && styles.registerButtonDisabled,
-                ]}
-                onPress={handleRegistration}
-                disabled={!isFormValid}
+                style={styles.checkboxContainer}
+                onPress={toggleTermsAccepted}
               >
-                <Text
+                <View
                   style={[
-                    styles.registerButtonText,
-                    !isFormValid && styles.registerButtonTextDisabled,
+                    styles.checkbox,
+                    termsAccepted && styles.checkboxChecked,
                   ]}
                 >
-                  Registrarse
+                  {termsAccepted && <Text style={styles.checkmark}>✓</Text>}
+                </View>
+                <Text style={styles.checkboxText}>
+                  Acepto los{' '}
+                  <Text style={styles.checkboxTextBold}>
+                    términos y las condiciones
+                  </Text>
                 </Text>
               </TouchableOpacity>
-            )}
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+            </View>
+
+            {/* Register Button */}
+            <View style={styles.buttonContainer}>
+              {loading ? (
+                <ActivityIndicator size="large" color="#FA8081" />
+              ) : (
+                <TouchableOpacity
+                  style={[
+                    styles.registerButton,
+                    !isFormValid && styles.registerButtonDisabled,
+                  ]}
+                  onPress={handleRegistration}
+                  disabled={!isFormValid}
+                >
+                  <Text
+                    style={[
+                      styles.registerButtonText,
+                      !isFormValid && styles.registerButtonTextDisabled,
+                    ]}
+                  >
+                    Registrarse
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
     </LinearGradient>
   );
 };

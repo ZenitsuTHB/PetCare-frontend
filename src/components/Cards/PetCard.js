@@ -6,12 +6,12 @@ import Dropdown from '../Dropdown/Dropdown';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const PetCard = ({
-  petName = "Aperitivo :)",
-  petType = "Hamster",
-  breed = "Ruso",
-  weight = "1 kg",
-  chipId = "981100002343567",
-  registrationDate = "00/00/0000",
+  petName = 'Aperitivo :)',
+  petType = 'Hamster',
+  breed = 'Ruso',
+  weight = '1 kg',
+  chipId = '981100002343567',
+  registrationDate = '00/00/0000',
   imageSource,
   onEditPet,
   onDeletePet,
@@ -50,9 +50,9 @@ const PetCard = ({
     <View style={styles.cardContainer}>
       <View style={styles.card}>
         {/* Imagen redonda */}
-        <Image 
-          source={imageSource || require('../../assets/images/hamgster.jpg')} 
-          style={styles.image} 
+        <Image
+          source={imageSource || require('../../assets/images/hamgster.jpg')}
+          style={styles.image}
         />
 
         {/* Contenido */}
@@ -63,7 +63,9 @@ const PetCard = ({
           </View>
 
           {/* Subtítulo */}
-          <Text style={styles.subtitle}>{petType} - {breed} - {weight}</Text>
+          <Text style={styles.subtitle}>
+            {petType} - {breed} - {weight}
+          </Text>
 
           {/* Info extra */}
           <Text style={styles.info}>Chip: {chipId}</Text>

@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import Button from '../Button/Button';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -9,14 +16,14 @@ const ConfirmationModalSimple = ({
   visible,
   onClose,
   onConfirm,
-  title = "¿Eliminar mascota?",
-  message = "Estas a punto de eliminar todos los datos de este perfil. Este cambio",
-  messageHighlight = "es irreversible",
-  messageContinuation = ".",
-  confirmText = "Eliminar",
-  cancelText = "Cancelar",
-  confirmVariant = "danger",
-  icon = "warning",
+  title = '¿Eliminar mascota?',
+  message = 'Estas a punto de eliminar todos los datos de este perfil. Este cambio',
+  messageHighlight = 'es irreversible',
+  messageContinuation = '.',
+  confirmText = 'Eliminar',
+  cancelText = 'Cancelar',
+  confirmVariant = 'danger',
+  icon = 'warning',
 }) => {
   return (
     <Modal
@@ -27,7 +34,7 @@ const ConfirmationModalSimple = ({
     >
       {/* Background with blur simulation */}
       <View style={styles.blurContainer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.overlay}
           activeOpacity={1}
           onPress={onClose}
@@ -35,19 +42,14 @@ const ConfirmationModalSimple = ({
           {/* Modal Content */}
           <TouchableOpacity activeOpacity={1} style={styles.modalContainer}>
             <View style={styles.modal}>
-              
               {/* Icon Section */}
               <View style={styles.iconSection}>
                 <View style={styles.iconContainer}>
                   <View style={styles.iconCircle}>
-                    <Icon 
-                      name={icon} 
-                      size={28} 
-                      color="#FA8081" 
-                    />
+                    <Icon name={icon} size={28} color="#FA8081" />
                   </View>
                 </View>
-                
+
                 {/* Title */}
                 <Text style={styles.title}>{title}</Text>
               </View>
@@ -56,7 +58,9 @@ const ConfirmationModalSimple = ({
               <View style={styles.messageSection}>
                 <Text style={styles.message}>
                   {message}{' '}
-                  <Text style={styles.messageHighlight}>{messageHighlight}</Text>
+                  <Text style={styles.messageHighlight}>
+                    {messageHighlight}
+                  </Text>
                   {messageContinuation}
                 </Text>
               </View>
@@ -70,7 +74,7 @@ const ConfirmationModalSimple = ({
                   onPress={onClose}
                   style={styles.cancelButton}
                 />
-                
+
                 <Button
                   title={confirmText}
                   variant={confirmVariant}
@@ -82,7 +86,6 @@ const ConfirmationModalSimple = ({
                   style={styles.confirmButton}
                 />
               </View>
-
             </View>
           </TouchableOpacity>
         </TouchableOpacity>
@@ -124,7 +127,7 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 8,
   },
-  
+
   // Icon section
   iconSection: {
     alignItems: 'center',
@@ -152,7 +155,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     lineHeight: 38.4,
   },
-  
+
   // Message section
   messageSection: {
     alignItems: 'center',
@@ -168,7 +171,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#636363',
   },
-  
+
   // Buttons section
   buttonsSection: {
     flexDirection: 'row',
