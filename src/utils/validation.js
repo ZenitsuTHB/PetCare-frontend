@@ -129,6 +129,21 @@ export const validatePetForm = (values) => {
     errors.birthdate = 'Usa dd/mm/aaaa';
   }
 
+  if (!validateRequired(values.gender)) {
+    errors.gender = 'Obligatorio';
+  }
+
+  if (!validateRequired(values.weight)) {
+    errors.weight = 'Obligatorio';
+  } else {
+    const weightValue = parseFloat(values.weight);
+    if (isNaN(weightValue) || weightValue <= 0) {
+      errors.weight = 'Debe ser un número válido mayor a 0';
+    } else if (weightValue > 200) {
+      errors.weight = 'El peso no puede exceder 200 kg';
+    }
+  }
+
   if (!validateRequired(values.chip)) {
     errors.chip = 'Obligatorio';
   } else {

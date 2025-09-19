@@ -48,7 +48,6 @@ export const PetProvider = ({ children }) => {
       id: Date.now().toString(), // ID único simple
       ...petData,
       registrationDate: new Date().toLocaleDateString('es-ES'), // Fecha actual
-      weight: petData.weight || 'No especificado', // Peso por defecto si no se proporciona
     };
 
     const updatedPets = [...pets, newPet];
@@ -68,9 +67,15 @@ export const PetProvider = ({ children }) => {
 
   // Eliminar mascota
   const deletePet = async (petId) => {
-    const updatedPets = pets.filter((pet) => pet.id !== petId);
+    console.log('PetContext deletePet called with petId:', petId);
+    
+    // Asegurar que estamos comparando el mismo tipo
+    const petIdStr = String(petId);
+    const updatedPets = pets.filter((pet) => String(pet.id) !== petIdStr);
+    
     setPets(updatedPets);
     await savePets(updatedPets);
+    console.log('Pet deletion completed');
   };
 
   const value = {

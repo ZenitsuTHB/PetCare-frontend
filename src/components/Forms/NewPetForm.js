@@ -14,15 +14,16 @@ import {
   Pressable,
   Alert,
   StatusBar,
-  SafeAreaView,
   Image,
   ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import LinearGradient from '../Utils/LinearGradient';
 import * as ImagePicker from 'expo-image-picker';
 import { usePets } from '../../contexts/PetContext';
 import { validatePetForm } from '../../utils/validation';
+import ConfirmationModal from '../Modal/ConfirmationModal';
 import { 
   SPECIES_OPTIONS, 
   THEME_COLORS, 
@@ -33,7 +34,14 @@ import {
 export default function NewPetFormScreen({ navigation, route }) {
   const pet = route?.params?.pet || null;
   const isEdit = !!pet;
-  const { addPet, updatePet } = usePets();
+  const { addPet, updatePet, deletePet } = usePets();
+
+  console.log('NewPetFormScreen - pet:', pet);
+  console.log('NewPetFormScreen - isEdit:', isEdit);
+  console.log('NewPetFormScreen - pet.id:', pet?.id);
+
+  // Capturar el ID del pet al inicio para evitar problemas de scope
+  const petId = pet?.id;
 
   const [values, setValues] = useState({
     photoUri: pet?.photoUri || '',
@@ -41,6 +49,8 @@ export default function NewPetFormScreen({ navigation, route }) {
     species: pet?.species || '',
     breed: pet?.breed || '',
     birthdate: pet?.birthdate || '', // dd/mm/aaaa
+    gender: pet?.gender || '',
+    weight: pet?.weight || '',
     chip: pet?.chip || '',
     notes: pet?.notes || '',
     consent: !!pet?.consent,
@@ -48,12 +58,37 @@ export default function NewPetFormScreen({ navigation, route }) {
   const [touched, setTouched] = useState({});
   const [selectOpen, setSelectOpen] = useState(null); // 'species' | null
   const [submitting, setSubmitting] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
   const onChange = (k) => (text) => setValues((s) => ({ ...s, [k]: text }));
   const onBlur = (k) => () => setTouched((s) => ({ ...s, [k]: true }));
 
   const validationResult = useMemo(() => validatePetForm(values), [values]);
   const errors = validationResult.errors;
+
+  const handleDeletePetFromEdit = () => {
+    if (!petId) {
+      Alert.alert('Error', 'No se puede eliminar: información de mascota no válida.');
+      return;
+    }
+    setDeleteModalVisible(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    setDeleteModalVisible(false);
+    try {
+      // Usar directamente la función del contexto
+      await deletePet(petId);
+      // Navegar de vuelta al Home
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+    } catch (error) {
+      console.error('Error deleting pet:', error);
+      Alert.alert('Error', 'No se pudo eliminar la mascota. Inténtalo de nuevo.');
+    }
+  };
 
   const pickImage = async () => {
     // Ejemplo con expo-image-picker (descomenta imports si lo usas)
@@ -77,6 +112,8 @@ export default function NewPetFormScreen({ navigation, route }) {
       species: true,
       breed: true,
       birthdate: true,
+      gender: true,
+      weight: true,
       chip: true,
       notes: true,
       consent: true,
@@ -98,6 +135,8 @@ export default function NewPetFormScreen({ navigation, route }) {
         species: values.species,
         breed: values.breed,
         birthdate: values.birthdate,
+        gender: values.gender,
+        weight: values.weight,
         chip: values.chip,
         notes: values.notes,
         photoUri: values.photoUri,
@@ -105,9 +144,13 @@ export default function NewPetFormScreen({ navigation, route }) {
 
       if (isEdit) {
         await updatePet(pet.id, payload);
-        Alert.alert('¡Guardado!', 'Los cambios se han actualizado.', [
-          { text: 'OK', onPress: () => navigation.goBack() },
-        ]);
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        });
+        setTimeout(() => {
+          Alert.alert('¡Guardado!', 'Los cambios se han actualizado correctamente.');
+        }, 500);
       } else {
         await addPet(payload);
         
@@ -247,23 +290,55 @@ export default function NewPetFormScreen({ navigation, route }) {
                 onPress={() => setSelectOpen('species')}
               />
 
-              <Field
-                label="Raza *"
-                placeholder="Indique raza específica"
-                value={values.breed}
-                onChangeText={onChange('breed')}
-                onBlur={onBlur('breed')}
-                error={touched.breed && errors.breed}
-              />
+              <View style={styles.fieldContainerRow}>
+                <Field
+                  label="Raza *"
+                  placeholder="Indique raza específica"
+                  value={values.breed}
+                  onChangeText={onChange('breed')}
+                  onBlur={onBlur('breed')}
+                  error={touched.breed && errors.breed}
+                  style={styles.fieldRow}
+                />
 
-              <Field
-                label="Fecha de nacimiento *"
-                placeholder="dd/mm/aaaa"
-                value={values.birthdate}
-                onChangeText={onChange('birthdate')}
-                onBlur={onBlur('birthdate')}
-                error={touched.birthdate && errors.birthdate}
-              />
+                <Field
+                  label="Fecha de nacimiento *"
+                  placeholder="dd/mm/aaaa"
+                  value={values.birthdate}
+                  onChangeText={onChange('birthdate')}
+                  onBlur={onBlur('birthdate')}
+                  error={touched.birthdate && errors.birthdate}
+                  style={styles.fieldRow}
+                />
+              </View>
+
+              <View style={styles.fieldContainerRow}>
+                <Select
+                  label="Género *"
+                  placeholder="Macho o hembra"
+                  value={values.gender}
+                  error={touched.gender && errors.gender}
+                  onPress={() => setSelectOpen('gender')}
+                  style={styles.fieldRow}
+                />
+                <Field
+                  label="Peso *"
+                  placeholder="Peso en kg (ej: 15.5)"
+                  value={values.weight}
+                  onChangeText={(text) => {
+                    // Permitir solo números y punto decimal
+                    const filtered = text.replace(/[^0-9.]/g, '');
+                    // Evitar múltiples puntos
+                    const parts = filtered.split('.');
+                    const formatted = parts.length > 2 ? parts[0] + '.' + parts.slice(1).join('') : filtered;
+                    onChange('weight')(formatted);
+                  }}
+                  onBlur={onBlur('weight')}
+                  error={touched.weight && errors.weight}
+                  keyboardType="decimal-pad"
+                  style={styles.fieldRow}
+                />  
+              </View>
 
               <Field
                 label="Chip *"
@@ -274,7 +349,13 @@ export default function NewPetFormScreen({ navigation, route }) {
                 error={touched.chip && errors.chip}
                 keyboardType="numeric"
                 maxLength={15}
+                editable={!isEdit}
               />
+              {isEdit && (
+                <Text style={styles.chipMessage}>
+                  Este campo no es editable. Si los datos del chip son incorrectos, consulta con tu veterinaria o Borra y crea un nuevo perfil.
+                </Text>
+              )}
               <Field
                 label="Observaciones"
                 placeholder="Apunta lo que quieras aquí (opcional)"
@@ -308,22 +389,34 @@ export default function NewPetFormScreen({ navigation, route }) {
                 <Text style={styles.errorSmall}>{errors.consent}</Text>
               )}
 
-              <TouchableOpacity
-                style={[
-                  styles.cta,
-                  (!values.consent || submitting) && styles.ctaDisabled,
-                ]}
-                onPress={submit}
-                disabled={!values.consent || submitting}
-              >
-                {submitting ? (
-                  <ActivityIndicator size="small" color="#fff" />
-                ) : (
-                  <Text style={styles.ctaText}>
-                    {isEdit ? 'Guardar cambios' : 'Crear mascota'}
-                  </Text>
+              <View style={styles.buttonContainer}>
+                {isEdit && (
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={handleDeletePetFromEdit}
+                  >
+                    <Ionicons name="trash-outline" size={24} color="#693636" />
+                    <Text style={styles.deleteButtonText}>Eliminar perfil</Text>
+                  </TouchableOpacity>
                 )}
-              </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[
+                    styles.cta,
+                    (!isEdit && (!values.consent || submitting)) && styles.ctaDisabled,
+                  ]}
+                  onPress={submit}
+                  disabled={!isEdit && (!values.consent || submitting)}
+                >
+                  {submitting ? (
+                    <ActivityIndicator size="small" color="#FFF8F4" />
+                  ) : (
+                    <Text style={styles.ctaText}>
+                      {isEdit ? 'Guardar datos' : 'Crear mascota'}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              </View>
 
               <View style={{ height: 24 }} />
             </ScrollView>
@@ -338,6 +431,18 @@ export default function NewPetFormScreen({ navigation, route }) {
           onClose={() => setSelectOpen(null)}
           onSelect={(val) => {
             setValues((s) => ({ ...s, species: val }));
+            setSelectOpen(null);
+          }}
+        />
+
+        {/* Select género */}
+        <OptionsModal
+          visible={selectOpen === 'gender'}
+          title="Selecciona género"
+          options={['Macho', 'Hembra']}
+          onClose={() => setSelectOpen(null)}
+          onSelect={(val) => {
+            setValues((s) => ({ ...s, gender: val }));
             setSelectOpen(null);
           }}
         />
@@ -375,6 +480,20 @@ export default function NewPetFormScreen({ navigation, route }) {
             </View>
           </Pressable>
         </Modal>
+
+        {/* Modal de confirmación para eliminar */}
+        <ConfirmationModal
+          visible={deleteModalVisible}
+          onClose={() => setDeleteModalVisible(false)}
+          onConfirm={handleConfirmDelete}
+          title="¿Eliminar mascota?"
+          message="Estas a punto de eliminar todos los datos de este perfil. Este cambio"
+          messageHighlight="es irreversible"
+          messageContinuation="."
+          confirmText="Eliminar"
+          cancelText="Cancelar"
+          confirmVariant="danger"
+        />
       </SafeAreaView>
     </LinearGradient>
   );
@@ -382,16 +501,18 @@ export default function NewPetFormScreen({ navigation, route }) {
 
 /* ---------- UI helpers ---------- */
 
-function Field({ label, error, style, ...inputProps }) {
+function Field({ label, error, style, editable = true, ...inputProps }) {
   return (
     <View style={[styles.field, style]}>
       <Text style={styles.label}>{label}</Text>
       <TextInput
         {...inputProps}
+        editable={editable}
         placeholderTextColor="#B9B9B9"
         style={[
           styles.input,
           !!error && styles.inputError,
+          !editable && styles.inputDisabled,
           inputProps.multiline && { paddingTop: 12 },
         ]}
       />
@@ -411,7 +532,7 @@ function Select({ label, value, placeholder, onPress, error, style }) {
         <Text style={[styles.selectText, !value && { color: '#B9B9B9' }]}>
           {value || placeholder}
         </Text>
-        <Text style={styles.caret}>▾</Text>
+        <Ionicons name="chevron-down" size={20} color="#9B9B9B" />
       </TouchableOpacity>
       {!!error && <Text style={styles.errorSmall}>{error}</Text>}
     </View>
@@ -539,6 +660,14 @@ const styles = StyleSheet.create({
   },
 
   field: { marginBottom: 14 },
+  fieldContainerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  fieldRow: {
+    flex: 1,
+  },
   label: {
     color: THEME_COLORS.TEXT_PRIMARY,
     fontSize: 13,
@@ -556,6 +685,20 @@ const styles = StyleSheet.create({
     color: THEME_COLORS.TEXT_PRIMARY,
   },
   inputError: { borderColor: THEME_COLORS.BORDER_ERROR },
+  inputDisabled: { 
+    backgroundColor: '#F8F9FA',
+    color: '#6C757D',
+    opacity: 0.7,
+  },
+
+  chipMessage: {
+    color: THEME_COLORS.TEXT_SECONDARY,
+    fontSize: 12,
+    marginTop: -8,
+    marginBottom: 14,
+    fontStyle: 'italic',
+    lineHeight: 16,
+  },
 
   select: {
     flexDirection: 'row',
@@ -563,22 +706,61 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   selectText: { fontSize: 16, color: THEME_COLORS.TEXT_PRIMARY },
-  caret: { fontSize: 16, color: '#9B9B9B' },
+
+  buttonContainer: {
+    width: '100%',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 16,
+  },
+
+  deleteButton: {
+    alignSelf: 'stretch',
+    paddingLeft: 24,
+    paddingRight: 24,
+    paddingTop: 12,
+    paddingBottom: 12,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 6,
+    backgroundColor: 'transparent',
+  },
+  deleteButtonText: {
+    textAlign: 'center',
+    color: '#3D3D3D',
+    fontSize: 16,
+    fontWeight: '600',
+    lineHeight: 25.6,
+  },
 
   cta: {
-    marginTop: 16,
+    alignSelf: 'stretch',
+    paddingLeft: 24,
+    paddingRight: 24,
+    paddingTop: 16,
+    paddingBottom: 16,
     backgroundColor: THEME_COLORS.CTA_BUTTON,
-    paddingVertical: 14,
-    borderRadius: 16,
-    alignItems: 'center',
+    borderRadius: 18,
     justifyContent: 'center',
+    alignItems: 'center',
+    gap: 6,
     minHeight: 48,
   },
   ctaDisabled: {
     backgroundColor: '#E2E8F0',
     opacity: 0.6,
   },
-  ctaText: { color: '#fff', fontWeight: '800', fontSize: 16 },
+  ctaText: { 
+    textAlign: 'center',
+    color: '#FFF8F4', 
+    fontWeight: '600', 
+    fontSize: 16,
+    lineHeight: 25.6,
+  },
 
   errorSmall: { color: THEME_COLORS.BORDER_ERROR, fontSize: 12, marginTop: 6 },
 

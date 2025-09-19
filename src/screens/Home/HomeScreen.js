@@ -56,7 +56,7 @@ const HomeScreen = ({ navigation }) => {
 
   // Configuración del empty state
   const emptyStateProps = {
-    image: require('../../assets/images/chulo.png'),
+    image: require('../../assets/images/chulo_right.png'),
     title: 'Tu lista está vacía',
     description: 'Registra tu mascota y guarda todos sus datos médicos.',
   };
@@ -89,7 +89,7 @@ const HomeScreen = ({ navigation }) => {
                       petName={pet.name}
                       petType={pet.species}
                       breed={pet.breed}
-                      weight="No especificado" // Puedes agregar peso al formulario si lo necesitas
+                      weight={pet.weight ? `${pet.weight} kg` : 'No especificado'}
                       chipId={pet.chip}
                       registrationDate={pet.registrationDate}
                       imageSource={pet.photoUri ? { uri: pet.photoUri } : null}

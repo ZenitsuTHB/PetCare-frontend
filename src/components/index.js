@@ -9,10 +9,3 @@ export { default as ConfirmationModal } from './Modal/ConfirmationModal';
 export { default as Footer } from './Utils/Footer';
 export { default as Header } from './Headers/Header';
 export { default as ProvincePicker } from './Utils/ProvincePicker';
-export { default as PetCard } from './Cards/PetCard';
-
-// ✅ También puedes exportar sin alias para mantener nombres originales
-// export { default as EmptyState } from './EmptyState/EmptyState';
-// Es equivalente a:
-// import EmptyState from './EmptyState/EmptyState';
-// export { EmptyState };
