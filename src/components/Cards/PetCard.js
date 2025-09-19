@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Button from '../Button/Button';
 import ConfirmationModal from '../Modal/ConfirmationModal';
 import Dropdown from '../Dropdown/Dropdown';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const PetCard = ({
   petName = 'Aperitivo :)',
@@ -25,13 +25,23 @@ const PetCard = ({
     {
       label: 'Editar',
       icon: 'edit',
-      onPress: onEditPet,
+      onPress: () => {
+        setDropdownVisible(false);
+        setTimeout(() => {
+          if (onEditPet) onEditPet();
+        }, 100);
+      },
     },
     {
       label: 'Eliminar',
       icon: 'delete',
       danger: true,
-      onPress: () => setDeleteModalVisible(true),
+      onPress: () => {
+        setDropdownVisible(false);
+        setTimeout(() => {
+          setDeleteModalVisible(true);
+        }, 100);
+      },
     },
   ];
 
@@ -42,10 +52,12 @@ const PetCard = ({
   };
 
   const handleConfirmDelete = () => {
+    setDeleteModalVisible(false);
     if (onDeletePet) {
       onDeletePet();
     }
   };
+
   return (
     <View style={styles.cardContainer}>
       <View style={styles.card}>
@@ -118,15 +130,6 @@ const PetCard = ({
         />
       </View>
 
-      {/* Overlay para cerrar el dropdown cuando está abierto */}
-      {/* {dropdownVisible && (
-        <TouchableOpacity 
-          style={StyleSheet.absoluteFillObject}
-          activeOpacity={1}
-          onPress={() => setDropdownVisible(false)}
-        />
-      )} */}
-
       {/* Modal de confirmación para eliminar */}
       <ConfirmationModal
         visible={deleteModalVisible}
@@ -139,7 +142,6 @@ const PetCard = ({
         confirmText="Eliminar"
         cancelText="Cancelar"
         confirmVariant="danger"
-        icon="warning"
       />
     </View>
   );

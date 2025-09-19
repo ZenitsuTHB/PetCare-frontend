@@ -7,9 +7,8 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
-import { BlurView } from 'expo-blur';
 import Button from '../Button/Button';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { AntDesign } from '@expo/vector-icons';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -24,8 +23,11 @@ const ConfirmationModal = ({
   confirmText = 'Eliminar',
   cancelText = 'Cancelar',
   confirmVariant = 'danger',
-  icon = 'warning',
+  icon = 'exclamation',
 }) => {
+  console.log('ConfirmationModal render - visible:', visible);
+  
+  if (!visible) return null;
   return (
     <Modal
       transparent={true}
@@ -33,64 +35,64 @@ const ConfirmationModal = ({
       animationType="fade"
       onRequestClose={onClose}
     >
-      {/* Blur Background */}
-      <BlurView intensity={20} tint="dark" style={styles.blurContainer}>
+      {/* Background Overlay */}
+      <View style={styles.overlay}>
         <TouchableOpacity
-          style={styles.overlay}
+          style={styles.backgroundTouchable}
           activeOpacity={1}
           onPress={onClose}
-        >
-          {/* Modal Content */}
-          <TouchableOpacity activeOpacity={1} style={styles.modalContainer}>
-            <View style={styles.modal}>
-              {/* Icon Section */}
-              <View style={styles.iconSection}>
-                <View style={styles.iconContainer}>
-                  <View style={styles.iconCircle}>
-                    <Icon name={icon} size={28} color="#FA8081" />
-                  </View>
+        />
+        
+        {/* Modal Content */}
+        <View style={styles.modalContainer}>
+          <View style={styles.modal}>
+            {/* Icon Section */}
+            <View style={styles.iconSection}>
+              <View style={styles.iconContainer}>
+                <View style={styles.iconCircle}>
+                  <AntDesign name={icon} size={32} color="#FA8081" />
                 </View>
-
-                {/* Title */}
-                <Text style={styles.title}>{title}</Text>
               </View>
 
-              {/* Message Section */}
-              <View style={styles.messageSection}>
-                <Text style={styles.message}>
-                  {message}{' '}
-                  <Text style={styles.messageHighlight}>
-                    {messageHighlight}
-                  </Text>
-                  {messageContinuation}
-                </Text>
-              </View>
-
-              {/* Buttons Section */}
-              <View style={styles.buttonsSection}>
-                <Button
-                  title={cancelText}
-                  variant="outline"
-                  size="medium"
-                  onPress={onClose}
-                  style={styles.cancelButton}
-                />
-
-                <Button
-                  title={confirmText}
-                  variant={confirmVariant}
-                  size="medium"
-                  onPress={() => {
-                    onConfirm();
-                    onClose();
-                  }}
-                  style={styles.confirmButton}
-                />
-              </View>
+              {/* Title */}
+              <Text style={styles.title}>{title}</Text>
             </View>
-          </TouchableOpacity>
-        </TouchableOpacity>
-      </BlurView>
+
+            {/* Message Section */}
+            <View style={styles.messageSection}>
+              <Text style={styles.message}>
+                {message}{' '}
+                <Text style={styles.messageHighlight}>
+                  {messageHighlight}
+                </Text>
+                {messageContinuation}
+              </Text>
+            </View>
+
+            {/* Buttons Section */}
+            <View style={styles.buttonsSection}>
+              <Button
+                title={cancelText}
+                variant="outline"
+                size="medium"
+                onPress={onClose}
+                style={styles.cancelButton}
+              />
+
+              <Button
+                title={confirmText}
+                variant={confirmVariant}
+                size="medium"
+                onPress={() => {
+                  onConfirm();
+                  onClose();
+                }}
+                style={styles.confirmButton}
+              />
+            </View>
+          </View>
+        </View>
+      </View>
     </Modal>
   );
 };
@@ -98,21 +100,24 @@ const ConfirmationModal = ({
 export default ConfirmationModal;
 
 const styles = StyleSheet.create({
-  blurContainer: {
-    flex: 1,
-    width: screenWidth,
-    height: screenHeight,
-  },
   overlay: {
     flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     paddingHorizontal: 24,
+  },
+  backgroundTouchable: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   modalContainer: {
     width: '100%',
     maxWidth: 400,
+    zIndex: 1000,
   },
   modal: {
     backgroundColor: 'white',

@@ -34,19 +34,14 @@ const HomeScreen = ({ navigation }) => {
     navigation.navigate('NewPetForm', { pet });
   };
 
-  const handleDeletePet = (petId) => {
-    Alert.alert(
-      'Confirmar eliminación',
-      '¿Estás seguro de que quieres eliminar esta mascota?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Eliminar',
-          style: 'destructive',
-          onPress: () => deletePet(petId),
-        },
-      ]
-    );
+  const handleDeletePet = async (petId) => {
+    try {
+      await deletePet(petId);
+      console.log('Pet deleted successfully');
+    } catch (error) {
+      console.error('Error deleting pet:', error);
+      Alert.alert('Error', 'No se pudo eliminar la mascota. Inténtalo de nuevo.');
+    }
   };
 
   const handleShowHistory = (pet) => {
