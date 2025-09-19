@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Pressable,
+  Platform,
+} from 'react-native';
 import Button from '../Button/Button';
 import ConfirmationModal from '../Modal/ConfirmationModal';
 import Dropdown from '../Dropdown/Dropdown';
@@ -17,6 +25,7 @@ const PetCard = ({
   onDeletePet,
   onShowHistory,
   onShowQR,
+  onPress,
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -48,86 +57,82 @@ const PetCard = ({
   };
   return (
     <View style={styles.cardContainer}>
-      <View style={styles.card}>
-        {/* Imagen redonda */}
-        <Image
-          source={imageSource || require('../../assets/images/hamgster.jpg')}
-          style={styles.image}
-        />
+      <TouchableOpacity
+        activeOpacity={0.96}
+        onPress={onPress}
+        accessibilityRole="button"
+        accessibilityLabel={`Abrir perfil de ${petName}`}
+      >
+        <View style={styles.card}>
+          {/* Imagen redonda */}
+          <Image
+            source={imageSource || require('../../assets/images/hamgster.jpg')}
+            style={styles.image}
+          />
 
-        {/* Contenido */}
-        <View style={styles.content}>
-          {/* Título */}
-          <View style={styles.headerRow}>
-            <Text style={styles.title}>{petName}</Text>
+          {/* Contenido */}
+          <View style={styles.content}>
+            {/* Título */}
+            <View style={styles.headerRow}>
+              <Text style={styles.title}>{petName}</Text>
+            </View>
+
+            {/* Subtítulo */}
+            <Text style={styles.subtitle}>
+              {petType} - {breed} - {weight}
+            </Text>
+
+            {/* Info extra */}
+            <Text style={styles.info}>Chip: {chipId}</Text>
+            <Text style={styles.info}>Fecha: {registrationDate}</Text>
+
+            {/* Botones */}
+            <View style={styles.buttonRow}>
+              <Button
+                title="Historial"
+                variant="outline"
+                size="small"
+                onPress={onShowHistory}
+                style={styles.historyButton}
+              />
+
+              <Button
+                title="Mostrar QR"
+                variant="secondary"
+                size="small"
+                onPress={onShowQR}
+                style={styles.qrButton}
+              />
+            </View>
           </View>
 
-          {/* Subtítulo */}
-          <Text style={styles.subtitle}>
-            {petType} - {breed} - {weight}
-          </Text>
-
-          {/* Info extra */}
-          <Text style={styles.info}>Chip: {chipId}</Text>
-          <Text style={styles.info}>Fecha: {registrationDate}</Text>
-
-          {/* Botones */}
-          <View style={styles.buttonRow}>
+          {/* Botón de menú en esquina superior derecha */}
+          <View style={styles.menuButtonContainer}>
             <Button
-              title="Historial"
-              variant="outline"
+              variant="ghost"
               size="small"
-              onPress={onShowHistory}
-              style={styles.historyButton}
-            />
-
-            <Button
-              title="Mostrar QR"
-              variant="secondary"
-              size="small"
-              onPress={onShowQR}
-              style={styles.qrButton}
+              iconName="more-vert"
+              iconPosition="only"
+              iconSize={20}
+              onPress={() => setDropdownVisible(true)}
+              style={styles.menuButton}
             />
           </View>
-        </View>
 
-        {/* Botón de menú en esquina superior derecha */}
-        <View style={styles.menuButtonContainer}>
-          <Button
-            variant="ghost"
-            size="small"
-            iconName="more-vert"
-            iconPosition="only"
-            iconSize={20}
-            onPress={() => setDropdownVisible(true)}
-            style={styles.menuButton}
+          {/* Componente Dropdown inline dentro de la card */}
+          <Dropdown
+            visible={dropdownVisible}
+            onClose={() => setDropdownVisible(false)}
+            onSelect={handleDropdownSelect}
+            options={dropdownOptions}
+            position="inline"
+            absolutePosition={{
+              top: 48,
+              right: 16,
+            }}
           />
         </View>
-
-        {/* Componente Dropdown inline dentro de la card */}
-        <Dropdown
-          visible={dropdownVisible}
-          onClose={() => setDropdownVisible(false)}
-          onSelect={handleDropdownSelect}
-          options={dropdownOptions}
-          position="inline"
-          absolutePosition={{
-            top: 48,
-            right: 16,
-          }}
-        />
-      </View>
-
-      {/* Overlay para cerrar el dropdown cuando está abierto */}
-      {/* {dropdownVisible && (
-        <TouchableOpacity 
-          style={StyleSheet.absoluteFillObject}
-          activeOpacity={1}
-          onPress={() => setDropdownVisible(false)}
-        />
-      )} */}
-
-      {/* Modal de confirmación para eliminar */}
+      </TouchableOpacity>
       <ConfirmationModal
         visible={deleteModalVisible}
         onClose={() => setDeleteModalVisible(false)}

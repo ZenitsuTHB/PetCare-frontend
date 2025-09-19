@@ -9,6 +9,7 @@ import RegisterScreen2 from '../screens/Register/RegisterScreen2';
 import HomeScreen from '../screens/Home/HomeScreen';
 import NotificationsScreen from '../screens/Notifications/NotificationsScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
+import PetDetailsScreen from '../screens/Details/PetDetailsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,7 @@ const AppNavigator = () => {
           component={NewPetFormScreen}
           options={{ title: 'Nueva Mascota' }}
         />
+        <Stack.Screen name="PetDetails" component={PetDetailsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
