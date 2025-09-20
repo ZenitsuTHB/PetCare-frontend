@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, StatusBar, ScrollView, Alert } from 'react-native';
 import { logoutUser } from '../../api/auth';
-import Footer from '../../components/Utils/Footer';
+import Footer from '../../components/Footers/Footer';
 import ContentContainer from '../../components/ContentContainer/ContentContainer';
 import Button from '../../components/Button/Button';
 import PetCard from '../../components/Cards/PetCard';
+import { QRModal } from '../../components';
 import { usePets } from '../../contexts/PetContext';
 
 const HomeScreen = ({ navigation }) => {
   const { pets, deletePet } = usePets();
+  const [qrModalVisible, setQrModalVisible] = useState(false);
+  const [selectedPet, setSelectedPet] = useState(null);
 
   const handleLogout = async () => {
     await logoutUser();
@@ -45,13 +48,12 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleShowHistory = (pet) => {
-    // TODO: Implementar navegación al historial médico
-    Alert.alert('Historial', `Mostrando historial de ${pet.name}`);
+    navigation.navigate('Historial', { petName: pet.name, pet });
   };
 
   const handleShowQR = (pet) => {
-    // TODO: Implementar generación/muestra de QR
-    Alert.alert('Código QR', `Generando QR para ${pet.name}`);
+    setSelectedPet(pet);
+    setQrModalVisible(true);
   };
 
   // Configuración del empty state
@@ -126,6 +128,13 @@ const HomeScreen = ({ navigation }) => {
           onProfilePress={handleProfile}
         />
       </View>
+
+      {/* QR Modal */}
+      <QRModal
+        visible={qrModalVisible}
+        onClose={() => setQrModalVisible(false)}
+        petName={selectedPet?.name}
+      />
     </View>
   );
 };

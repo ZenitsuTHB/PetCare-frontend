@@ -9,6 +9,7 @@ import RegisterScreen2 from '../screens/Register/RegisterScreen2';
 import HomeScreen from '../screens/Home/HomeScreen';
 import NotificationsScreen from '../screens/Notifications/NotificationsScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
+import HistorialScreen from '../screens/Historial/HistorialScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Notifications" component={NotificationsScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Historial" component={HistorialScreen} />
         <Stack.Screen
           name="NewPetForm"
           component={NewPetFormScreen}
