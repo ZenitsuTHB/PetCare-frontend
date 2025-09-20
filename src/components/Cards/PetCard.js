@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Animated, Pressable } from 'react-native';
 import Button from '../Button/Button';
 import ConfirmationModal from '../Modal/ConfirmationModal';
 import Dropdown from '../Dropdown/Dropdown';
@@ -20,6 +20,11 @@ const PetCard = ({
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [isPressed, setIsPressed] = useState(false);
+  
+  // Valores animados para el efecto flotante
+  const animatedValue = useRef(new Animated.Value(0)).current;
+  const shadowOpacity = useRef(new Animated.Value(0.15)).current;
 
   const dropdownOptions = [
     {
@@ -58,14 +63,77 @@ const PetCard = ({
     }
   };
 
+  // Animaciones de click/press
+  const handlePressIn = () => {
+    setIsPressed(true);
+    Animated.parallel([
+      Animated.spring(animatedValue, {
+        toValue: 1,
+        useNativeDriver: true,
+        tension: 200,
+        friction: 6,
+      }),
+      Animated.timing(shadowOpacity, {
+        toValue: 0.35,
+        duration: 250,
+        useNativeDriver: false,
+      }),
+    ]).start();
+  };
+
+  const handlePressOut = () => {
+    setIsPressed(false);
+    Animated.parallel([
+      Animated.spring(animatedValue, {
+        toValue: 0,
+        useNativeDriver: true,
+        tension: 200,
+        friction: 6,
+      }),
+      Animated.timing(shadowOpacity, {
+        toValue: 0.15,
+        duration: 250,
+        useNativeDriver: false,
+      }),
+    ]).start();
+  };
+
+  // Estilos animados
+  const animatedStyle = {
+    transform: [
+      {
+        translateY: animatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, -12], // Levanta la card 12 unidades
+        }),
+      },
+      {
+        scale: animatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [1, 1.05], // Escala más notoria (5%)
+        }),
+      },
+    ],
+  };
+
+  const shadowStyle = {
+    shadowOpacity: shadowOpacity,
+  };
+
   return (
     <View style={styles.cardContainer}>
-      <View style={styles.card}>
-        {/* Imagen redonda */}
-        <Image
-          source={imageSource || require('../../assets/images/hamgster.jpg')}
-          style={styles.image}
-        />
+      <Pressable
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        style={styles.pressableWrapper}
+        disabled={dropdownVisible} // Deshabilita cuando el dropdown está abierto
+      >
+        <Animated.View style={[styles.card, animatedStyle, shadowStyle]}>
+          {/* Imagen redonda */}
+          <Image
+            source={imageSource || require('../../assets/images/hamgster.jpg')}
+            style={styles.image}
+          />
 
         {/* Contenido */}
         <View style={styles.content}>
@@ -128,7 +196,8 @@ const PetCard = ({
             right: 16,
           }}
         />
-      </View>
+        </Animated.View>
+      </Pressable>
 
       {/* Modal de confirmación para eliminar */}
       <ConfirmationModal
@@ -154,6 +223,9 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: '100%',
   },
+  pressableWrapper: {
+    width: '100%',
+  },
   card: {
     width: '100%',
     padding: 24,
@@ -165,6 +237,14 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     gap: 10,
     position: 'relative',
+    // Sombra base
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowRadius: 16,
+    elevation: 10, // Para Android
   },
   image: {
     width: 80,
