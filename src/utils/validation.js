@@ -13,10 +13,42 @@ export const validateRequired = (value) => {
   return value && value.trim().length > 0;
 };
 
+// export const validateDateFormat = (date) => {
+//   const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+//   return dateRegex.test(date);
+// };
+
 export const validateDateFormat = (date) => {
-  const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-  return dateRegex.test(date);
+  // Primero validamos el formato DD/MM/YYYY
+  const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+  const match = date.match(dateRegex);
+
+  if (!match) return false;
+
+  let day = parseInt(match[1], 10);
+  let month = parseInt(match[2], 10);
+  let year = parseInt(match[3], 10);
+
+  // Validar rangos básicos
+  if (month < 1 || month > 12) return false;
+  if (day < 1) return false;
+  // jonathan Turtle from seychells, 1832
+  if (year < 1832 || year > new Date().getFullYear()) return false; // Evitar años futuros
+
+  // Días máximos por mes
+  const daysInMonth = [31, (isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+  if (day > daysInMonth[month - 1]) return false;
+
+  return true;
 };
+
+// Helper para saber si es año bisiesto
+const isLeapYear = (year) => {
+  return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+};
+
+
 
 export const validateChip = (chip) => {
   // Debe ser exactamente 15 dígitos numéricos
@@ -107,7 +139,7 @@ export const validateRegistrationCompleteForm = (formData) => {
   };
 };
 
-// Validación para formulario de nueva mascota
+// Validación para FORMULARIO DE NUEVO MASCOTA
 export const validatePetForm = (values) => {
   const errors = {};
 
@@ -126,7 +158,7 @@ export const validatePetForm = (values) => {
   if (!validateRequired(values.birthdate)) {
     errors.birthdate = 'Obligatorio';
   } else if (!validateDateFormat(values.birthdate)) {
-    errors.birthdate = 'Usa dd/mm/aaaa';
+    errors.birthdate = 'Formato inválido o fecha inválida. Usa dd/mm/aaaa';
   }
 
   if (!validateRequired(values.gender)) {

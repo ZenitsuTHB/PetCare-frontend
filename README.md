@@ -209,4 +209,10 @@ npm run web        # Ejecuta en navegador web
 
 ---
 
+### Para hacer 22/09/2025
+- *Persistent verification check for the date when register a pet*
+    - base on the life expectancy of each animals
+    - the date is always taking the current date 
+    - merge it with the sergi part
+
 *Desarrollado con ❤️ usando React Native y Expo*

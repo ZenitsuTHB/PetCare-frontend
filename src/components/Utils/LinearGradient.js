@@ -7,14 +7,14 @@ const Background = ({
   colors = ['#FFF8F4', '#FB999A'], // 🎨 colores por defecto
   start = { x: 0, y: 0 },
   end = { x: 1, y: 0 },
-  // locations = [0.5, 0.5], // mitad izquierda un color, mitad derecha otro
+  locations = [0.5, 0.5], // mitad izquierda un color, mitad derecha otro
 }) => {
   return (
     <LinearGradient
       colors={colors}
       start={start}
       end={end}
-      // locations={locations}
+      locations={locations}
       style={styles.container}
     >
       {children}

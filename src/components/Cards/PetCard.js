@@ -6,11 +6,11 @@ import Dropdown from '../Dropdown/Dropdown';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const PetCard = ({
-  petName = 'Aperitivo :)',
-  petType = 'Hamster',
-  breed = 'Ruso',
-  weight = '1 kg',
-  chipId = '981100002343567',
+  petName = '',
+  petType = '',
+  breed = '',
+  weight = '',
+  chipId = '',
   registrationDate = '00/00/0000',
   imageSource,
   onEditPet,
