@@ -80,18 +80,25 @@ const PetDetailsScreen = ({ route, navigation }) => {
 
         {/* Ficha */}
         <View style={styles.card}>
-          <Row label="Especie" value={pet.species} />
-          <Row label="Raza" value={pet.breed} right />
+          {/* Especie / Raza */}
+          <View style={styles.rowWrap}>
+            <Row label="Especie" value={pet.species} />
+            <Row label="Raza" value={pet.breed} right />
+          </View>
           <Divider />
 
-          <Row label="Fecha de nacimiento" value={pet.birthdate} />
-          <Row label="" value="" right empty />
+          {/* Fecha de nacimiento (fila completa) */}
+          <Row label="Fecha de nacimiento" value={pet.birthdate} full />
           <Divider />
 
-          <Row label="Género" value={pet.gender} />
-          <Row label="Peso (kg)" value={String(pet.weight)} right />
+          {/* Género / Peso */}
+          <View style={styles.rowWrap}>
+            <Row label="Género" value={pet.gender} />
+            <Row label="Peso (kg)" value={String(pet.weight)} right />
+          </View>
           <Divider />
 
+          {/* Chip (fila completa) */}
           <Row label="Chip" value={pet.chip} full />
           <Divider />
 
@@ -232,9 +239,13 @@ const styles = StyleSheet.create({
 
   row: {
     flexDirection: 'column',
-    width: '50%',
+    width: '48%',
     paddingRight: 18,
     marginBottom: 10,
+  },
+  rowWrap: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   rowFull: { width: '100%', marginTop: 2 },
 
@@ -284,8 +295,8 @@ const styles = StyleSheet.create({
   barLabel: { fontSize: 12, color: COLORS.text },
   fab: {
     position: 'absolute',
-    alignSelf: 'center', // ← centra horizontalmente dentro del bottomBar
-    top: -26, // ← flota por encima de la barra
+    alignSelf: 'center',
+    top: -26,
     width: 64,
     height: 64,
     borderRadius: 999,
@@ -295,8 +306,8 @@ const styles = StyleSheet.create({
   },
   fabText: {
     position: 'absolute',
-    alignSelf: 'center', // ← centra el texto
-    bottom: 8, // ← dentro de la barra
+    alignSelf: 'center',
+    bottom: 8,
     fontSize: 12,
     color: COLORS.text,
   },
