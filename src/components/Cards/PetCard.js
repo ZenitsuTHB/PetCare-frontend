@@ -1,5 +1,13 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Animated, Pressable } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity, Animated, Pressable,
+  Pressable,
+  Platform,
+} from 'react-native';
 import Button from '../Button/Button';
 import ConfirmationModal from '../Modal/ConfirmationModal';
 import Dropdown from '../Dropdown/Dropdown';
@@ -17,6 +25,7 @@ const PetCard = ({
   onDeletePet,
   onShowHistory,
   onShowQR,
+  onPress,
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -122,67 +131,73 @@ const PetCard = ({
 
   return (
     <View style={styles.cardContainer}>
-      <Pressable
+      <TouchableOpacity
+        activeOpacity={0.96}
+        onPress={onPress}
+        accessibilityRole="button"
+        accessibilityLabel={`Abrir perfil de ${petName}`}
+      >
+        <Pressable
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         style={styles.pressableWrapper}
         disabled={dropdownVisible} // Deshabilita cuando el dropdown está abierto
       >
         <Animated.View style={[styles.card, animatedStyle, shadowStyle]}>
-          {/* Imagen redonda */}
-          <Image
-            source={imageSource || require('../../assets/images/hamgster.jpg')}
-            style={styles.image}
-          />
-
-        {/* Contenido */}
-        <View style={styles.content}>
-          {/* Título */}
-          <View style={styles.headerRow}>
-            <Text style={styles.title}>{petName}</Text>
-          </View>
-
-          {/* Subtítulo */}
-          <Text style={styles.subtitle}>
-            {petType} - {breed} - {weight}
-          </Text>
-
-          {/* Info extra */}
-          <Text style={styles.info}>Chip: {chipId}</Text>
-          <Text style={styles.info}>Fecha: {registrationDate}</Text>
-
-          {/* Botones */}
-          <View style={styles.buttonRow}>
-            <Button
-              title="Historial"
-              variant="outline"
-              size="small"
-              onPress={onShowHistory}
-              style={styles.historyButton}
+            {/* Imagen redonda */}
+            <Image
+              source={imageSource || require('../../assets/images/hamgster.jpg')}
+              style={styles.image}
             />
 
+          {/* Contenido */}
+          <View style={styles.content}>
+            {/* Título */}
+            <View style={styles.headerRow}>
+              <Text style={styles.title}>{petName}</Text>
+            </View>
+
+            {/* Subtítulo */}
+            <Text style={styles.subtitle}>
+              {petType} - {breed} - {weight}
+            </Text>
+
+            {/* Info extra */}
+            <Text style={styles.info}>Chip: {chipId}</Text>
+            <Text style={styles.info}>Fecha: {registrationDate}</Text>
+
+            {/* Botones */}
+            <View style={styles.buttonRow}>
+              <Button
+                title="Historial"
+                variant="outline"
+                size="small"
+                onPress={onShowHistory}
+                style={styles.historyButton}
+              />
+
+              <Button
+                title="Mostrar QR"
+                variant="secondary"
+                size="small"
+                onPress={onShowQR}
+                style={styles.qrButton}
+              />
+            </View>
+          </View>
+
+          {/* Botón de menú en esquina superior derecha */}
+          <View style={styles.menuButtonContainer}>
             <Button
-              title="Mostrar QR"
-              variant="secondary"
+              variant="ghost"
               size="small"
-              onPress={onShowQR}
-              style={styles.qrButton}
+              iconName="more-vert"
+              iconPosition="only"
+              iconSize={20}
+              onPress={() => setDropdownVisible(true)}
+              style={styles.menuButton}
             />
           </View>
-        </View>
-
-        {/* Botón de menú en esquina superior derecha */}
-        <View style={styles.menuButtonContainer}>
-          <Button
-            variant="ghost"
-            size="small"
-            iconName="more-vert"
-            iconPosition="only"
-            iconSize={20}
-            onPress={() => setDropdownVisible(true)}
-            style={styles.menuButton}
-          />
-        </View>
 
         {/* Componente Dropdown inline dentro de la card */}
         <Dropdown

@@ -85,23 +85,46 @@ const HomeScreen = ({ navigation }) => {
                 style={styles.petList}
                 showsVerticalScrollIndicator={false}
               >
-                {pets.map((pet) => (
-                  <View key={pet.id} style={styles.petCardContainer}>
-                    <PetCard
-                      petName={pet.name}
-                      petType={pet.species}
-                      breed={pet.breed}
-                      weight={pet.weight ? `${pet.weight} kg` : 'No especificado'}
-                      chipId={pet.chip}
-                      registrationDate={pet.registrationDate}
-                      imageSource={pet.photoUri ? { uri: pet.photoUri } : null}
-                      onEditPet={() => handleEditPet(pet)}
-                      onDeletePet={() => handleDeletePet(pet.id)}
-                      onShowHistory={() => handleShowHistory(pet)}
-                      onShowQR={() => handleShowQR(pet)}
-                    />
-                  </View>
-                ))}
+                {pets.map((pet) => {
+                  // 👇 Aquí creas el objeto con los datos que pasaremos a la pantalla de detalles
+                  const petForDetails = {
+                    name: pet.name,
+                    species: pet.species,
+                    breed: pet.breed,
+                    birthdate: pet.birthdate,
+                    chip: pet.chip,
+                    notes: pet.notes,
+                    gender: pet.gender || '—',
+                    weight: pet.weight || 'No especificado',
+                    avatar: pet.photoUri || '',
+                  };
+
+                  // 👇 Aquí retornas el JSX igual que antes, pero con el onPress que navega
+                  return (
+                    <View key={pet.id} style={styles.petCardContainer}>
+                      <PetCard
+                        petName={pet.name}
+                        petType={pet.species}
+                        breed={pet.breed}
+                        weight={pet.weight ? `${pet.weight} kg` : 'No especificado'}
+                        chipId={pet.chip}
+                        registrationDate={pet.registrationDate}
+                        imageSource={
+                          pet.photoUri ? { uri: pet.photoUri } : null
+                        }
+                        onEditPet={() => handleEditPet(pet)}
+                        onDeletePet={() => handleDeletePet(pet.id)}
+                        onShowHistory={() => handleShowHistory(pet)}
+                        onShowQR={() => handleShowQR(pet)}
+                        onPress={() =>
+                          navigation.navigate('PetDetails', {
+                            pet: petForDetails,
+                          })
+                        }
+                      />
+                    </View>
+                  );
+                })}
               </ScrollView>
             )}
           </ContentContainer>
