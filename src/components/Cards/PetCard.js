@@ -4,13 +4,15 @@ import {
   Text,
   StyleSheet,
   Image,
-  TouchableOpacity, Animated,
+  TouchableOpacity, 
+  Animated,
   Pressable,
   Platform,
+  Modal,
 } from 'react-native';
 import Button from '../Button/Button';
 import ConfirmationModal from '../Modal/ConfirmationModal';
-import Dropdown from '../Dropdown/Dropdown';
+import DropdownModal from '../Modal/DropdownModal';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const PetCard = ({
@@ -35,12 +37,12 @@ const PetCard = ({
   const animatedValue = useRef(new Animated.Value(0)).current;
   const shadowOpacity = useRef(new Animated.Value(0.15)).current;
 
+  // Opciones del dropdown modal
   const dropdownOptions = [
     {
       label: 'Editar',
       icon: 'edit',
       onPress: () => {
-        setDropdownVisible(false);
         setTimeout(() => {
           if (onEditPet) onEditPet();
         }, 100);
@@ -51,7 +53,6 @@ const PetCard = ({
       icon: 'delete',
       danger: true,
       onPress: () => {
-        setDropdownVisible(false);
         setTimeout(() => {
           setDeleteModalVisible(true);
         }, 100);
@@ -134,9 +135,9 @@ const PetCard = ({
       <Pressable
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        onPress={onPress} // Agregamos el onPress aquí
+        onPress={onPress}
         style={styles.pressableWrapper}
-        disabled={dropdownVisible} // Deshabilita cuando el dropdown está abierto
+        disabled={dropdownVisible || deleteModalVisible} // Deshabilita cuando hay modales abiertos
         accessibilityRole="button"
         accessibilityLabel={`Abrir perfil de ${petName}`}
       >
@@ -169,7 +170,10 @@ const PetCard = ({
                   title="Historial"
                   variant="outline"
                   size="small"
-                  onPress={onShowHistory}
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    onShowHistory();
+                  }}
                   style={styles.historyButton}
                 />
 
@@ -177,7 +181,10 @@ const PetCard = ({
                   title="Mostrar QR"
                   variant="secondary"
                   size="small"
-                  onPress={onShowQR}
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    onShowQR();
+                  }}
                   style={styles.qrButton}
                 />
               </View>
@@ -191,27 +198,23 @@ const PetCard = ({
                 iconName="more-vert"
                 iconPosition="only"
                 iconSize={20}
-                onPress={() => setDropdownVisible(true)}
+                onPress={(e) => {
+                  e.stopPropagation();
+                  setDropdownVisible(true);
+                }}
                 style={styles.menuButton}
               />
             </View>
-          
-            {/* Componente Dropdown inline dentro de la card */}
-            <Dropdown
-              visible={dropdownVisible}
-              onClose={() => setDropdownVisible(false)}
-              onSelect={handleDropdownSelect}
-              options={dropdownOptions}
-              position="inline"
-              absolutePosition={{
-                top: 48,
-                right: 16,
-                // left: Platform.OS === 'ios' ? undefined : 16,
-                // bottom: Platform.OS === 'ios' ? 48 : undefined,
-              }}
-            />
           </Animated.View>
         </Pressable>
+
+      {/* Dropdown Modal con Blur */}
+      <DropdownModal
+        visible={dropdownVisible}
+        onClose={() => setDropdownVisible(false)}
+        onSelect={handleDropdownSelect}
+        options={dropdownOptions}
+      />
 
       {/* Modal de confirmación para eliminar */}
       <ConfirmationModal
