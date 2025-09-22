@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet,
   Image,
-  TouchableOpacity, Animated, Pressable,
+  TouchableOpacity, Animated,
   Pressable,
   Platform,
 } from 'react-native';
@@ -131,17 +131,14 @@ const PetCard = ({
 
   return (
     <View style={styles.cardContainer}>
-      <TouchableOpacity
-        activeOpacity={0.96}
-        onPress={onPress}
-        accessibilityRole="button"
-        accessibilityLabel={`Abrir perfil de ${petName}`}
-      >
-        <Pressable
+      <Pressable
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
+        onPress={onPress} // Agregamos el onPress aquí
         style={styles.pressableWrapper}
         disabled={dropdownVisible} // Deshabilita cuando el dropdown está abierto
+        accessibilityRole="button"
+        accessibilityLabel={`Abrir perfil de ${petName}`}
       >
         <Animated.View style={[styles.card, animatedStyle, shadowStyle]}>
             {/* Imagen redonda */}
@@ -150,69 +147,71 @@ const PetCard = ({
               style={styles.image}
             />
 
-          {/* Contenido */}
-          <View style={styles.content}>
-            {/* Título */}
-            <View style={styles.headerRow}>
-              <Text style={styles.title}>{petName}</Text>
+            {/* Contenido */}
+            <View style={styles.content}>
+              {/* Título */}
+              <View style={styles.headerRow}>
+                <Text style={styles.title}>{petName}</Text>
+              </View>
+
+              {/* Subtítulo */}
+              <Text style={styles.subtitle}>
+                {petType} - {breed} - {weight}
+              </Text>
+
+              {/* Info extra */}
+              <Text style={styles.info}>Chip: {chipId}</Text>
+              <Text style={styles.info}>Fecha: {registrationDate}</Text>
+
+              {/* Botones */}
+              <View style={styles.buttonRow}>
+                <Button
+                  title="Historial"
+                  variant="outline"
+                  size="small"
+                  onPress={onShowHistory}
+                  style={styles.historyButton}
+                />
+
+                <Button
+                  title="Mostrar QR"
+                  variant="secondary"
+                  size="small"
+                  onPress={onShowQR}
+                  style={styles.qrButton}
+                />
+              </View>
             </View>
 
-            {/* Subtítulo */}
-            <Text style={styles.subtitle}>
-              {petType} - {breed} - {weight}
-            </Text>
-
-            {/* Info extra */}
-            <Text style={styles.info}>Chip: {chipId}</Text>
-            <Text style={styles.info}>Fecha: {registrationDate}</Text>
-
-            {/* Botones */}
-            <View style={styles.buttonRow}>
+            {/* Botón de menú en esquina superior derecha */}
+            <View style={styles.menuButtonContainer}>
               <Button
-                title="Historial"
-                variant="outline"
+                variant="ghost"
                 size="small"
-                onPress={onShowHistory}
-                style={styles.historyButton}
-              />
-
-              <Button
-                title="Mostrar QR"
-                variant="secondary"
-                size="small"
-                onPress={onShowQR}
-                style={styles.qrButton}
+                iconName="more-vert"
+                iconPosition="only"
+                iconSize={20}
+                onPress={() => setDropdownVisible(true)}
+                style={styles.menuButton}
               />
             </View>
-          </View>
-
-          {/* Botón de menú en esquina superior derecha */}
-          <View style={styles.menuButtonContainer}>
-            <Button
-              variant="ghost"
-              size="small"
-              iconName="more-vert"
-              iconPosition="only"
-              iconSize={20}
-              onPress={() => setDropdownVisible(true)}
-              style={styles.menuButton}
+          
+            {/* Componente Dropdown inline dentro de la card */}
+            <Dropdown
+              visible={dropdownVisible}
+              onClose={() => setDropdownVisible(false)}
+              onSelect={handleDropdownSelect}
+              options={dropdownOptions}
+              position="inline"
+              absolutePosition={{
+                top: 48,
+                right: 16,
+                // left: Platform.OS === 'ios' ? undefined : 16,
+                // bottom: Platform.OS === 'ios' ? 48 : undefined,
+              }}
             />
-          </View>
-
-        {/* Componente Dropdown inline dentro de la card */}
-        <Dropdown
-          visible={dropdownVisible}
-          onClose={() => setDropdownVisible(false)}
-          onSelect={handleDropdownSelect}
-          options={dropdownOptions}
-          position="inline"
-          absolutePosition={{
-            top: 48,
-            right: 16,
-          }}
-        />
-        </Animated.View>
-      </Pressable>
+          </Animated.View>
+        </Pressable>
 
       {/* Modal de confirmación para eliminar */}
       <ConfirmationModal
