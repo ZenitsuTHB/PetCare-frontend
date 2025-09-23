@@ -68,11 +68,11 @@ export const PetProvider = ({ children }) => {
   // Eliminar mascota
   const deletePet = async (petId) => {
     console.log('PetContext deletePet called with petId:', petId);
-    
+
     // Asegurar que estamos comparando el mismo tipo
     const petIdStr = String(petId);
     const updatedPets = pets.filter((pet) => String(pet.id) !== petIdStr);
-    
+
     setPets(updatedPets);
     await savePets(updatedPets);
     console.log('Pet deletion completed');

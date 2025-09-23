@@ -2,8 +2,8 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
-const PageFooter = ({ 
-  activeTab = 'archivos', // 'archivos', 'qr', 'historial' 
+const PageFooter = ({
+  activeTab = 'archivos', // 'archivos', 'qr', 'historial'
   onArchivosPress,
   onQRPress,
   onHistorialPress,
@@ -32,10 +32,12 @@ const PageFooter = ({
             size={28}
             color={activeTab === 'archivos' ? '#FA8081' : '#494949'}
           />
-          <Text style={[
-            styles.tabText,
-            activeTab === 'archivos' && styles.activeTabText
-          ]}>
+          <Text
+            style={[
+              styles.tabText,
+              activeTab === 'archivos' && styles.activeTabText,
+            ]}
+          >
             Archivos
           </Text>
           {activeTab === 'archivos' && <View style={styles.underline} />}
@@ -47,10 +49,9 @@ const PageFooter = ({
           onPress={onQRPress}
           activeOpacity={0.8}
         >
-          <Text style={[
-            styles.tabText,
-            activeTab === 'qr' && styles.activeTabText
-          ]}>
+          <Text
+            style={[styles.tabText, activeTab === 'qr' && styles.activeTabText]}
+          >
             Generar QR
           </Text>
           {activeTab === 'qr' && <View style={styles.underline} />}
@@ -67,10 +68,12 @@ const PageFooter = ({
             size={28}
             color={activeTab === 'historial' ? '#FA8081' : '#494949'}
           />
-          <Text style={[
-            styles.tabText,
-            activeTab === 'historial' && styles.activeTabText
-          ]}>
+          <Text
+            style={[
+              styles.tabText,
+              activeTab === 'historial' && styles.activeTabText,
+            ]}
+          >
             Historial
           </Text>
           {activeTab === 'historial' && <View style={styles.underline} />}

@@ -26,7 +26,7 @@ const ConfirmationModal = ({
   icon = 'exclamation',
 }) => {
   console.log('ConfirmationModal render - visible:', visible);
-  
+
   if (!visible) return null;
   return (
     <Modal
@@ -42,7 +42,7 @@ const ConfirmationModal = ({
           activeOpacity={1}
           onPress={onClose}
         />
-        
+
         {/* Modal Content */}
         <View style={styles.modalContainer}>
           <View style={styles.modal}>
@@ -62,9 +62,7 @@ const ConfirmationModal = ({
             <View style={styles.messageSection}>
               <Text style={styles.message}>
                 {message}{' '}
-                <Text style={styles.messageHighlight}>
-                  {messageHighlight}
-                </Text>
+                <Text style={styles.messageHighlight}>{messageHighlight}</Text>
                 {messageContinuation}
               </Text>
             </View>

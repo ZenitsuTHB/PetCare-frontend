@@ -43,7 +43,10 @@ const HomeScreen = ({ navigation }) => {
       console.log('Pet deleted successfully');
     } catch (error) {
       console.error('Error deleting pet:', error);
-      Alert.alert('Error', 'No se pudo eliminar la mascota. Inténtalo de nuevo.');
+      Alert.alert(
+        'Error',
+        'No se pudo eliminar la mascota. Inténtalo de nuevo.'
+      );
     }
   };
 
@@ -106,7 +109,9 @@ const HomeScreen = ({ navigation }) => {
                         petName={pet.name}
                         petType={pet.species}
                         breed={pet.breed}
-                        weight={pet.weight ? `${pet.weight} kg` : 'No especificado'}
+                        weight={
+                          pet.weight ? `${pet.weight} kg` : 'No especificado'
+                        }
                         chipId={pet.chip}
                         registrationDate={pet.registrationDate}
                         imageSource={

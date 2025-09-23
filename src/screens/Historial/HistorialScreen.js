@@ -1,6 +1,6 @@
 // src/screens/Historial/HistorialScreen.js
-import React, { useState } from "react";
-import { View, StyleSheet, StatusBar } from "react-native";
+import React, { useState } from 'react';
+import { View, StyleSheet, StatusBar } from 'react-native';
 import { THEME_COLORS } from '../../constants/formConstants';
 import { PageFooter, BackButton, QRModal } from '../../components';
 import ContentContainer from '../../components/ContentContainer/ContentContainer';

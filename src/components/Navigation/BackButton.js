@@ -2,10 +2,10 @@ import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const BackButton = ({ 
-  onPress, 
-  text = "Volver al perfil",
-  iconName = "chevron-back",
+const BackButton = ({
+  onPress,
+  text = 'Volver al perfil',
+  iconName = 'chevron-back',
   iconSize = 24,
   style = {},
   textStyle = {},
@@ -17,14 +17,8 @@ const BackButton = ({
       activeOpacity={0.7}
     >
       <View style={styles.content}>
-        <Ionicons 
-          name={iconName} 
-          size={iconSize} 
-          color="#636363" 
-        />
-        <Text style={[styles.text, textStyle]}>
-          {text}
-        </Text>
+        <Ionicons name={iconName} size={iconSize} color="#636363" />
+        <Text style={[styles.text, textStyle]}>{text}</Text>
       </View>
     </TouchableOpacity>
   );

@@ -24,11 +24,11 @@ import * as ImagePicker from 'expo-image-picker';
 import { usePets } from '../../contexts/PetContext';
 import { validatePetForm } from '../../utils/validation';
 import ConfirmationModal from '../Modal/ConfirmationModal';
-import { 
-  SPECIES_OPTIONS, 
-  THEME_COLORS, 
-  IMAGE_PICKER_CONFIG, 
-  PERMISSION_MESSAGES 
+import {
+  SPECIES_OPTIONS,
+  THEME_COLORS,
+  IMAGE_PICKER_CONFIG,
+  PERMISSION_MESSAGES,
 } from '../../constants/formConstants';
 
 export default function NewPetFormScreen({ navigation, route }) {
@@ -68,7 +68,10 @@ export default function NewPetFormScreen({ navigation, route }) {
 
   const handleDeletePetFromEdit = () => {
     if (!petId) {
-      Alert.alert('Error', 'No se puede eliminar: información de mascota no válida.');
+      Alert.alert(
+        'Error',
+        'No se puede eliminar: información de mascota no válida.'
+      );
       return;
     }
     setDeleteModalVisible(true);
@@ -86,7 +89,10 @@ export default function NewPetFormScreen({ navigation, route }) {
       });
     } catch (error) {
       console.error('Error deleting pet:', error);
-      Alert.alert('Error', 'No se pudo eliminar la mascota. Inténtalo de nuevo.');
+      Alert.alert(
+        'Error',
+        'No se pudo eliminar la mascota. Inténtalo de nuevo.'
+      );
     }
   };
 
@@ -149,17 +155,20 @@ export default function NewPetFormScreen({ navigation, route }) {
           routes: [{ name: 'Home' }],
         });
         setTimeout(() => {
-          Alert.alert('¡Guardado!', 'Los cambios se han actualizado correctamente.');
+          Alert.alert(
+            '¡Guardado!',
+            'Los cambios se han actualizado correctamente.'
+          );
         }, 500);
       } else {
         await addPet(payload);
-        
+
         // Navegación inmediata sin alert para mejor UX
         navigation.reset({
           index: 0,
           routes: [{ name: 'Home' }],
         });
-        
+
         // Mostrar mensaje de éxito después de navegar
         setTimeout(() => {
           Alert.alert('¡Mascota creada!', 'Guardamos los datos correctamente.');
@@ -226,7 +235,10 @@ export default function NewPetFormScreen({ navigation, route }) {
   return (
     <LinearGradient>
       <SafeAreaView style={{ flex: 1 }}>
-        <StatusBar backgroundColor={THEME_COLORS.PRIMARY_PINK} barStyle="dark-content" />
+        <StatusBar
+          backgroundColor={THEME_COLORS.PRIMARY_PINK}
+          barStyle="dark-content"
+        />
 
         {/* Header */}
         <View style={styles.header}>
@@ -330,14 +342,17 @@ export default function NewPetFormScreen({ navigation, route }) {
                     const filtered = text.replace(/[^0-9.]/g, '');
                     // Evitar múltiples puntos
                     const parts = filtered.split('.');
-                    const formatted = parts.length > 2 ? parts[0] + '.' + parts.slice(1).join('') : filtered;
+                    const formatted =
+                      parts.length > 2
+                        ? parts[0] + '.' + parts.slice(1).join('')
+                        : filtered;
                     onChange('weight')(formatted);
                   }}
                   onBlur={onBlur('weight')}
                   error={touched.weight && errors.weight}
                   keyboardType="decimal-pad"
                   style={styles.fieldRow}
-                />  
+                />
               </View>
 
               <Field
@@ -353,7 +368,9 @@ export default function NewPetFormScreen({ navigation, route }) {
               />
               {isEdit && (
                 <Text style={styles.chipMessage}>
-                  Este campo no es editable. Si los datos del chip son incorrectos, consulta con tu veterinaria o Borra y crea un nuevo perfil.
+                  Este campo no es editable. Si los datos del chip son
+                  incorrectos, consulta con tu veterinaria o Borra y crea un
+                  nuevo perfil.
                 </Text>
               )}
               <Field
@@ -403,7 +420,9 @@ export default function NewPetFormScreen({ navigation, route }) {
                 <TouchableOpacity
                   style={[
                     styles.cta,
-                    (!isEdit && (!values.consent || submitting)) && styles.ctaDisabled,
+                    !isEdit &&
+                      (!values.consent || submitting) &&
+                      styles.ctaDisabled,
                   ]}
                   onPress={submit}
                   disabled={!isEdit && (!values.consent || submitting)}
@@ -563,7 +582,12 @@ function OptionsModal({ visible, title, options, onClose, onSelect }) {
             style={[styles.modalItem, { marginTop: 8 }]}
             onPress={onClose}
           >
-            <Text style={[styles.modalItemText, { color: THEME_COLORS.TEXT_SECONDARY }]}>
+            <Text
+              style={[
+                styles.modalItemText,
+                { color: THEME_COLORS.TEXT_SECONDARY },
+              ]}
+            >
               Cancelar
             </Text>
           </TouchableOpacity>
@@ -598,7 +622,12 @@ const styles = StyleSheet.create({
     borderColor: THEME_COLORS.CTA_BUTTON,
   },
   checkMark: { color: '#fff', fontWeight: '900', fontSize: 12 },
-  checkText: { flex: 1, color: THEME_COLORS.TEXT_SECONDARY, fontSize: 12, lineHeight: 16 },
+  checkText: {
+    flex: 1,
+    color: THEME_COLORS.TEXT_SECONDARY,
+    fontSize: 12,
+    lineHeight: 16,
+  },
   header: {
     backgroundColor: THEME_COLORS.PRIMARY_PINK,
     paddingTop: Platform.select({ ios: 56, android: 24 }),
@@ -685,7 +714,7 @@ const styles = StyleSheet.create({
     color: THEME_COLORS.TEXT_PRIMARY,
   },
   inputError: { borderColor: THEME_COLORS.BORDER_ERROR },
-  inputDisabled: { 
+  inputDisabled: {
     backgroundColor: '#F8F9FA',
     color: '#6C757D',
     opacity: 0.7,
@@ -754,10 +783,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#E2E8F0',
     opacity: 0.6,
   },
-  ctaText: { 
+  ctaText: {
     textAlign: 'center',
-    color: '#FFF8F4', 
-    fontWeight: '600', 
+    color: '#FFF8F4',
+    fontWeight: '600',
     fontSize: 16,
     lineHeight: 25.6,
   },
@@ -837,5 +866,9 @@ const styles = StyleSheet.create({
     borderColor: THEME_COLORS.BORDER_DEFAULT,
     marginTop: 8,
   },
-  modalItemText: { fontSize: 16, color: THEME_COLORS.TEXT_PRIMARY, textAlign: 'center' },
+  modalItemText: {
+    fontSize: 16,
+    color: THEME_COLORS.TEXT_PRIMARY,
+    textAlign: 'center',
+  },
 });

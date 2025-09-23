@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet,
   Image,
-  TouchableOpacity, 
+  TouchableOpacity,
   Animated,
   Pressable,
   Platform,
@@ -32,7 +32,7 @@ const PetCard = ({
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
-  
+
   // Valores animados para el efecto flotante
   const animatedValue = useRef(new Animated.Value(0)).current;
   const shadowOpacity = useRef(new Animated.Value(0.15)).current;
@@ -142,71 +142,71 @@ const PetCard = ({
         accessibilityLabel={`Abrir perfil de ${petName}`}
       >
         <Animated.View style={[styles.card, animatedStyle, shadowStyle]}>
-            {/* Imagen redonda */}
-            <Image
-              source={imageSource || require('../../assets/images/hamgster.jpg')}
-              style={styles.image}
-            />
+          {/* Imagen redonda */}
+          <Image
+            source={imageSource || require('../../assets/images/hamgster.jpg')}
+            style={styles.image}
+          />
 
-            {/* Contenido */}
-            <View style={styles.content}>
-              {/* Título */}
-              <View style={styles.headerRow}>
-                <Text style={styles.title}>{petName}</Text>
-              </View>
-
-              {/* Subtítulo */}
-              <Text style={styles.subtitle}>
-                {petType} - {breed} - {weight}
-              </Text>
-
-              {/* Info extra */}
-              <Text style={styles.info}>Chip: {chipId}</Text>
-              <Text style={styles.info}>Fecha: {registrationDate}</Text>
-
-              {/* Botones */}
-              <View style={styles.buttonRow}>
-                <Button
-                  title="Historial"
-                  variant="outline"
-                  size="small"
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    onShowHistory();
-                  }}
-                  style={styles.historyButton}
-                />
-
-                <Button
-                  title="Mostrar QR"
-                  variant="secondary"
-                  size="small"
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    onShowQR();
-                  }}
-                  style={styles.qrButton}
-                />
-              </View>
+          {/* Contenido */}
+          <View style={styles.content}>
+            {/* Título */}
+            <View style={styles.headerRow}>
+              <Text style={styles.title}>{petName}</Text>
             </View>
 
-            {/* Botón de menú en esquina superior derecha */}
-            <View style={styles.menuButtonContainer}>
+            {/* Subtítulo */}
+            <Text style={styles.subtitle}>
+              {petType} - {breed} - {weight}
+            </Text>
+
+            {/* Info extra */}
+            <Text style={styles.info}>Chip: {chipId}</Text>
+            <Text style={styles.info}>Fecha: {registrationDate}</Text>
+
+            {/* Botones */}
+            <View style={styles.buttonRow}>
               <Button
-                variant="ghost"
+                title="Historial"
+                variant="outline"
                 size="small"
-                iconName="more-vert"
-                iconPosition="only"
-                iconSize={20}
                 onPress={(e) => {
                   e.stopPropagation();
-                  setDropdownVisible(true);
+                  onShowHistory();
                 }}
-                style={styles.menuButton}
+                style={styles.historyButton}
+              />
+
+              <Button
+                title="Mostrar QR"
+                variant="secondary"
+                size="small"
+                onPress={(e) => {
+                  e.stopPropagation();
+                  onShowQR();
+                }}
+                style={styles.qrButton}
               />
             </View>
-          </Animated.View>
-        </Pressable>
+          </View>
+
+          {/* Botón de menú en esquina superior derecha */}
+          <View style={styles.menuButtonContainer}>
+            <Button
+              variant="ghost"
+              size="small"
+              iconName="more-vert"
+              iconPosition="only"
+              iconSize={20}
+              onPress={(e) => {
+                e.stopPropagation();
+                setDropdownVisible(true);
+              }}
+              style={styles.menuButton}
+            />
+          </View>
+        </Animated.View>
+      </Pressable>
 
       {/* Dropdown Modal con Blur */}
       <DropdownModal

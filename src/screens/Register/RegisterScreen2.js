@@ -32,7 +32,10 @@ const RegisterScreen2 = ({ navigation, route }) => {
 
   // Usar la función de validación centralizada
   const formData = { address, city, postalCode, province, termsAccepted };
-  const validationResult = useMemo(() => validateRegistrationCompleteForm(formData), [formData]);
+  const validationResult = useMemo(
+    () => validateRegistrationCompleteForm(formData),
+    [formData]
+  );
   const { errors, isValid } = validationResult;
 
   const handleRegistration = async () => {
@@ -110,110 +113,110 @@ const RegisterScreen2 = ({ navigation, route }) => {
             style={styles.formSection}
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
           >
-          <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.formContainer}
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={styles.inputsContainer}>
-              {/* Address Input */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Domicilio</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Dirección completa"
-                  placeholderTextColor="#62748E"
-                  value={address}
-                  onChangeText={setAddress}
-                  autoCapitalize="words"
-                />
-              </View>
-
-              {/* City and Postal Code Row */}
-              <View style={styles.cityRow}>
-                <View style={styles.cityInputGroup}>
-                  <Text style={styles.inputLabel}>Ciudad</Text>
+            <ScrollView
+              style={styles.scrollView}
+              contentContainerStyle={styles.formContainer}
+              showsVerticalScrollIndicator={false}
+            >
+              <View style={styles.inputsContainer}>
+                {/* Address Input */}
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>Domicilio</Text>
                   <TextInput
                     style={styles.input}
-                    placeholder="Ciudad"
+                    placeholder="Dirección completa"
                     placeholderTextColor="#62748E"
-                    value={city}
-                    onChangeText={setCity}
+                    value={address}
+                    onChangeText={setAddress}
                     autoCapitalize="words"
                   />
                 </View>
 
-                <View style={styles.postalInputGroup}>
-                  <Text style={styles.inputLabel}>C.P</Text>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Código postal"
-                    placeholderTextColor="#62748E"
-                    value={postalCode}
-                    onChangeText={setPostalCode}
-                    keyboardType="numeric"
-                    maxLength={5}
+                {/* City and Postal Code Row */}
+                <View style={styles.cityRow}>
+                  <View style={styles.cityInputGroup}>
+                    <Text style={styles.inputLabel}>Ciudad</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Ciudad"
+                      placeholderTextColor="#62748E"
+                      value={city}
+                      onChangeText={setCity}
+                      autoCapitalize="words"
+                    />
+                  </View>
+
+                  <View style={styles.postalInputGroup}>
+                    <Text style={styles.inputLabel}>C.P</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Código postal"
+                      placeholderTextColor="#62748E"
+                      value={postalCode}
+                      onChangeText={setPostalCode}
+                      keyboardType="numeric"
+                      maxLength={5}
+                    />
+                  </View>
+                </View>
+
+                {/* Province Picker */}
+                <View style={styles.inputGroup}>
+                  <Text style={styles.inputLabel}>Provincia</Text>
+                  <ProvincePicker
+                    selectedProvince={province}
+                    onChange={(value) => setProvince(value)}
                   />
                 </View>
-              </View>
 
-              {/* Province Picker */}
-              <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Provincia</Text>
-                <ProvincePicker
-                  selectedProvince={province}
-                  onChange={(value) => setProvince(value)}
-                />
-              </View>
-
-              {/* Terms and Conditions Checkbox */}
-              <TouchableOpacity
-                style={styles.checkboxContainer}
-                onPress={toggleTermsAccepted}
-              >
-                <View
-                  style={[
-                    styles.checkbox,
-                    termsAccepted && styles.checkboxChecked,
-                  ]}
+                {/* Terms and Conditions Checkbox */}
+                <TouchableOpacity
+                  style={styles.checkboxContainer}
+                  onPress={toggleTermsAccepted}
                 >
-                  {termsAccepted && <Text style={styles.checkmark}>✓</Text>}
-                </View>
-                <Text style={styles.checkboxText}>
-                  Acepto los{' '}
-                  <Text style={styles.checkboxTextBold}>
-                    términos y las condiciones
-                  </Text>
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Register Button */}
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={[
-                  styles.registerButton,
-                  (!isValid || loading) && styles.registerButtonDisabled,
-                ]}
-                onPress={handleRegistration}
-                disabled={!isValid || loading}
-              >
-                {loading ? (
-                  <ActivityIndicator size="small" color="#FFF8F4" />
-                ) : (
-                  <Text
+                  <View
                     style={[
-                      styles.registerButtonText,
-                      !isValid && styles.registerButtonTextDisabled,
+                      styles.checkbox,
+                      termsAccepted && styles.checkboxChecked,
                     ]}
                   >
-                    Registrarse
+                    {termsAccepted && <Text style={styles.checkmark}>✓</Text>}
+                  </View>
+                  <Text style={styles.checkboxText}>
+                    Acepto los{' '}
+                    <Text style={styles.checkboxTextBold}>
+                      términos y las condiciones
+                    </Text>
                   </Text>
-                )}
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
+                </TouchableOpacity>
+              </View>
+
+              {/* Register Button */}
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={[
+                    styles.registerButton,
+                    (!isValid || loading) && styles.registerButtonDisabled,
+                  ]}
+                  onPress={handleRegistration}
+                  disabled={!isValid || loading}
+                >
+                  {loading ? (
+                    <ActivityIndicator size="small" color="#FFF8F4" />
+                  ) : (
+                    <Text
+                      style={[
+                        styles.registerButtonText,
+                        !isValid && styles.registerButtonTextDisabled,
+                      ]}
+                    >
+                      Registrarse
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          </KeyboardAvoidingView>
         </View>
       </SafeAreaView>
     </LinearGradient>

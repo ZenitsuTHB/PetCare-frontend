@@ -10,12 +10,7 @@ import Button from '../Button/Button';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-const DropdownModal = ({
-  visible,
-  onClose,
-  options = [],
-  onSelect,
-}) => {
+const DropdownModal = ({ visible, onClose, options = [], onSelect }) => {
   return (
     <Modal
       transparent={true}

@@ -36,7 +36,20 @@ export const validateDateFormat = (date) => {
   if (year < 1832 || year > new Date().getFullYear()) return false; // Evitar años futuros
 
   // Días máximos por mes
-  const daysInMonth = [31, (isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  const daysInMonth = [
+    31,
+    isLeapYear(year) ? 29 : 28,
+    31,
+    30,
+    31,
+    30,
+    31,
+    31,
+    30,
+    31,
+    30,
+    31,
+  ];
 
   if (day > daysInMonth[month - 1]) return false;
 
@@ -45,23 +58,27 @@ export const validateDateFormat = (date) => {
 
 // Helper para saber si es año bisiesto
 const isLeapYear = (year) => {
-  return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
 };
-
-
 
 export const validateChip = (chip) => {
   // Debe ser exactamente 15 dígitos numéricos
   if (!/^\d{15}$/.test(chip)) {
-    return { isValid: false, message: 'Debe contener exactamente 15 dígitos numéricos' };
+    return {
+      isValid: false,
+      message: 'Debe contener exactamente 15 dígitos numéricos',
+    };
   }
-  
+
   // Los 3 primeros dígitos deben estar entre 900 y 985
   const prefix = parseInt(chip.substring(0, 3), 10);
   if (prefix < 900 || prefix > 985) {
-    return { isValid: false, message: 'Los 3 primeros dígitos deben estar entre 900 y 985' };
+    return {
+      isValid: false,
+      message: 'Los 3 primeros dígitos deben estar entre 900 y 985',
+    };
   }
-  
+
   return { isValid: true };
 };
 

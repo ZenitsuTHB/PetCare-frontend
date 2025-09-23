@@ -70,7 +70,7 @@ export const PERMISSION_MESSAGES = {
     message: 'Activa el acceso a la cámara para continuar.',
   },
   LIBRARY_REQUIRED: {
-    title: 'Permiso requerido', 
+    title: 'Permiso requerido',
     message: 'Activa el acceso a tus fotos para continuar.',
   },
 };

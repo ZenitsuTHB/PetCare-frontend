@@ -15,7 +15,6 @@ const ProfileScreen = ({ navigation }) => {
     <View style={styles.container}>
       <StatusBar backgroundColor="#FFF8F4" barStyle="dark-content" />
 
-  
       <View style={styles.mainContent}>
         <View style={styles.content}>
           <Text style={styles.title}>Perfil</Text>

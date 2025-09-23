@@ -29,11 +29,19 @@ const RegisterScreen = ({ navigation }) => {
 
   // Usar la función de validación centralizada
   const formData = { firstName, lastName, email, password, confirmPassword };
-  const validationResult = useMemo(() => validateRegistrationBasicForm(formData), [formData]);
+  const validationResult = useMemo(
+    () => validateRegistrationBasicForm(formData),
+    [formData]
+  );
   const { errors, isValid } = validationResult;
 
   // Verificar si todos los campos están llenos
-  const allFieldsFilled = firstName.trim() && lastName.trim() && email.trim() && password.trim() && confirmPassword.trim();
+  const allFieldsFilled =
+    firstName.trim() &&
+    lastName.trim() &&
+    email.trim() &&
+    password.trim() &&
+    confirmPassword.trim();
   const canProceed = allFieldsFilled && isValid;
 
   // Manejadores para marcar campos como tocados
@@ -125,7 +133,12 @@ const RegisterScreen = ({ navigation }) => {
                 <View style={styles.nameInputGroup}>
                   <Text style={styles.inputLabel}>Nombre *</Text>
                   <TextInput
-                    style={[styles.input, touched.firstName && errors.firstName && styles.inputError]}
+                    style={[
+                      styles.input,
+                      touched.firstName &&
+                        errors.firstName &&
+                        styles.inputError,
+                    ]}
                     placeholder="Nombre"
                     placeholderTextColor="#62748E"
                     value={firstName}
@@ -133,14 +146,19 @@ const RegisterScreen = ({ navigation }) => {
                     onBlur={onBlur('firstName')}
                     autoCapitalize="words"
                   />
-                  {touched.firstName && errors.firstName && <Text style={styles.errorText}>{errors.firstName}</Text>}
+                  {touched.firstName && errors.firstName && (
+                    <Text style={styles.errorText}>{errors.firstName}</Text>
+                  )}
                 </View>
 
                 {/* Last Name */}
                 <View style={styles.nameInputGroup}>
                   <Text style={styles.inputLabel}>Apellidos *</Text>
                   <TextInput
-                    style={[styles.input, touched.lastName && errors.lastName && styles.inputError]}
+                    style={[
+                      styles.input,
+                      touched.lastName && errors.lastName && styles.inputError,
+                    ]}
                     placeholder="Apellidos"
                     placeholderTextColor="#62748E"
                     value={lastName}
@@ -148,14 +166,19 @@ const RegisterScreen = ({ navigation }) => {
                     onBlur={onBlur('lastName')}
                     autoCapitalize="words"
                   />
-                  {touched.lastName && errors.lastName && <Text style={styles.errorText}>{errors.lastName}</Text>}
+                  {touched.lastName && errors.lastName && (
+                    <Text style={styles.errorText}>{errors.lastName}</Text>
+                  )}
                 </View>
 
                 {/* Email Input */}
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>Correo *</Text>
                   <TextInput
-                    style={[styles.input, touched.email && errors.email && styles.inputError]}
+                    style={[
+                      styles.input,
+                      touched.email && errors.email && styles.inputError,
+                    ]}
                     placeholder="Tu correo electrónico"
                     placeholderTextColor="#62748E"
                     value={email}
@@ -164,14 +187,19 @@ const RegisterScreen = ({ navigation }) => {
                     autoCapitalize="none"
                     keyboardType="email-address"
                   />
-                  {touched.email && errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+                  {touched.email && errors.email && (
+                    <Text style={styles.errorText}>{errors.email}</Text>
+                  )}
                 </View>
 
                 {/* Password Input */}
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>Contraseña *</Text>
                   <TextInput
-                    style={[styles.input, touched.password && errors.password && styles.inputError]}
+                    style={[
+                      styles.input,
+                      touched.password && errors.password && styles.inputError,
+                    ]}
                     placeholder="Mínimo 8 caracteres"
                     placeholderTextColor="#62748E"
                     value={password}
@@ -179,7 +207,9 @@ const RegisterScreen = ({ navigation }) => {
                     onBlur={onBlur('password')}
                     secureTextEntry
                   />
-                  {touched.password && errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+                  {touched.password && errors.password && (
+                    <Text style={styles.errorText}>{errors.password}</Text>
+                  )}
                 </View>
 
                 {/* Confirm Password Input */}
@@ -188,7 +218,12 @@ const RegisterScreen = ({ navigation }) => {
                     Confirmación de contraseña *
                   </Text>
                   <TextInput
-                    style={[styles.input, touched.confirmPassword && errors.confirmPassword && styles.inputError]}
+                    style={[
+                      styles.input,
+                      touched.confirmPassword &&
+                        errors.confirmPassword &&
+                        styles.inputError,
+                    ]}
                     placeholder="Que coincida con las contraseñas"
                     placeholderTextColor="#62748E"
                     value={confirmPassword}
@@ -196,7 +231,11 @@ const RegisterScreen = ({ navigation }) => {
                     onBlur={onBlur('confirmPassword')}
                     secureTextEntry
                   />
-                  {touched.confirmPassword && errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
+                  {touched.confirmPassword && errors.confirmPassword && (
+                    <Text style={styles.errorText}>
+                      {errors.confirmPassword}
+                    </Text>
+                  )}
                 </View>
               </View>
 
@@ -208,15 +247,17 @@ const RegisterScreen = ({ navigation }) => {
                   <TouchableOpacity
                     style={[
                       styles.registerButton,
-                      !canProceed && styles.registerButtonDisabled
+                      !canProceed && styles.registerButtonDisabled,
                     ]}
                     onPress={() => navigation.navigate('Register2')}
                     disabled={!canProceed}
                   >
-                    <Text style={[
-                      styles.registerButtonText,
-                      !canProceed && styles.registerButtonTextDisabled
-                    ]}>
+                    <Text
+                      style={[
+                        styles.registerButtonText,
+                        !canProceed && styles.registerButtonTextDisabled,
+                      ]}
+                    >
                       Siguiente
                     </Text>
                   </TouchableOpacity>

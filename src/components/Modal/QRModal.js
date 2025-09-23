@@ -12,15 +12,11 @@ import Button from '../Button/Button';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
-const QRModal = ({
-  visible,
-  onClose,
-  petName = 'tu mascota',
-}) => {
+const QRModal = ({ visible, onClose, petName = 'tu mascota' }) => {
   console.log('QRModal render - visible:', visible);
-  
+
   if (!visible) return null;
-  
+
   return (
     <Modal
       transparent={true}
@@ -35,7 +31,7 @@ const QRModal = ({
           activeOpacity={1}
           onPress={onClose}
         />
-        
+
         {/* Modal Content */}
         <View style={styles.modalContainer}>
           <View style={styles.modal}>
@@ -47,7 +43,7 @@ const QRModal = ({
                 style={styles.qrImage}
                 resizeMode="contain"
               />
-              
+
               {/* Description */}
               <View style={styles.descriptionSection}>
                 <Text style={styles.description}>
