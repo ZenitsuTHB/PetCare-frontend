@@ -15,6 +15,7 @@ import {
 } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import PetDetailsFooter from '../../components/Footers/PetDetailsFooter';
 
 const COLORS = {
   bg: '#FFF8F4',
@@ -44,7 +45,6 @@ const PetDetailsScreen = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-      {/* HEADER grande con avatar dentro */}
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <TouchableOpacity
           style={styles.backRow}
@@ -59,89 +59,56 @@ const PetDetailsScreen = ({ route, navigation }) => {
         <View style={styles.headerAvatarWrap}>
           <Image source={{ uri: pet.avatar }} style={styles.avatar} />
           <View style={styles.avatarBorder} />
-          <TouchableOpacity
-            style={styles.editBtn}
-            onPress={() => navigation?.navigate?.('EditPet', { pet })}
-            activeOpacity={0.8}
-          >
-            <MaterialIcons name="edit" size={18} color={COLORS.primary} />
-          </TouchableOpacity>
         </View>
       </View>
 
-      <ScrollView
-        contentContainerStyle={{ paddingBottom: 140 + insets.bottom }}
-        contentInsetAdjustmentBehavior="automatic"
-        showsVerticalScrollIndicator={false}
-        style={styles.scroll}
-      >
-        {/* Nombre */}
-        <Text style={styles.name}>{pet.name}</Text>
-
-        {/* Ficha */}
-        <View style={styles.card}>
-          {/* Especie / Raza */}
-          <View style={styles.rowWrap}>
-            <Row label="Especie" value={pet.species} />
-            <Row label="Raza" value={pet.breed} right />
-          </View>
-          <Divider />
-
-          {/* Fecha de nacimiento (fila completa) */}
-          <Row label="Fecha de nacimiento" value={pet.birthdate} full />
-          <Divider />
-
-          {/* Género / Peso */}
-          <View style={styles.rowWrap}>
-            <Row label="Género" value={pet.gender} />
-            <Row label="Peso (kg)" value={String(pet.weight)} right />
-          </View>
-          <Divider />
-
-          {/* Chip (fila completa) */}
-          <Row label="Chip" value={pet.chip} full />
-          <Divider />
-
-          <View style={{ marginTop: 6 }}>
-            <Text style={styles.labelRed}>Observaciones</Text>
-            <Text style={styles.value}>{pet.notes}</Text>
-          </View>
-        </View>
-      </ScrollView>
-
-      {/* Bottom bar */}
-      <View
-        style={[
-          styles.bottomBar,
-          { paddingBottom: insets.bottom ? insets.bottom - 6 : 10 },
-        ]}
-      >
-        <TouchableOpacity
-          style={styles.barItem}
-          onPress={() => navigation?.navigate?.('PetFiles', { pet })}
-          activeOpacity={0.8}
+      <View style={styles.detailsContainer}>
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: 140 + insets.bottom }}
+          contentInsetAdjustmentBehavior="automatic"
+          showsVerticalScrollIndicator={false}
+          style={styles.scroll}
         >
-          <Ionicons name="folder-open-outline" size={22} />
-          <Text style={styles.barLabel}>Archivos</Text>
-        </TouchableOpacity>
+          {/* Nombre */}
+          <Text style={styles.name}>{pet.name}</Text>
 
-        <TouchableOpacity
-          style={styles.fab}
-          onPress={() => navigation?.navigate?.('PetQR', { pet })}
-          activeOpacity={0.85}
-        >
-          <Ionicons name="qr-code-outline" size={26} color="#FFF" />
-        </TouchableOpacity>
-        <Text style={styles.fabText}>Generar QR</Text>
+          {/* Ficha */}
+          <View style={styles.card}>
+            {/* Especie / Raza */}
+            <View style={styles.rowWrap}>
+              <Row label="Especie" value={pet.species} />
+              <Row label="Raza" value={pet.breed} right />
+            </View>
+            <Divider />
 
-        <TouchableOpacity
-          style={styles.barItem}
-          onPress={() => navigation?.navigate?.('PetHistory', { pet })}
-          activeOpacity={0.8}
-        >
-          <Ionicons name="time-outline" size={22} />
-          <Text style={styles.barLabel}>Historial</Text>
-        </TouchableOpacity>
+            {/* Fecha de nacimiento (fila completa) */}
+            <Row label="Fecha de nacimiento" value={pet.birthdate} full />
+            <Divider />
+
+            {/* Género / Peso */}
+            <View style={styles.rowWrap}>
+              <Row label="Género" value={pet.gender} />
+              <Row label="Peso (kg)" value={String(pet.weight)} right />
+            </View>
+            <Divider />
+
+            {/* Chip (fila completa) */}
+            <Row label="Chip" value={pet.chip} full />
+            <Divider />
+
+            <View style={{ marginTop: 6 }}>
+              <Text style={styles.labelRed}>Observaciones</Text>
+              <Text style={styles.value}>{pet.notes}</Text>
+            </View>
+            <Divider />
+          </View>
+        </ScrollView>
+
+        <PetDetailsFooter
+          onArchivosPress={() => navigation.navigate('PetFiles', { pet })}
+          onQRPress={() => navigation.navigate('PetQR', { pet })}
+          onHistorialPress={() => navigation.navigate('PetHistory', { pet })}
+        />
       </View>
     </SafeAreaView>
   );
@@ -158,42 +125,41 @@ const Row = ({ label, value, right, full, empty }) => {
   ];
   return (
     <View style={full ? styles.rowFull : container}>
-      {!!label && (
-        <Text
-          style={[styles.label, label === 'Chip' && { color: COLORS.label }]}
-        >
-          {label}
-        </Text>
-      )}
+      {!!label && <Text style={styles.label}>{label}</Text>}
       {!empty && <Text style={styles.value}>{value}</Text>}
     </View>
   );
 };
+
 const Divider = () => <View style={styles.divider} />;
 
 /* ---------- Styles ---------- */
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: COLORS.bg },
+  safe: { flex: 1, backgroundColor: COLORS.header },
+
+  detailsContainer: {
+    flex: 1,
+    backgroundColor: COLORS.bg,
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingTop: 60,
+    marginTop: -70,
+    zIndex: -1,
+  },
 
   header: {
-    backgroundColor: COLORS.header,
     paddingHorizontal: 16,
-    paddingBottom: 72, // ← más alto para dejar espacio al avatar
-    borderBottomLeftRadius: 40,
-    borderBottomRightRadius: 40,
   },
   backRow: { flexDirection: 'row', alignItems: 'center' },
   backText: { color: '#FFF', fontSize: 16, fontWeight: '600', marginLeft: 4 },
 
-  // avatar ahora vive EN el header
   headerAvatarWrap: {
+    marginTop: 50,
     alignSelf: 'center',
-    marginTop: 16,
-    marginBottom: -58, // ← hace que “asome” sobre la sección inferior
   },
   avatar: {
-    width: 116,
-    height: 116,
+    width: 150,
+    height: 150,
     borderRadius: 999,
     backgroundColor: '#FFD0CA',
   },
@@ -204,8 +170,8 @@ const styles = StyleSheet.create({
     right: -4,
     bottom: -4,
     borderRadius: 999,
-    borderWidth: 3,
-    borderColor: COLORS.primary,
+    borderWidth: 4,
+    borderColor: COLORS.header,
   },
   editBtn: {
     position: 'absolute',
@@ -231,7 +197,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '800',
     color: COLORS.primary,
-    marginBottom: 6,
+    marginBottom: 20,
     marginTop: 20,
   },
 
@@ -249,10 +215,16 @@ const styles = StyleSheet.create({
   },
   rowFull: { width: '100%', marginTop: 2 },
 
-  label: { fontSize: 13, color: COLORS.muted, marginBottom: 4 },
+  // ← labels en rojo (como la maqueta)
+  label: {
+    fontSize: 13,
+    color: COLORS.label,
+    marginBottom: 4,
+    fontWeight: '600',
+  },
   labelRed: {
     fontSize: 13,
-    color: COLORS.primary,
+    color: COLORS.label,
     marginBottom: 6,
     fontWeight: '600',
   },
@@ -268,47 +240,5 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 
-  bottomBar: {
-    position: 'absolute',
-    left: 20,
-    right: 20,
-    bottom: 14,
-    backgroundColor: COLORS.card,
-    borderRadius: 16,
-    paddingTop: 10,
-    paddingHorizontal: 24,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-  },
-  barItem: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 8,
-    width: 92,
-  },
-  barLabel: { fontSize: 12, color: COLORS.text },
-  fab: {
-    position: 'absolute',
-    alignSelf: 'center',
-    top: -26,
-    width: 64,
-    height: 64,
-    borderRadius: 999,
-    backgroundColor: COLORS.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  fabText: {
-    position: 'absolute',
-    alignSelf: 'center',
-    bottom: 8,
-    fontSize: 12,
-    color: COLORS.text,
-  },
+  // (el footer real está en PetDetailsFooter)
 });

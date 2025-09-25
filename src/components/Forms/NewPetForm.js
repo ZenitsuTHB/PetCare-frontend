@@ -670,7 +670,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     elevation: 3,
   },
-
   container: {
     flex: 1,
     borderTopRightRadius: 40,
