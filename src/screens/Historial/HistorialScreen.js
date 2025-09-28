@@ -1,13 +1,32 @@
 // src/screens/Historial/HistorialScreen.js
 import React, { useState } from 'react';
-import { View, StyleSheet, StatusBar } from 'react-native';
+import { View, StyleSheet, StatusBar, ScrollView } from 'react-native';
 import { THEME_COLORS } from '../../constants/formConstants';
-import { PageFooter, BackButton, QRModal } from '../../components';
+import { BackButton, QRModal } from '../../components';
 import ContentContainer from '../../components/ContentContainer/ContentContainer';
+import ConsultationCard from '../../components/Cards/ConsultationCard';
+import PetDetailsFooter from '../../components/Footers/PetDetailsFooter';
 
 export default function HistorialScreen({ route, navigation }) {
   const { petName, pet } = route.params; // 👈 llega el nombre y objeto pet desde HomeScreen
   const [qrModalVisible, setQrModalVisible] = useState(false);
+
+  // Datos hardcodeados para probar la ConsultationCard
+  const hasConsultations = true; // Cambiar a false para ver empty state
+  const consultations = [
+    {
+      id: 1,
+      title: 'Consulta de rutina',
+      description: 'Revisión general, vacunación antirrábica y desparasitación. Todo en perfecto estado.',
+      date: '15/09/2025'
+    },
+    {
+      id: 2,
+      title: 'Control post-cirugía',
+      description: 'Revisión de sutura tras esterilización. Cicatrización correcta, sin complicaciones.',
+      date: '28/08/2025'
+    }
+  ];
 
   const handleArchivosPress = () => {
     console.log('Archivos pressed');
@@ -15,8 +34,9 @@ export default function HistorialScreen({ route, navigation }) {
   };
 
   const handleQRPress = () => {
-    console.log('QR pressed');
+    console.log('QR pressed in HistorialScreen');
     setQrModalVisible(true);
+    console.log('qrModalVisible set to true in HistorialScreen');
   };
 
   const handleHistorialPress = () => {
@@ -45,24 +65,37 @@ export default function HistorialScreen({ route, navigation }) {
             style={styles.backButton}
           />
 
-          {/* Content Container with Header and Empty State */}
+          {/* Content Container with Header and Conditional Content */}
           <ContentContainer
             title="Historial médico"
             subtitle="Consulta los diagnósticos que constan en tu história clínica."
-            showEmptyState={true} // Por ahora siempre mostramos empty state
+            showEmptyState={!hasConsultations}
             emptyStateProps={emptyStateProps}
           >
-            {/* Aquí iría el contenido del historial cuando exista */}
+            {hasConsultations && (
+              <ScrollView 
+                style={styles.consultationsContainer}
+                showsVerticalScrollIndicator={false}
+              >
+                {consultations.map((consultation) => (
+                  <ConsultationCard
+                    key={consultation.id}
+                    title={consultation.title}
+                    description={consultation.description}
+                    date={consultation.date}
+                  />
+                ))}
+              </ScrollView>
+            )}
           </ContentContainer>
         </View>
 
-        {/* Page Footer */}
-        <PageFooter
+        {/* Pet Details Footer (consolidado) */}
+        <PetDetailsFooter
           activeTab="historial"
           onArchivosPress={handleArchivosPress}
           onQRPress={handleQRPress}
           onHistorialPress={handleHistorialPress}
-          showProfileIcon={true}
         />
       </View>
 
@@ -95,5 +128,9 @@ const styles = StyleSheet.create({
   backButton: {
     alignSelf: 'flex-start',
     marginBottom: 16,
+  },
+  consultationsContainer: {
+    flex: 1,
+    paddingTop: 8,
   },
 });

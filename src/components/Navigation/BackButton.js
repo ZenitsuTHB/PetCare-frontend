@@ -5,8 +5,8 @@ import { Ionicons } from '@expo/vector-icons';
 const BackButton = ({
   onPress,
   text = 'Volver al perfil',
-  iconName = 'chevron-back',
-  iconSize = 24,
+  iconName = 'arrow-back',
+  iconSize = 20,
   style = {},
   textStyle = {},
 }) => {
@@ -17,7 +17,7 @@ const BackButton = ({
       activeOpacity={0.7}
     >
       <View style={styles.content}>
-        <Ionicons name={iconName} size={iconSize} color="#636363" />
+        <Ionicons name={iconName} size={iconSize} color={COLORS.text} />
         <Text style={[styles.text, textStyle]}>{text}</Text>
       </View>
     </TouchableOpacity>
@@ -26,23 +26,24 @@ const BackButton = ({
 
 export default BackButton;
 
+const COLORS = {
+  text: '#636363', // Color unificado para flecha y texto
+};
+
 const styles = StyleSheet.create({
   container: {
     padding: 12,
     borderRadius: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
+    alignSelf: 'flex-start',
   },
   content: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 8, // Espacio entre el icono y el texto
   },
   text: {
-    textAlign: 'center',
-    color: '#636363',
+    color: COLORS.text,
     fontSize: 16,
-    fontFamily: 'Inter',
     fontWeight: '600',
     lineHeight: 25.6,
   },

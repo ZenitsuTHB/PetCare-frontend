@@ -55,8 +55,10 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleShowQR = (pet) => {
+    console.log('handleShowQR called with pet:', pet);
     setSelectedPet(pet);
     setQrModalVisible(true);
+    console.log('qrModalVisible set to true');
   };
 
   // Configuración del empty state
