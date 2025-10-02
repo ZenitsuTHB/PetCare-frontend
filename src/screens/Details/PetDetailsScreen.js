@@ -51,8 +51,7 @@ const PetDetailsScreen = ({ route, navigation }) => {
   const handleArchivosPress = () => {
     console.log('Archivos pressed');
     setActiveTab('archivos');
-    // Mantener la funcionalidad original o cambiar según necesites
-    // navigation.navigate('PetFiles', { pet });
+    navigation.navigate('Archivos', { pet });
   };
 
   const handleQRPress = () => {

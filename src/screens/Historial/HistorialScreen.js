@@ -32,7 +32,7 @@ export default function HistorialScreen({ route, navigation }) {
   const handleArchivosPress = () => {
     console.log('Archivos pressed');
     setActiveTab('archivos');
-    // TODO: Implementar navegación a archivos o mostrar contenido de archivos
+    navigation.navigate('Archivos', { pet: route.params?.pet });
   };
 
   const handleQRPress = () => {

@@ -70,10 +70,11 @@ export const validateChip = (chip) => {
     };
   }
 
-  // 2. Verifica prefijo (ejemplo simple para España/UE)
+  // 2. Verifica prefijo usando números enteros
   const prefix = parseInt(chip.substring(0, 3), 10);
 
-  const validPrefixes = ["981", "990", "985", "977"]; // to put in constant when amplied
+  console.log('Chip prefix:', prefix);
+  const validPrefixes = [981, 990, 985, 977]; // Array de números enteros
   if (!validPrefixes.includes(prefix)) {
     return { 
       isValid: false,
