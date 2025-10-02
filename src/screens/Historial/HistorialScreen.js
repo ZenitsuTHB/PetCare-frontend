@@ -10,6 +10,7 @@ import PetDetailsFooter from '../../components/Footers/PetDetailsFooter';
 export default function HistorialScreen({ route, navigation }) {
   const { petName, pet } = route.params; // 👈 llega el nombre y objeto pet desde HomeScreen
   const [qrModalVisible, setQrModalVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState('historial'); // Tab activo por defecto
 
   // Datos hardcodeados para probar la ConsultationCard
   const hasConsultations = true; // Cambiar a false para ver empty state
@@ -30,18 +31,21 @@ export default function HistorialScreen({ route, navigation }) {
 
   const handleArchivosPress = () => {
     console.log('Archivos pressed');
-    // TODO: Implementar navegación a archivos
+    setActiveTab('archivos');
+    // TODO: Implementar navegación a archivos o mostrar contenido de archivos
   };
 
   const handleQRPress = () => {
     console.log('QR pressed in HistorialScreen');
+    setActiveTab('qr');
     setQrModalVisible(true);
     console.log('qrModalVisible set to true in HistorialScreen');
   };
 
   const handleHistorialPress = () => {
     console.log('Historial pressed');
-    // Ya estamos en historial
+    setActiveTab('historial');
+    // Ya estamos en historial, podrías agregar alguna animación o efecto
   };
 
   // Configuración del empty state
@@ -90,9 +94,9 @@ export default function HistorialScreen({ route, navigation }) {
           </ContentContainer>
         </View>
 
-        {/* Pet Details Footer (consolidado) */}
+        {/* PetDetailsFooter con tabs interactivos */}
         <PetDetailsFooter
-          activeTab="historial"
+          activeTab={activeTab}
           onArchivosPress={handleArchivosPress}
           onQRPress={handleQRPress}
           onHistorialPress={handleHistorialPress}

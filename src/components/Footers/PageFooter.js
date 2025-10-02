@@ -1,9 +1,76 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Easing } from 'react-native';
+
+const TabItem = ({ tabName, label, icon, isActive, onPress, isQRTab = false }) => {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const underlineAnim = useRef(new Animated.Value(isActive ? 1 : 0)).current;
+
+  useEffect(() => {
+    if (isActive && !isQRTab) {
+      // Animación de "pop" en el icono al activarse (excepto para QR)
+      Animated.sequence([
+        Animated.spring(scaleAnim, {
+          toValue: 1.2,
+          useNativeDriver: true,
+        }),
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    }
+
+    // Animación suave para el subrayado
+    Animated.timing(underlineAnim, {
+      toValue: isActive ? 1 : 0,
+      duration: 250,
+      easing: Easing.in(Easing.ease),
+      useNativeDriver: false,
+    }).start();
+  }, [isActive, isQRTab]);
+
+  return (
+    <TouchableOpacity
+      style={styles.tab}
+      onPress={onPress}
+      activeOpacity={0.8}
+    >
+      <Animated.View style={{ transform: [{ scale: isQRTab ? 1 : scaleAnim }] }}>
+        {icon && (
+          <MaterialIcons
+            name={icon}
+            size={28}
+            color={isActive ? '#FA8081' : '#494949'}
+          />
+        )}
+      </Animated.View>
+      <Text
+        style={[
+          styles.tabText,
+          isActive && styles.activeTabText,
+        ]}
+      >
+        {label}
+      </Text>
+      
+      {/* Subrayado animado */}
+      <Animated.View
+        style={[
+          styles.underline,
+          { 
+            opacity: underlineAnim, 
+            transform: [{ scaleX: underlineAnim }],
+          },
+        ]}
+      />
+    </TouchableOpacity>
+  );
+};
 
 const PageFooter = ({
-  activeTab = 'archivos', // 'archivos', 'qr', 'historial'
+  activeTab = 'historial', // 'archivos', 'qr', 'historial' - por defecto 'historial'
   onArchivosPress,
   onQRPress,
   onHistorialPress,
@@ -12,72 +79,45 @@ const PageFooter = ({
   return (
     <View style={styles.container}>
       <View style={styles.footerContent}>
-        {/* Profile Icon (Centro elevado) */}
+        {/* Profile Icon (Centro elevado) - siempre rosa */}
         {showProfileIcon && (
           <View style={styles.profileIconContainer}>
-            <View style={styles.profileIcon}>
-              <Ionicons name="paw" size={40} color="white" />
-            </View>
+            <TouchableOpacity 
+              style={styles.profileIcon}
+              onPress={onQRPress}
+              activeOpacity={0.9}
+            >
+              <MaterialIcons name="qr-code" size={28} color="white" />
+            </TouchableOpacity>
           </View>
         )}
 
         {/* Archivos Tab */}
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'archivos' && styles.activeTab]}
+        <TabItem
+          tabName="archivos"
+          label="Archivos"
+          icon="folder-open"
+          isActive={activeTab === 'archivos'}
           onPress={onArchivosPress}
-          activeOpacity={0.8}
-        >
-          <MaterialIcons
-            name="folder-open"
-            size={28}
-            color={activeTab === 'archivos' ? '#FA8081' : '#494949'}
-          />
-          <Text
-            style={[
-              styles.tabText,
-              activeTab === 'archivos' && styles.activeTabText,
-            ]}
-          >
-            Archivos
-          </Text>
-          {activeTab === 'archivos' && <View style={styles.underline} />}
-        </TouchableOpacity>
+        />
 
-        {/* Generar QR Tab */}
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'qr' && styles.activeTab]}
+        {/* Generar QR Tab (centro) */}
+        <TabItem
+          tabName="qr"
+          label="Generar QR"
+          isActive={activeTab === 'qr'}
           onPress={onQRPress}
-          activeOpacity={0.8}
-        >
-          <Text
-            style={[styles.tabText, activeTab === 'qr' && styles.activeTabText]}
-          >
-            Generar QR
-          </Text>
-          {activeTab === 'qr' && <View style={styles.underline} />}
-        </TouchableOpacity>
+          isQRTab={true}
+        />
 
         {/* Historial Tab */}
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'historial' && styles.activeTab]}
+        <TabItem
+          tabName="historial"
+          label="Historial"
+          icon="history"
+          isActive={activeTab === 'historial'}
           onPress={onHistorialPress}
-          activeOpacity={0.8}
-        >
-          <MaterialIcons
-            name="history"
-            size={28}
-            color={activeTab === 'historial' ? '#FA8081' : '#494949'}
-          />
-          <Text
-            style={[
-              styles.tabText,
-              activeTab === 'historial' && styles.activeTabText,
-            ]}
-          >
-            Historial
-          </Text>
-          {activeTab === 'historial' && <View style={styles.underline} />}
-        </TouchableOpacity>
+        />
       </View>
     </View>
   );
@@ -105,41 +145,41 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 75, // Ajustado para dar espacio al icono elevado
+    height: 75,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   profileIconContainer: {
     position: 'absolute',
     top: -30,
     left: '50%',
-    marginLeft: -40, // Centro del icono (80/2)
+    marginLeft: -40,
     zIndex: 10,
   },
   profileIcon: {
     width: 80,
     height: 80,
-    backgroundColor: '#FA8081',
+    backgroundColor: '#FA8081', // Siempre rosa
     borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 5,
+    elevation: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
   },
   tab: {
     flex: 1,
     height: 67,
-    paddingTop: 8,
-    paddingBottom: 8,
+    paddingVertical: 6,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-  },
-  activeTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: '#FA8081',
   },
   tabText: {
     color: '#494949',
@@ -155,9 +195,11 @@ const styles = StyleSheet.create({
   },
   underline: {
     position: 'absolute',
-    bottom: -2,
-    height: 2,
+    bottom: 0,
+    height: 3,
     width: '60%',
+    borderRadius: 2,
     backgroundColor: '#FA8081',
+    alignSelf: 'center',
   },
 });

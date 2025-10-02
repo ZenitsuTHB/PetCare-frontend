@@ -18,6 +18,11 @@ export const validateRequired = (value) => {
 //   return dateRegex.test(date);
 // };
 
+// Helper para saber si es año bisiesto
+const isLeapYear = (year) => {
+  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+};
+
 export const validateDateFormat = (date) => {
   // Primero validamos el formato DD/MM/YYYY
   const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
@@ -56,26 +61,23 @@ export const validateDateFormat = (date) => {
   return true;
 };
 
-// Helper para saber si es año bisiesto
-const isLeapYear = (year) => {
-  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-};
-
 export const validateChip = (chip) => {
   // Debe ser exactamente 15 dígitos numéricos
-  if (!/^\d{15}$/.test(chip)) {
+  if (!/^[0-9]{15}$/.test(chip)) {
     return {
       isValid: false,
       message: 'Debe contener exactamente 15 dígitos numéricos',
     };
   }
 
-  // Los 3 primeros dígitos deben estar entre 900 y 985
+  // 2. Verifica prefijo (ejemplo simple para España/UE)
   const prefix = parseInt(chip.substring(0, 3), 10);
-  if (prefix < 900 || prefix > 985) {
-    return {
+
+  const validPrefixes = ["981", "990", "985", "977"]; // to put in constant when amplied
+  if (!validPrefixes.includes(prefix)) {
+    return { 
       isValid: false,
-      message: 'Los 3 primeros dígitos deben estar entre 900 y 985',
+      message: "El chip no tiene un prefijo válido"
     };
   }
 

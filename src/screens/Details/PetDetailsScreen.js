@@ -1,5 +1,5 @@
 // src/screens/PetDetailsScreen.js
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import PetDetailsFooter from '../../components/Footers/PetDetailsFooter';
+import { QRModal } from '../../components';
 
 const COLORS = {
   bg: '#FFF8F4',
@@ -30,6 +31,9 @@ const COLORS = {
 
 const PetDetailsScreen = ({ route, navigation }) => {
   const insets = useSafeAreaInsets();
+  const [activeTab, setActiveTab] = useState('archivos'); // Tab activo por defecto en PetDetails
+  const [qrModalVisible, setQrModalVisible] = useState(false);
+  
   const pet = route?.params?.pet ?? {
     name: 'Michi',
     species: 'Gato',
@@ -41,6 +45,26 @@ const PetDetailsScreen = ({ route, navigation }) => {
     notes: 'Le gusta mucho el salmón.',
     avatar:
       'https://images.unsplash.com/photo-1543852786-1cf6624b9987?q=80&w=800&auto=format&fit=crop',
+  };
+
+  // Handlers para el footer
+  const handleArchivosPress = () => {
+    console.log('Archivos pressed');
+    setActiveTab('archivos');
+    // Mantener la funcionalidad original o cambiar según necesites
+    // navigation.navigate('PetFiles', { pet });
+  };
+
+  const handleQRPress = () => {
+    console.log('QR pressed in PetDetailsScreen');
+    setActiveTab('qr');
+    setQrModalVisible(true);
+  };
+
+  const handleHistorialPress = () => {
+    console.log('Historial pressed');
+    setActiveTab('historial');
+    navigation.navigate('Historial', { petName: pet.name, pet });
   };
 
   return (
@@ -63,12 +87,13 @@ const PetDetailsScreen = ({ route, navigation }) => {
       </View>
 
       <View style={styles.detailsContainer}>
-        <ScrollView
-          contentContainerStyle={{ paddingBottom: 140 + insets.bottom }}
-          contentInsetAdjustmentBehavior="automatic"
-          showsVerticalScrollIndicator={false}
-          style={styles.scroll}
-        >
+        <View style={styles.contentWrapper}>
+          <ScrollView
+            contentContainerStyle={{ paddingBottom: 20 }} // Reducido para footer relativo
+            contentInsetAdjustmentBehavior="automatic"
+            showsVerticalScrollIndicator={false}
+            style={styles.scroll}
+          >
           {/* Nombre */}
           <Text style={styles.name}>{pet.name}</Text>
 
@@ -103,13 +128,22 @@ const PetDetailsScreen = ({ route, navigation }) => {
             <Divider />
           </View>
         </ScrollView>
+        </View>
 
         <PetDetailsFooter
-          onArchivosPress={() => navigation.navigate('PetFiles', { pet })}
-          onQRPress={() => navigation.navigate('PetQR', { pet })}
-          onHistorialPress={() => navigation.navigate('PetHistory', { pet })}
+          activeTab={activeTab}
+          onArchivosPress={handleArchivosPress}
+          onQRPress={handleQRPress}
+          onHistorialPress={handleHistorialPress}
         />
       </View>
+
+      {/* QR Modal */}
+      <QRModal
+        visible={qrModalVisible}
+        onClose={() => setQrModalVisible(false)}
+        petName={pet.name}
+      />
     </SafeAreaView>
   );
 };
@@ -145,6 +179,15 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     marginTop: -70,
     zIndex: -1,
+    flexDirection: 'column',
+    justifyContent: 'space-between', // Para separar contenido y footer
+    paddingHorizontal: 16, // Agregar padding como otros screens
+    paddingBottom: 12, // Agregar padding como otros screens
+  },
+
+  contentWrapper: {
+    flex: 1,
+    justifyContent: 'flex-start',
   },
 
   header: {
