@@ -24,5 +24,9 @@ module.exports = (() => {
     sourceExts: [...resolver.sourceExts, 'svg'],
   };
 
+  // Configuraciones para mejorar Hot Reload
+  config.watchFolders = [__dirname];
+  config.resetCache = true;
+
   return config;
 })();
