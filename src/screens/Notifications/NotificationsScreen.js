@@ -23,9 +23,6 @@ const NotificationsScreen = ({ navigation }) => {
             Aquí aparecerán tus notificaciones
           </Text>
         </View>
-
-        <PetCard />
-
         <Footer
           activeTab="notifications"
           onPetsPress={handlePets}

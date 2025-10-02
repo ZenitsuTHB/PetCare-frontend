@@ -25,6 +25,38 @@ export const PetProvider = ({ children }) => {
       const storedPets = await AsyncStorage.getItem('pets');
       if (storedPets) {
         setPets(JSON.parse(storedPets));
+      } else {
+        // Datos de prueba si no hay mascotas guardadas
+        const testPets = [
+          {
+            id: '1',
+            name: 'Max',
+            species: 'Perro',
+            breed: 'Golden Retriever',
+            weight: '25',
+            chip: 'CHI001234567',
+            registrationDate: '15/09/2025',
+            photoUri: null,
+            birthdate: '2022-03-15',
+            gender: 'Macho',
+            notes: 'Muy juguetón y amigable',
+          },
+          {
+            id: '2',
+            name: 'Luna',
+            species: 'Gato',
+            breed: 'Persa',
+            weight: '4',
+            chip: 'CHI001234568',
+            registrationDate: '20/08/2025',
+            photoUri: null,
+            birthdate: '2021-07-10',
+            gender: 'Hembra',
+            notes: 'Le gusta dormir en lugares altos',
+          },
+        ];
+        setPets(testPets);
+        await savePets(testPets);
       }
     } catch (error) {
       console.error('Error loading pets:', error);

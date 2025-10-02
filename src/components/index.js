@@ -5,8 +5,8 @@ export { default as ContentContainer } from './ContentContainer/ContentContainer
 export { default as Button } from './Button/Button';
 export { default as Dropdown } from './Dropdown/Dropdown';
 export { default as PetCard } from './Cards/PetCard';
+export { default as ConsultationCard } from './Cards/ConsultationCard';
 export { default as ConfirmationModal } from './Modal/ConfirmationModal';
-export { default as DropdownModal } from './Modal/DropdownModal';
 export { default as QRModal } from './Modal/QRModal';
 export { default as Footer } from './Footers/Footer';
 export { default as PageFooter } from './Footers/PageFooter';

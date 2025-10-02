@@ -8,11 +8,10 @@ import {
   Animated,
   Pressable,
   Platform,
-  Modal,
 } from 'react-native';
+import { Menu } from 'react-native-paper';
 import Button from '../Button/Button';
 import ConfirmationModal from '../Modal/ConfirmationModal';
-import DropdownModal from '../Modal/DropdownModal';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const PetCard = ({
@@ -37,34 +36,7 @@ const PetCard = ({
   const animatedValue = useRef(new Animated.Value(0)).current;
   const shadowOpacity = useRef(new Animated.Value(0.15)).current;
 
-  // Opciones del dropdown modal
-  const dropdownOptions = [
-    {
-      label: 'Editar',
-      icon: 'edit',
-      onPress: () => {
-        setTimeout(() => {
-          if (onEditPet) onEditPet();
-        }, 100);
-      },
-    },
-    {
-      label: 'Eliminar',
-      icon: 'delete',
-      danger: true,
-      onPress: () => {
-        setTimeout(() => {
-          setDeleteModalVisible(true);
-        }, 100);
-      },
-    },
-  ];
 
-  const handleDropdownSelect = (option) => {
-    if (option.onPress) {
-      option.onPress();
-    }
-  };
 
   const handleConfirmDelete = () => {
     setDeleteModalVisible(false);
@@ -190,31 +162,57 @@ const PetCard = ({
             </View>
           </View>
 
-          {/* Botón de menú en esquina superior derecha */}
-          <View style={styles.menuButtonContainer}>
-            <Button
-              variant="ghost"
-              size="small"
-              iconName="more-vert"
-              iconPosition="only"
-              iconSize={20}
-              onPress={(e) => {
-                e.stopPropagation();
-                setDropdownVisible(true);
-              }}
-              style={styles.menuButton}
-            />
-          </View>
+          {/* Menu de opciones */}
+            <View style={styles.menuButtonContainer}>
+              <Menu
+                visible={dropdownVisible}
+                onDismiss={() => setDropdownVisible(false)}
+                anchor={
+                  <Button
+                    variant="ghost"
+                    size="small"
+                    iconName="more-vert"
+                    iconPosition="only"
+                    iconSize={20}
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      setDropdownVisible(true);
+                    }}
+                    style={styles.menuButton}
+                  />
+                }
+                contentStyle={styles.menuContent}
+              >
+                <Menu.Item
+                  onPress={() => {
+                    setDropdownVisible(false);
+                    setTimeout(() => {
+                      if (onEditPet) onEditPet();
+                    }, 100);
+                  }}
+                  title="Editar"
+                  leadingIcon={() => <MaterialIcons name="edit" size={16} color="#020618" />}
+                  titleStyle={styles.menuItemText}
+                  style={styles.menuItem}
+                />
+                <Menu.Item
+                  onPress={() => {
+                    setDropdownVisible(false);
+                    setTimeout(() => {
+                      setDeleteModalVisible(true);
+                    }, 100);
+                  }}
+                  title="Eliminar"
+                  leadingIcon={() => <MaterialIcons name="delete" size={16} color="#FF4444" />}
+                  titleStyle={styles.deleteMenuText}
+                  style={styles.menuItem}
+                />
+              </Menu>
+            </View>
         </Animated.View>
       </Pressable>
 
-      {/* Dropdown Modal con Blur */}
-      <DropdownModal
-        visible={dropdownVisible}
-        onClose={() => setDropdownVisible(false)}
-        onSelect={handleDropdownSelect}
-        options={dropdownOptions}
-      />
+
 
       {/* Modal de confirmación para eliminar */}
       <ConfirmationModal
@@ -330,5 +328,39 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 32,
     backgroundColor: '#FFBA92',
+  },
+  // Estilos para el Menu de react-native-paper (idénticos al dropdown original)
+  menuContent: {
+    backgroundColor: 'white',
+    borderRadius: 6, // Mismo que el dropdown original
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 3,
+    minWidth: 120,
+    paddingVertical: 4, // Mismo padding que el dropdown original
+    marginTop: 8,
+  },
+  menuItem: {
+    paddingHorizontal: 12, // Mismo padding que dropdownOption
+    paddingVertical: 6,
+    minHeight: 32,
+    borderRadius: 0,
+  },
+  menuItemText: {
+    color: '#020618', // Mismo color que dropdownOptionText
+    fontSize: 14,
+    fontWeight: '400',
+  },
+  deleteMenuText: {
+    color: '#FF4444', // Mismo color que dangerText
+    fontSize: 14,
+    fontWeight: '400',
   },
 });

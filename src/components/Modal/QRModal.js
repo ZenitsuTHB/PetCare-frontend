@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -13,9 +13,26 @@ import Button from '../Button/Button';
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 const QRModal = ({ visible, onClose, petName = 'tu mascota' }) => {
-  console.log('QRModal render - visible:', visible);
+  const [imageError, setImageError] = useState(false);
+  
+  console.log('QRModal render - visible:', visible, 'petName:', petName);
 
-  if (!visible) return null;
+  const handleImageError = (error) => {
+    console.log('Image loading error:', error);
+    setImageError(true);
+  };
+
+  const handleImageLoad = () => {
+    console.log('Image loaded successfully');
+    setImageError(false);
+  };
+
+  if (!visible) {
+    console.log('QRModal not visible, returning null');
+    return null;
+  }
+
+  console.log('QRModal rendering modal content');
 
   return (
     <Modal
@@ -35,19 +52,34 @@ const QRModal = ({ visible, onClose, petName = 'tu mascota' }) => {
         {/* Modal Content */}
         <View style={styles.modalContainer}>
           <View style={styles.modal}>
+            {/* Header */}
+            <View style={styles.header}>
+              <Text style={styles.title}>Código QR</Text>
+              <Text style={styles.subtitle}>de {petName}</Text>
+            </View>
+
             {/* QR Content Section */}
             <View style={styles.qrSection}>
               {/* QR Image */}
-              <Image
-                source={require('../../assets/images/qrCodeEX.png')}
-                style={styles.qrImage}
-                resizeMode="contain"
-              />
+              {imageError ? (
+                <View style={[styles.qrImage, styles.errorContainer]}>
+                  <Text style={styles.errorText}>⚠️ Error cargando QR</Text>
+                  <Text style={styles.errorSubtext}>Intenta cerrar y abrir de nuevo</Text>
+                </View>
+              ) : (
+                <Image
+                  source={require('../../assets/images/qrCodeEX.png')}
+                  style={styles.qrImage}
+                  resizeMode="contain"
+                  onError={handleImageError}
+                  onLoad={handleImageLoad}
+                />
+              )}
 
               {/* Description */}
               <View style={styles.descriptionSection}>
                 <Text style={styles.description}>
-                  Escanea el QR para acceder a todos sus datos.
+                  Escanea el QR para acceder a todos los datos de {petName}.
                 </Text>
               </View>
             </View>
@@ -107,6 +139,22 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
 
+  // Header
+  header: {
+    alignItems: 'center',
+    gap: 4,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#020618',
+  },
+  subtitle: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#636363',
+  },
+
   // QR Section
   qrSection: {
     alignSelf: 'stretch',
@@ -117,8 +165,27 @@ const styles = StyleSheet.create({
   },
   qrImage: {
     alignSelf: 'stretch',
-    height: 349.42,
+    height: 280,
     width: '100%',
+  },
+  errorContainer: {
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+  },
+  errorText: {
+    color: '#FF4444',
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  errorSubtext: {
+    color: '#666',
+    fontSize: 12,
+    textAlign: 'center',
   },
   descriptionSection: {
     alignSelf: 'stretch',
