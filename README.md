@@ -206,11 +206,52 @@ npm install expo-image-picker @react-native-async-storage/async-storage
 ### Scripts Disponibles
 
 ```bash
+# Comandos básicos
 npm start          # Inicia el servidor de desarrollo
 npm run android    # Ejecuta en Android
 npm run ios        # Ejecuta en iOS
 npm run web        # Ejecuta en navegador web
+
+# Comandos de desarrollo y debugging
+npx expo start --clear    # Inicia con cache limpio (recomendado para problemas)
+npx expo start --tunnel   # Usa túnel para dispositivos en redes diferentes
+npx expo start --localhost # Solo conexiones locales
+npx expo start --lan     # Conexión por red local (por defecto)
+
+# Hot Reload y Cache Management
+npx expo r               # Reload manual de la aplicación
+npx expo start --no-dev  # Modo producción (sin hot reload)
+npx expo start --max-workers 1  # Limitar workers para dispositivos lentos
+
+# Debugging y limpieza
+npm run format           # Formatear código con Prettier
+npx expo install --fix   # Reparar dependencias incompatibles
+rm -rf node_modules && npm install  # Reinstalar dependencias completas
 ```
+
+### 🔧 Solución de Problemas Comunes
+
+#### Hot Reload no funciona
+
+```bash
+# Paso 1: Limpiar cache y reiniciar
+npx expo start --clear
+
+# Paso 2: Si persiste, actualizar dependencias
+npx expo install --fix
+
+# Paso 3: Reinstalación completa
+rm -rf node_modules
+npm install
+npx expo start --clear
+```
+
+#### Configuración Metro para Hot Reload Óptimo
+
+El proyecto ya incluye configuración optimizada en `metro.config.js`:
+- `watchFolders` configurado para monitorear cambios
+- `resetCache` habilitado para mejor detección
+- Source maps mejorados para debugging
 
 ## 🚀 Próximos Pasos Sugeridos
 
