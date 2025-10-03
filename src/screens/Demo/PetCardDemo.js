@@ -12,6 +12,7 @@ const PetCardDemo = () => {
       weight: '1 kg',
       chipId: '981100002343567',
       date: '15/09/2024',
+      birthdate: '10/01/2024',
     },
     {
       id: 2,
@@ -21,6 +22,7 @@ const PetCardDemo = () => {
       weight: '25 kg',
       chipId: '981100002343568',
       date: '10/08/2024',
+      birthdate: '15/03/2022',
     },
     {
       id: 3,
@@ -30,6 +32,7 @@ const PetCardDemo = () => {
       weight: '4 kg',
       chipId: '981100002343569',
       date: '22/07/2024',
+      birthdate: '20/05/2021',
     },
   ];
 
@@ -66,7 +69,7 @@ const PetCardDemo = () => {
             breed={pet.breed}
             weight={pet.weight}
             chipId={pet.chipId}
-            registrationDate={pet.date}
+            birthdate={pet.birthdate || pet.date}
             onEditPet={() => handleEditPet(pet.name)}
             onDeletePet={() => handleDeletePet(pet.name)}
             onShowHistory={() => handleShowHistory(pet.name)}

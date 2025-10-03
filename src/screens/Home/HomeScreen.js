@@ -115,7 +115,7 @@ const HomeScreen = ({ navigation }) => {
                           pet.weight ? `${pet.weight} kg` : 'No especificado'
                         }
                         chipId={pet.chip}
-                        registrationDate={pet.registrationDate}
+                        birthdate={pet.birthdate}
                         imageSource={
                           pet.photoUri ? { uri: pet.photoUri } : null
                         }

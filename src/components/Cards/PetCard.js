@@ -20,7 +20,7 @@ const PetCard = ({
   breed = '',
   weight = '',
   chipId = '',
-  registrationDate = '00/00/0000',
+  birthdate = '00/00/0000',
   imageSource,
   onEditPet,
   onDeletePet,
@@ -134,7 +134,7 @@ const PetCard = ({
 
             {/* Info extra */}
             <Text style={styles.info}>Chip: {chipId}</Text>
-            <Text style={styles.info}>Fecha: {registrationDate}</Text>
+            <Text style={styles.info}>Nacimiento: {birthdate}</Text>
 
             {/* Botones */}
             <View style={styles.buttonRow}>

@@ -12,6 +12,7 @@ const ModalDemo = () => {
       weight: '1 kg',
       chipId: '981100002343567',
       date: '15/09/2024',
+      birthdate: '10/01/2024',
     },
     {
       id: 2,
@@ -21,6 +22,7 @@ const ModalDemo = () => {
       weight: '25 kg',
       chipId: '981100002343568',
       date: '10/08/2024',
+      birthdate: '15/03/2022',
     },
   ];
 
@@ -60,7 +62,7 @@ const ModalDemo = () => {
             breed={pet.breed}
             weight={pet.weight}
             chipId={pet.chipId}
-            registrationDate={pet.date}
+            birthdate={pet.birthdate || pet.date}
             onEditPet={() => handleEditPet(pet.name)}
             onDeletePet={() => handleDeletePet(pet.name)}
             onShowHistory={() => handleShowHistory(pet.name)}
