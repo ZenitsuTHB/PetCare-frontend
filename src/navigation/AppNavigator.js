@@ -12,6 +12,7 @@ import ProfileScreen from '../screens/Profile/ProfileScreen';
 import HistorialScreen from '../screens/Historial/HistorialScreen';
 import PetDetailsScreen from '../screens/Details/PetDetailsScreen';
 import ArchivosScreen from '../screens/Archivos/ArchivosScreen';
+import UploadDocForm from '../components/Forms/UploadDocForm';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,6 +38,11 @@ const AppNavigator = () => {
           options={{ title: 'Nueva Mascota' }}
         />
         <Stack.Screen name="PetDetails" component={PetDetailsScreen} />
+        <Stack.Screen
+          name="UploadDocForm"
+          component={UploadDocForm}
+          options={{ title: 'Subir Documento' }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

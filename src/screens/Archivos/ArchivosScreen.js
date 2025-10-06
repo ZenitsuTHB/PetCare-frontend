@@ -6,6 +6,7 @@ import PageHeader from '../../components/Headers/PageHeader';
 import EmptyState from '../../components/EmptyState/EmptyState';
 import Button from '../../components/Button/Button';
 import PetDetailsFooter from '../../components/Footers/PetDetailsFooter';
+import UploadDocForm from '../../components/Forms/UploadDocForm';
 
 export default function ArchivosScreen({ route, navigation }) {
   const { petName, pet } = route.params; // Recibir datos de la mascota
@@ -22,19 +23,17 @@ export default function ArchivosScreen({ route, navigation }) {
   };
 
   const handleQRPress = () => {
-    console.log('QR pressed in ArchivosScreen');
     setActiveTab('qr');
     setQrModalVisible(true);
   };
 
   const handleHistorialPress = () => {
-    console.log('Historial pressed');
     setActiveTab('historial');
     navigation.navigate('Historial', { petName, pet });
   };
 
   const handleAddDocument = () => {
-    console.log('Añadir documento pressed');
+    navigation.navigate('UploadDocForm', { petName, pet });
     // TODO: Implementar funcionalidad para agregar documentos
     // Podrías abrir un selector de archivos, cámara, etc.
   };
@@ -77,7 +76,7 @@ export default function ArchivosScreen({ route, navigation }) {
           </View>
         </View>
       ))}
-      
+
       {/* Botón de agregar documento también cuando hay archivos */}
       <View style={styles.buttonContainer}>
         <Button
@@ -90,7 +89,7 @@ export default function ArchivosScreen({ route, navigation }) {
           fullWidth
         />
       </View>
-      
+
       {/* Spacer para que el último elemento no quede pegado al footer */}
       <View style={styles.bottomSpacer} />
     </View>
@@ -111,13 +110,13 @@ export default function ArchivosScreen({ route, navigation }) {
           />
 
           {/* Page Header */}
-          <PageHeader 
-            title="Archivos adjuntos" 
-            subtitle="Documentación de la mascota." 
+          <PageHeader
+            title="Archivos adjuntos"
+            subtitle="Documentación de la mascota."
           />
 
           {/* Content with ScrollView for files or EmptyState */}
-          <ScrollView 
+          <ScrollView
             style={styles.scrollContainer}
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
