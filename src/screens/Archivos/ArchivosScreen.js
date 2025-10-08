@@ -77,7 +77,7 @@ export default function ArchivosScreen({ route, navigation }) {
           </View>
         </View>
       ))}
-      
+
       {/* Botón de agregar documento también cuando hay archivos */}
       <View style={styles.buttonContainer}>
         <Button
@@ -90,7 +90,7 @@ export default function ArchivosScreen({ route, navigation }) {
           fullWidth
         />
       </View>
-      
+
       {/* Spacer para que el último elemento no quede pegado al footer */}
       <View style={styles.bottomSpacer} />
     </View>
@@ -111,13 +111,13 @@ export default function ArchivosScreen({ route, navigation }) {
           />
 
           {/* Page Header */}
-          <PageHeader 
-            title="Archivos adjuntos" 
-            subtitle="Documentación de la mascota." 
+          <PageHeader
+            title="Archivos adjuntos"
+            subtitle="Documentación de la mascota."
           />
 
           {/* Content with ScrollView for files or EmptyState */}
-          <ScrollView 
+          <ScrollView
             style={styles.scrollContainer}
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}

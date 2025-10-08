@@ -36,8 +36,6 @@ const PetCard = ({
   const animatedValue = useRef(new Animated.Value(0)).current;
   const shadowOpacity = useRef(new Animated.Value(0.15)).current;
 
-
-
   const handleConfirmDelete = () => {
     setDeleteModalVisible(false);
     if (onDeletePet) {
@@ -163,56 +161,58 @@ const PetCard = ({
           </View>
 
           {/* Menu de opciones */}
-            <View style={styles.menuButtonContainer}>
-              <Menu
-                visible={dropdownVisible}
-                onDismiss={() => setDropdownVisible(false)}
-                anchor={
-                  <Button
-                    variant="ghost"
-                    size="small"
-                    iconName="more-vert"
-                    iconPosition="only"
-                    iconSize={20}
-                    onPress={(e) => {
-                      e.stopPropagation();
-                      setDropdownVisible(true);
-                    }}
-                    style={styles.menuButton}
-                  />
-                }
-                contentStyle={styles.menuContent}
-              >
-                <Menu.Item
-                  onPress={() => {
-                    setDropdownVisible(false);
-                    setTimeout(() => {
-                      if (onEditPet) onEditPet();
-                    }, 100);
+          <View style={styles.menuButtonContainer}>
+            <Menu
+              visible={dropdownVisible}
+              onDismiss={() => setDropdownVisible(false)}
+              anchor={
+                <Button
+                  variant="ghost"
+                  size="small"
+                  iconName="more-vert"
+                  iconPosition="only"
+                  iconSize={20}
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    setDropdownVisible(true);
                   }}
-                  title="Editar"
-                  leadingIcon={() => <MaterialIcons name="edit" size={16} color="#020618" />}
-                  titleStyle={styles.menuItemText}
-                  style={styles.menuItem}
+                  style={styles.menuButton}
                 />
-                <Menu.Item
-                  onPress={() => {
-                    setDropdownVisible(false);
-                    setTimeout(() => {
-                      setDeleteModalVisible(true);
-                    }, 100);
-                  }}
-                  title="Eliminar"
-                  leadingIcon={() => <MaterialIcons name="delete" size={16} color="#FF4444" />}
-                  titleStyle={styles.deleteMenuText}
-                  style={styles.menuItem}
-                />
-              </Menu>
-            </View>
+              }
+              contentStyle={styles.menuContent}
+            >
+              <Menu.Item
+                onPress={() => {
+                  setDropdownVisible(false);
+                  setTimeout(() => {
+                    if (onEditPet) onEditPet();
+                  }, 100);
+                }}
+                title="Editar"
+                leadingIcon={() => (
+                  <MaterialIcons name="edit" size={16} color="#020618" />
+                )}
+                titleStyle={styles.menuItemText}
+                style={styles.menuItem}
+              />
+              <Menu.Item
+                onPress={() => {
+                  setDropdownVisible(false);
+                  setTimeout(() => {
+                    setDeleteModalVisible(true);
+                  }, 100);
+                }}
+                title="Eliminar"
+                leadingIcon={() => (
+                  <MaterialIcons name="delete" size={16} color="#FF4444" />
+                )}
+                titleStyle={styles.deleteMenuText}
+                style={styles.menuItem}
+              />
+            </Menu>
+          </View>
         </Animated.View>
       </Pressable>
-
-
 
       {/* Modal de confirmación para eliminar */}
       <ConfirmationModal

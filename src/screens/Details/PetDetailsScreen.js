@@ -33,7 +33,7 @@ const PetDetailsScreen = ({ route, navigation }) => {
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState('archivos'); // Tab activo por defecto en PetDetails
   const [qrModalVisible, setQrModalVisible] = useState(false);
-  
+
   const pet = route?.params?.pet ?? {
     name: 'Michi',
     species: 'Gato',
@@ -93,40 +93,40 @@ const PetDetailsScreen = ({ route, navigation }) => {
             showsVerticalScrollIndicator={false}
             style={styles.scroll}
           >
-          {/* Nombre */}
-          <Text style={styles.name}>{pet.name}</Text>
+            {/* Nombre */}
+            <Text style={styles.name}>{pet.name}</Text>
 
-          {/* Ficha */}
-          <View style={styles.card}>
-            {/* Especie / Raza */}
-            <View style={styles.rowWrap}>
-              <Row label="Especie" value={pet.species} />
-              <Row label="Raza" value={pet.breed} right />
+            {/* Ficha */}
+            <View style={styles.card}>
+              {/* Especie / Raza */}
+              <View style={styles.rowWrap}>
+                <Row label="Especie" value={pet.species} />
+                <Row label="Raza" value={pet.breed} right />
+              </View>
+              <Divider />
+
+              {/* Fecha de nacimiento (fila completa) */}
+              <Row label="Fecha de nacimiento" value={pet.birthdate} full />
+              <Divider />
+
+              {/* Género / Peso */}
+              <View style={styles.rowWrap}>
+                <Row label="Género" value={pet.gender} />
+                <Row label="Peso (kg)" value={String(pet.weight)} right />
+              </View>
+              <Divider />
+
+              {/* Chip (fila completa) */}
+              <Row label="Chip" value={pet.chip} full />
+              <Divider />
+
+              <View style={{ marginTop: 6 }}>
+                <Text style={styles.labelRed}>Observaciones</Text>
+                <Text style={styles.value}>{pet.notes}</Text>
+              </View>
+              <Divider />
             </View>
-            <Divider />
-
-            {/* Fecha de nacimiento (fila completa) */}
-            <Row label="Fecha de nacimiento" value={pet.birthdate} full />
-            <Divider />
-
-            {/* Género / Peso */}
-            <View style={styles.rowWrap}>
-              <Row label="Género" value={pet.gender} />
-              <Row label="Peso (kg)" value={String(pet.weight)} right />
-            </View>
-            <Divider />
-
-            {/* Chip (fila completa) */}
-            <Row label="Chip" value={pet.chip} full />
-            <Divider />
-
-            <View style={{ marginTop: 6 }}>
-              <Text style={styles.labelRed}>Observaciones</Text>
-              <Text style={styles.value}>{pet.notes}</Text>
-            </View>
-            <Divider />
-          </View>
-        </ScrollView>
+          </ScrollView>
         </View>
 
         <PetDetailsFooter

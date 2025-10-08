@@ -1,9 +1,22 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
+} from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Easing } from 'react-native';
 
-const TabItem = ({ tabName, label, icon, isActive, onPress, isQRTab = false }) => {
+const TabItem = ({
+  tabName,
+  label,
+  icon,
+  isActive,
+  onPress,
+  isQRTab = false,
+}) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const underlineAnim = useRef(new Animated.Value(isActive ? 1 : 0)).current;
 
@@ -32,12 +45,10 @@ const TabItem = ({ tabName, label, icon, isActive, onPress, isQRTab = false }) =
   }, [isActive, isQRTab]);
 
   return (
-    <TouchableOpacity
-      style={styles.tab}
-      onPress={onPress}
-      activeOpacity={0.8}
-    >
-      <Animated.View style={{ transform: [{ scale: isQRTab ? 1 : scaleAnim }] }}>
+    <TouchableOpacity style={styles.tab} onPress={onPress} activeOpacity={0.8}>
+      <Animated.View
+        style={{ transform: [{ scale: isQRTab ? 1 : scaleAnim }] }}
+      >
         {icon && (
           <MaterialIcons
             name={icon}
@@ -46,21 +57,16 @@ const TabItem = ({ tabName, label, icon, isActive, onPress, isQRTab = false }) =
           />
         )}
       </Animated.View>
-      <Text
-        style={[
-          styles.tabText,
-          isActive && styles.activeTabText,
-        ]}
-      >
+      <Text style={[styles.tabText, isActive && styles.activeTabText]}>
         {label}
       </Text>
-      
+
       {/* Subrayado animado */}
       <Animated.View
         style={[
           styles.underline,
-          { 
-            opacity: underlineAnim, 
+          {
+            opacity: underlineAnim,
             transform: [{ scaleX: underlineAnim }],
           },
         ]}
@@ -82,7 +88,7 @@ const PageFooter = ({
         {/* Profile Icon (Centro elevado) - siempre rosa */}
         {showProfileIcon && (
           <View style={styles.profileIconContainer}>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.profileIcon}
               onPress={onQRPress}
               activeOpacity={0.9}

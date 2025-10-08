@@ -46,7 +46,9 @@ const TabItem = ({ icon, label, isActive, onPress, isQRTab = false }) => {
       onPress={onPress}
       activeOpacity={0.85}
     >
-      <Animated.View style={{ transform: [{ scale: isQRTab ? 1 : scaleAnim }] }}>
+      <Animated.View
+        style={{ transform: [{ scale: isQRTab ? 1 : scaleAnim }] }}
+      >
         {icon && (
           <Ionicons
             name={icon}
@@ -58,13 +60,13 @@ const TabItem = ({ icon, label, isActive, onPress, isQRTab = false }) => {
       <Text style={[styles.label, isActive && styles.labelActive]}>
         {label}
       </Text>
-      
+
       {/* Subrayado animado */}
       <Animated.View
         style={[
           styles.underline,
-          { 
-            opacity: underlineAnim, 
+          {
+            opacity: underlineAnim,
             transform: [{ scaleX: underlineAnim }],
           },
         ]}
