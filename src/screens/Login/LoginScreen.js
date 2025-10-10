@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   View,
   Text,
@@ -15,8 +15,16 @@ import {
 import Header from '../../components/Headers/Header';
 import LinearGradient from '../../components/Utils/LinearGradient';
 import { login as loginService } from '../../api/services/auth';
+import { AuthContext } from '../../contexts/AutContext';
 
 const LoginScreen = ({ navigation }) => {
+  const authContext = useContext(AuthContext);
+  const performLogin = async ({ email, password }) => {
+    if (authContext?.loginUser) {
+      return authContext.loginUser(email, password);
+    }
+    return loginService({ email, password });
+  };
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,20 +38,27 @@ const LoginScreen = ({ navigation }) => {
     setLoading(true);
 
     try {
-      const response = await loginService({
+      const response = await performLogin({
         email: email.trim().toLowerCase(),
         password,
       });
 
       if (response.success) {
+        const resolvedUser =
+          response.user ||
+          authContext?.user ||
+          response?.data?.user ||
+          (typeof response.data === 'object' ? response.data : null);
         const userName =
-          response?.data?.user?.name ||
-          response?.data?.user?.nombre ||
-          response?.data?.user?.correo ||
+          resolvedUser?.name ||
+          resolvedUser?.full_name ||
+          resolvedUser?.nombre ||
+          resolvedUser?.correo ||
           'Usuario';
 
-        Alert.alert('Login exitoso', `Bienvenido ${userName}`);
-        navigation.navigate('Home');
+        Alert.alert('Login exitoso', 'Bienvenido ' + userName);
+        navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
+        return;
       } else {
         Alert.alert('Error de autenticacion', response.message);
       }

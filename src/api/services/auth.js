@@ -23,11 +23,7 @@ const toFormUrlEncoded = (payload) =>
 
 const buildRegisterPayload = (input = {}) => {
   const termsValue =
-    input.termsAccepted ??
-    input.terminos ??
-    input.terms ??
-    input.agree ??
-    false;
+    input.termsAccepted ?? input.terminos ?? input.terms ?? input.agree ?? false;
 
   const payload = sanitizePayload({
     nombre: input.firstName,
@@ -41,13 +37,17 @@ const buildRegisterPayload = (input = {}) => {
     provincia: input.province,
     cp: input.postalCode,
     terminos:
-      typeof termsValue === 'boolean'
-        ? Number(termsValue)
-        : sanitizeValue(termsValue),
+      typeof termsValue === 'boolean' ? Number(termsValue) : sanitizeValue(termsValue),
   });
 
   return payload;
 };
+
+const buildLoginPayload = (input = {}) =>
+  sanitizePayload({
+    correo: input.email?.toLowerCase(),
+    contrasena: input.password,
+  });
 
 const buildSuccessResult = (data, fallbackPayload) => {
   const container = typeof data === 'object' && data !== null ? data : {};
@@ -144,9 +144,17 @@ export const register = async (userInput = {}) => {
 };
 
 export const login = async (credentials = {}) => {
+  const payload = buildLoginPayload(credentials);
+  const body = toFormUrlEncoded(payload);
+
   try {
-    const { data } = await api.post('/auth/login', credentials);
-    return buildGenericSuccessResult(data);
+    const { data } = await api.post('/auth/login', body, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+
+    return buildSuccessResult(data, payload);
   } catch (error) {
     return buildErrorResult(error);
   }
@@ -178,3 +186,5 @@ export const refreshToken = async (token) => {
     return buildErrorResult(error);
   }
 };
+
+
