@@ -1,5 +1,5 @@
 // src/screens/ProfileScreen.js
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AuthContext } from '../../contexts/AutContext';
 import { Ionicons } from '@expo/vector-icons';
 import Footer from '../../components/Footers/Footer';
 
@@ -28,8 +29,12 @@ const AVATAR_RING_PADDING = 6;
 const AVATAR_RING_SIZE = AVATAR_SIZE + AVATAR_RING_PADDING * 2;
 
 const ProfileScreen = ({ navigation }) => {
+  const authContext = useContext(AuthContext);
+  const user = authContext?.user;
   const insets = useSafeAreaInsets();
   const storageUsed = 0.65; // mock UI
+  const greetingName =
+    user?.full_name || user?.name || user?.nombre || user?.correo || 'Usuario';
 
   return (
     <View style={styles.container}>
@@ -40,7 +45,7 @@ const ProfileScreen = ({ navigation }) => {
         <Text style={styles.headerTitle}>Perfil</Text>
       </View>
 
-      <Text style={styles.greeting}>¡Hola [nombre]!</Text>
+      <Text style={styles.greeting}>Hola {greetingName}!</Text>
 
       {/* Avatar + editar */}
       <View style={styles.avatarWrap}>

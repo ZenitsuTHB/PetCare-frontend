@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, StatusBar, ScrollView, Alert } from 'react-native';
-import { logoutUser } from '../../api/auth';
+import { logout as logoutService } from '../../api/services/auth';
 import Footer from '../../components/Footers/Footer';
 import ContentContainer from '../../components/ContentContainer/ContentContainer';
 import Button from '../../components/Button/Button';
@@ -14,7 +14,7 @@ const HomeScreen = ({ navigation }) => {
   const [selectedPet, setSelectedPet] = useState(null);
 
   const handleLogout = async () => {
-    await logoutUser();
+    await logoutService();
     navigation.replace('Login');
   };
 

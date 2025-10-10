@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import {
   View,
   Text,
@@ -11,15 +11,18 @@ import {
   Platform,
   StatusBar,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import Header from '../../components/Headers/Header';
 import ProvincePicker from '../../components/Utils/ProvincePicker';
-import { SafeAreaView } from 'react-native-web';
 import LinearGradient from '../../components/Utils/LinearGradient';
 import { validateRegistrationCompleteForm } from '../../utils/validation';
+import { AuthContext } from '../../contexts/AutContext';
+import { register as registerService } from '../../api/services/auth';
 
 const RegisterScreen2 = ({ navigation, route }) => {
+  const authContext = useContext(AuthContext);
+  const registerFn = authContext?.registerUser ?? registerService;
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [postalCode, setPostalCode] = useState('');
@@ -27,10 +30,8 @@ const RegisterScreen2 = ({ navigation, route }) => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Datos del formulario anterior
   const userBasicData = route?.params?.userBasicData || {};
 
-  // Usar la función de validación centralizada
   const formData = { address, city, postalCode, province, termsAccepted };
   const validationResult = useMemo(
     () => validateRegistrationCompleteForm(formData),
@@ -50,41 +51,41 @@ const RegisterScreen2 = ({ navigation, route }) => {
     try {
       const completeUserData = {
         ...userBasicData,
-        address,
-        city,
-        postalCode,
+        address: address.trim(),
+        city: city.trim(),
+        postalCode: postalCode.trim(),
         province,
         termsAccepted,
       };
 
-      // Aquí llamarías a tu API de registro
-      // const response = await registerUser(completeUserData);
+      const response = await registerFn(completeUserData);
 
-      // Simulación de registro exitoso
-      setTimeout(() => {
-        setLoading(false);
-        Alert.alert(
-          '¡Registro exitoso!',
-          'Tu cuenta ha sido creada correctamente',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                navigation.navigate('Login');
-              },
-            },
-          ]
-        );
-      }, 2000);
+      if (response.success) {
+        navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
+        return;
+      } else {
+        const errorsFromResponse =
+          response?.errors &&
+          Object.values(response.errors).flat().filter(Boolean);
+
+        const fallbackMessage =
+          response?.message ||
+          (errorsFromResponse && errorsFromResponse.length
+            ? errorsFromResponse.join('\n')
+            : 'No se pudo completar el registro');
+
+        Alert.alert('Error de registro', fallbackMessage);
+      }
     } catch (error) {
-      setLoading(false);
-      Alert.alert('Error', 'Ocurrió un problema inesperado');
       console.error('Registration error:', error);
+      Alert.alert('Error', 'Ocurrio un problema inesperado');
+    } finally {
+      setLoading(false);
     }
   };
 
   const toggleTermsAccepted = () => {
-    setTermsAccepted(!termsAccepted);
+    setTermsAccepted((prev) => !prev);
   };
 
   return (
@@ -92,23 +93,21 @@ const RegisterScreen2 = ({ navigation, route }) => {
       <SafeAreaView style={{ flex: 1 }}>
         <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
 
-        {/* Header Section */}
         <Header
           title="Registro"
           subtitle={
             <>
-              Crea tu cuenta y empieza a organizar la información médica de tu
+              Crea tu cuenta y empieza a organizar la informacion medica de tu
               mascota de forma{' '}
               <Text style={styles.subtitleBold}>sencilla y segura</Text>.
             </>
           }
           showBackButton={true}
-          backButtonText="← Inicio"
+          backButtonText="? Inicio"
           onBackPress={() => navigation.goBack()}
         />
 
         <View style={styles.container}>
-          {/* Form Section */}
           <KeyboardAvoidingView
             style={styles.formSection}
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -119,20 +118,20 @@ const RegisterScreen2 = ({ navigation, route }) => {
               showsVerticalScrollIndicator={false}
             >
               <View style={styles.inputsContainer}>
-                {/* Address Input */}
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>Domicilio</Text>
                   <TextInput
                     style={styles.input}
-                    placeholder="Dirección completa"
+                    placeholder="Direccion completa"
                     placeholderTextColor="#62748E"
                     value={address}
                     onChangeText={setAddress}
-                    autoCapitalize="words"
                   />
+                  {errors.address && (
+                    <Text style={styles.errorText}>{errors.address}</Text>
+                  )}
                 </View>
 
-                {/* City and Postal Code Row */}
                 <View style={styles.cityRow}>
                   <View style={styles.cityInputGroup}>
                     <Text style={styles.inputLabel}>Ciudad</Text>
@@ -144,32 +143,39 @@ const RegisterScreen2 = ({ navigation, route }) => {
                       onChangeText={setCity}
                       autoCapitalize="words"
                     />
+                    {errors.city && (
+                      <Text style={styles.errorText}>{errors.city}</Text>
+                    )}
                   </View>
 
                   <View style={styles.postalInputGroup}>
                     <Text style={styles.inputLabel}>C.P</Text>
                     <TextInput
                       style={styles.input}
-                      placeholder="Código postal"
+                      placeholder="Codigo postal"
                       placeholderTextColor="#62748E"
                       value={postalCode}
                       onChangeText={setPostalCode}
                       keyboardType="numeric"
                       maxLength={5}
                     />
+                    {errors.postalCode && (
+                      <Text style={styles.errorText}>{errors.postalCode}</Text>
+                    )}
                   </View>
                 </View>
 
-                {/* Province Picker */}
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>Provincia</Text>
                   <ProvincePicker
                     selectedProvince={province}
                     onChange={(value) => setProvince(value)}
                   />
+                  {errors.province && (
+                    <Text style={styles.errorText}>{errors.province}</Text>
+                  )}
                 </View>
 
-                {/* Terms and Conditions Checkbox */}
                 <TouchableOpacity
                   style={styles.checkboxContainer}
                   onPress={toggleTermsAccepted}
@@ -180,18 +186,20 @@ const RegisterScreen2 = ({ navigation, route }) => {
                       termsAccepted && styles.checkboxChecked,
                     ]}
                   >
-                    {termsAccepted && <Text style={styles.checkmark}>✓</Text>}
+                    {termsAccepted && <Text style={styles.checkmark}>X</Text>}
                   </View>
                   <Text style={styles.checkboxText}>
                     Acepto los{' '}
                     <Text style={styles.checkboxTextBold}>
-                      términos y las condiciones
+                      terminos y las condiciones
                     </Text>
                   </Text>
                 </TouchableOpacity>
+                {errors.termsAccepted && (
+                  <Text style={styles.errorText}>{errors.termsAccepted}</Text>
+                )}
               </View>
 
-              {/* Register Button */}
               <View style={styles.buttonContainer}>
                 <TouchableOpacity
                   style={[
@@ -342,7 +350,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 18,
     alignItems: 'center',
-    minHeight: 48, // Altura mínima para mantener consistencia
+    minHeight: 48,
   },
   registerButtonDisabled: {
     backgroundColor: '#E2E8F0',
@@ -356,5 +364,11 @@ const styles = StyleSheet.create({
   },
   registerButtonTextDisabled: {
     color: '#FFF8F4',
+  },
+  errorText: {
+    color: '#FF6B6B',
+    fontSize: 12,
+    marginTop: 4,
+    lineHeight: 16,
   },
 });

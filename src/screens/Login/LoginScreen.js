@@ -10,11 +10,11 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
+  SafeAreaView,
 } from 'react-native';
-import { loginUser } from '../../api/auth';
 import Header from '../../components/Headers/Header';
 import LinearGradient from '../../components/Utils/LinearGradient';
-import { SafeAreaView } from 'react-native';
+import { login as loginService } from '../../api/services/auth';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -30,20 +30,29 @@ const LoginScreen = ({ navigation }) => {
     setLoading(true);
 
     try {
-      const response = await loginUser(email, password);
+      const response = await loginService({
+        email: email.trim().toLowerCase(),
+        password,
+      });
 
       if (response.success) {
-        Alert.alert('¡Login exitoso!', `Bienvenido ${response.user.name}`);
+        const userName =
+          response?.data?.user?.name ||
+          response?.data?.user?.nombre ||
+          response?.data?.user?.correo ||
+          'Usuario';
+
+        Alert.alert('Login exitoso', `Bienvenido ${userName}`);
         navigation.navigate('Home');
       } else {
-        Alert.alert('Error de autenticación', response.message);
+        Alert.alert('Error de autenticacion', response.message);
       }
     } catch (error) {
-      Alert.alert('Error', 'Ocurrió un problema inesperado');
       console.error('Login error:', error);
+      Alert.alert('Error', 'Ocurrio un problema inesperado');
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -51,23 +60,20 @@ const LoginScreen = ({ navigation }) => {
       <SafeAreaView style={{ flex: 1 }}>
         <StatusBar backgroundColor="#FA8081" barStyle="dark-content" />
 
-        {/* Header Component */}
         <Header
-          title="Iniciar Sesión"
-          subtitle="Inicia sesión y sigue cuidando a quienes más quieres."
+          title="Iniciar Sesion"
+          subtitle="Inicia sesion y sigue cuidando a quienes mas quieres."
           showBackButton={true}
-          backButtonText="← Inicio"
+          backButtonText="? Inicio"
           onBackPress={() => navigation.goBack()}
         />
 
-        {/* Form Section */}
         <KeyboardAvoidingView
           style={styles.formSection}
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
           <View style={styles.formContainer}>
             <View style={styles.inputsContainer}>
-              {/* Email Input */}
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>Correo</Text>
                 <TextInput
@@ -81,12 +87,11 @@ const LoginScreen = ({ navigation }) => {
                 />
               </View>
 
-              {/* Password Input */}
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Contraseña</Text>
+                <Text style={styles.inputLabel}>Contrasena</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="Introduce tu contraseña"
+                  placeholder="Introduce tu contrasena"
                   placeholderTextColor="#62748E"
                   value={password}
                   onChangeText={setPassword}
@@ -96,12 +101,11 @@ const LoginScreen = ({ navigation }) => {
 
               <TouchableOpacity style={styles.forgotPassword}>
                 <Text style={styles.forgotPasswordText}>
-                  ¿Olvidaste tu contraseña?
+                  ? Olvidaste tu contrasena?
                 </Text>
               </TouchableOpacity>
             </View>
 
-            {/* Login Button */}
             <View style={styles.buttonContainer}>
               {loading ? (
                 <ActivityIndicator size="large" color="#FA8081" />
@@ -110,19 +114,18 @@ const LoginScreen = ({ navigation }) => {
                   style={styles.loginButton}
                   onPress={handleLogin}
                 >
-                  <Text style={styles.loginButtonText}>Iniciar sesión</Text>
+                  <Text style={styles.loginButtonText}>Iniciar sesion</Text>
                 </TouchableOpacity>
               )}
             </View>
 
-            {/* Register Link */}
             <TouchableOpacity
               style={styles.registerContainer}
               onPress={() => navigation.navigate('Register')}
             >
               <Text style={styles.registerText}>
-                ¿Todavía no tienes cuenta?{' '}
-                <Text style={styles.registerLink}>Regístrate ahora</Text>
+                ? Todavia no tienes cuenta?{' '}
+                <Text style={styles.registerLink}>Registrate ahora</Text>
               </Text>
             </TouchableOpacity>
           </View>
@@ -199,15 +202,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   registerText: {
-    color: '#121212',
-    fontSize: 16,
+    color: '#62748E',
+    fontSize: 14,
     fontWeight: '400',
-    lineHeight: 25.6,
-    textAlign: 'center',
   },
   registerLink: {
     color: '#FA8081',
     fontWeight: '600',
-    textDecorationLine: 'underline',
   },
 });
