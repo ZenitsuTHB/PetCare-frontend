@@ -35,8 +35,8 @@ export default function ArchivosScreen({ route, navigation }) {
 
   const handleAddDocument = () => {
     console.log('Añadir documento pressed');
-    // TODO: Implementar funcionalidad para agregar documentos
-    // Podrías abrir un selector de archivos, cámara, etc.
+    // Navegar a la pantalla de subir documento
+    navigation.navigate('UploadDocument', { petName, pet });
   };
 
   // Configuración del empty state personalizado

@@ -12,6 +12,7 @@ import ProfileScreen from '../screens/Profile/ProfileScreen';
 import HistorialScreen from '../screens/Historial/HistorialScreen';
 import PetDetailsScreen from '../screens/Details/PetDetailsScreen';
 import ArchivosScreen from '../screens/Archivos/ArchivosScreen';
+import UploadDocumentScreen from '../screens/Archivos/UploadDocumentScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Historial" component={HistorialScreen} />
         <Stack.Screen name="Archivos" component={ArchivosScreen} />
+  <Stack.Screen name="UploadDocument" component={UploadDocumentScreen} />
         <Stack.Screen
           name="NewPetForm"
           component={NewPetFormScreen}
