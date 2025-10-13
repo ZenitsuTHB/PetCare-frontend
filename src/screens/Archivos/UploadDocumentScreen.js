@@ -121,6 +121,7 @@ export default function UploadDocumentScreen({ route, navigation }) {
           {formErrors.file ? <Text style={styles.errorText}>{formErrors.file}</Text> : null}
           {fileName ? <Text style={styles.fileName}>Archivo seleccionado: {fileName}</Text> : null}
         </View>
+     
       </View>
     </View>
   );

@@ -18,7 +18,6 @@ export default function ArchivosScreen({ route, navigation }) {
   const handleArchivosPress = () => {
     console.log('Archivos pressed');
     setActiveTab('archivos');
-    // Ya estamos en archivos
   };
 
   const handleQRPress = () => {
