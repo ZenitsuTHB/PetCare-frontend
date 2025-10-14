@@ -87,13 +87,12 @@ export default function UploadDocumentScreen({ route, navigation }) {
         setFileName(file.name);
         setFileUri(uriToUse);
         setFileSize(file.size);
-        setUploadedFile(null);
 
         console.log('✅ File set:', { name: file.name, size: file.size, uri: uriToUse });
         
-        if (__DEV__) {
-          Alert.alert('✅ Archivo seleccionado', `${file.name}\nTamaño: ${formatFileSize(file.size)}`);
-        }
+        // Start upload simulation immediately after file picked
+        await simulateUpload(file.name, file.size, uriToUse);
+        
       } else if (res.type === 'success') {
         // Old API (backward compatibility)
         const name = res.name || '';
@@ -120,13 +119,11 @@ export default function UploadDocumentScreen({ route, navigation }) {
         setFileName(res.name);
         setFileUri(uriToUse);
         setFileSize(res.size);
-        setUploadedFile(null);
 
         console.log('✅ File set (old API):', { name: res.name, size: res.size, uri: uriToUse });
         
-        if (__DEV__) {
-          Alert.alert('✅ Archivo seleccionado', `${res.name}\nTamaño: ${formatFileSize(res.size)}`);
-        }
+        // Start upload simulation immediately after file picked
+        await simulateUpload(res.name, res.size, uriToUse);
       }
     } catch (err) {
       console.error('❌ Document pick error:', err);
@@ -134,193 +131,135 @@ export default function UploadDocumentScreen({ route, navigation }) {
     }
   };
 
+  const simulateUpload = async (name, size, uri) => {
+    setUploading(true);
+    setUploadProgress(0);
+    setUploadedFile(null);
+    console.log('⏳ Starting upload simulation...');
+
+    try {
+      // Simulate upload progress
+      await new Promise((resolve) => {
+        let pct = 0;
+        const int = setInterval(() => {
+          pct += Math.floor(Math.random() * 20) + 10;
+          if (pct >= 100) {
+            pct = 100;
+            setUploadProgress(pct);
+            clearInterval(int);
+            resolve();
+          } else {
+            setUploadProgress(pct);
+          }
+        }, 200);
+      });
+
+      console.log('✅ Upload simulation complete');
+      
+      // Set uploaded file to show the completed card
+      setUploadedFile({ name, size });
+      
+      if (__DEV__) {
+        Alert.alert('✅ Archivo cargado', `${name}\nTamaño: ${formatFileSize(size)}\n\nAhora completa el formulario.`);
+      }
+    } catch (err) {
+      console.error('❌ Upload simulation error:', err);
+      Alert.alert('Error', 'Falló la carga del archivo');
+    } finally {
+      setUploading(false);
+      setUploadProgress(0);
+    }
+  };
+
   const handleSubmit = async () => {
     console.log('🚀 Submit started');
     
-    // Validar campos
-    const errors = {};
-    if (!title.trim()) errors.title = 'El título es obligatorio';
-    if (!fileUri) errors.file = 'Debes seleccionar un archivo';
-
-    if (Object.keys(errors).length) {
-      console.log('❌ Validation errors:', errors);
-      setFormErrors(errors);
+    // Validate required fields
+    if (!uploadedFile) {
+      Alert.alert('Error', 'Por favor sube un archivo primero');
+      return;
+    }
+    if (!title.trim()) {
+      Alert.alert('Error', 'Por favor ingresa un título');
       return;
     }
 
     console.log('✅ Validation passed');
-    console.log('📦 Upload data:', { title, date, description, fileName, fileUri, fileSize });
+    console.log('� Submit data:', { title, date, description, uploadedFile, fileUri });
 
-    // For now save locally so you can test without API wiring
-    const useLocalSave = true;
-
-    if (useLocalSave) {
-      setIsSubmitting(true);
-      setUploading(true);
-      setUploadProgress(0);
-      console.log('💾 Starting local save...');
-
-      try {
-        // For web, we skip FileSystem operations
-        let finalUri = fileUri;
-        
-        if (Platform.OS !== 'web') {
-          // Ensure destination dir
-          const baseDir = FileSystem.documentDirectory + 'documents/';
-          try {
-            await FileSystem.makeDirectoryAsync(baseDir, { intermediates: true });
-            console.log('📁 Created/verified directory:', baseDir);
-          } catch (e) {
-            // ignore if exists
-            console.log('📁 Directory already exists');
-          }
-
-          const destName = `${Date.now()}-${fileName}`;
-          const destPath = baseDir + destName;
-
-          // Copy file to app document directory (if not already there)
-          try {
-            if (!fileUri.startsWith(FileSystem.documentDirectory)) {
-              await FileSystem.copyAsync({ from: fileUri, to: destPath });
-              finalUri = destPath;
-              console.log('📋 Copied file to:', destPath);
-            }
-          } catch (copyErr) {
-            console.warn('⚠️  Copy to docs failed, using original uri', copyErr);
-            finalUri = fileUri; // fallback
-          }
-        }
-
-        // Simulate upload progress for local save
-        console.log('⏳ Simulating upload progress...');
-        await new Promise((resolve) => {
-          let pct = 0;
-          const int = setInterval(() => {
-            pct += Math.floor(Math.random() * 20) + 10; // increment
-            if (pct >= 100) {
-              pct = 100;
-              setUploadProgress(pct);
-              clearInterval(int);
-              resolve();
-            } else {
-              setUploadProgress(pct);
-            }
-          }, 200);
-        });
-
-        console.log('✅ Progress complete');
-
-        // Persist metadata in AsyncStorage
-        const key = `documents:${pet?.id || petName || 'default'}`;
-        console.log('💾 Saving to AsyncStorage key:', key);
-        
-        const existingRaw = await AsyncStorage.getItem(key);
-        const existing = existingRaw ? JSON.parse(existingRaw) : [];
-        console.log('📚 Existing documents:', existing.length);
-        
-        const newDoc = {
-          id: Date.now(),
-          name: fileName,
-          title,
-          date,
-          description,
-          uri: finalUri,
-          size: fileSize,
-          createdAt: new Date().toISOString(),
-        };
-        existing.push(newDoc);
-        await AsyncStorage.setItem(key, JSON.stringify(existing));
-        
-        console.log('✅ Document saved:', newDoc);
-        console.log('📚 Total documents now:', existing.length);
-
-        setUploadedFile({ name: fileName, size: fileSize });
-        
-        // Reset form after success
-        Alert.alert(
-          '✅ Éxito',
-          'Documento guardado localmente (test)',
-          [
-            {
-              text: 'Ver Archivos',
-              onPress: () => {
-                console.log('📂 Navigating back to Archivos');
-                // Clear form and navigate back
-                setTitle('');
-                setDate('');
-                setDescription('');
-                setFileName(null);
-                setFileUri(null);
-                setFileSize(null);
-                setFormErrors({});
-                navigation.goBack();
-              }
-            },
-            {
-              text: 'Subir Otro',
-              style: 'cancel',
-              onPress: () => {
-                console.log('🔄 Resetting form for another upload');
-                // Just clear form, stay on page
-                setTitle('');
-                setDate('');
-                setDescription('');
-                setFileName(null);
-                setFileUri(null);
-                setFileSize(null);
-                setFormErrors({});
-              }
-            }
-          ]
-        );
-      } catch (err) {
-        console.error('❌ Local save error:', err);
-        console.error('Error stack:', err.stack);
-        
-        let errorMsg = 'No se pudo guardar localmente';
-        if (err.message?.includes('permission')) {
-          errorMsg = 'Permiso denegado para guardar archivo';
-        } else if (err.message?.includes('space')) {
-          errorMsg = 'No hay espacio suficiente en el dispositivo';
-        }
-        
-        Alert.alert('Error', `${errorMsg}\n\nDetalle: ${err.message}`);
-      } finally {
-        setIsSubmitting(false);
-        setUploading(false);
-        setUploadProgress(0);
-        console.log('🏁 Upload finished');
-      }
-
-      return;
-    }
-
-    // If you later want to use real API upload, this branch will call uploadDocument
     setIsSubmitting(true);
-    setUploading(true);
-    setUploadProgress(0);
-    try {
-      const resp = await uploadDocument({
-        fileUri,
-        fileName,
-        title,
-        date,
-        description,
-        petId: pet?.id || '',
-        onProgress: (pct) => setUploadProgress(pct),
-      });
+    console.log('💾 Starting document save...');
 
-      console.log('Upload response', resp);
-      setUploadedFile({ name: fileName, size: null });
-      Alert.alert('Éxito', 'Documento subido correctamente');
+    try {
+      // Save document metadata to AsyncStorage
+      const docKey = `documents:${pet?.id || petName || 'default'}`;
+      console.log('💾 Saving to AsyncStorage key:', docKey);
+      
+      const existingDocsStr = await AsyncStorage.getItem(docKey);
+      const existingDocs = existingDocsStr ? JSON.parse(existingDocsStr) : [];
+      console.log('📚 Existing documents:', existingDocs.length);
+
+      const newDoc = {
+        id: Date.now().toString(),
+        fileName: uploadedFile.name,
+        fileUri,
+        fileSize: uploadedFile.size,
+        title: title.trim(),
+        date: date.trim(),
+        description: description.trim(),
+        uploadedAt: new Date().toISOString(),
+        petId: pet?.id,
+        petName: pet?.name || petName,
+      };
+
+      existingDocs.push(newDoc);
+      await AsyncStorage.setItem(docKey, JSON.stringify(existingDocs));
+
+      console.log('✅ Document saved:', newDoc);
+      console.log('� Total documents for pet:', existingDocs.length);
+
+      Alert.alert(
+        '✅ Documento guardado',
+        `"${title}" ha sido guardado exitosamente`,
+        [
+          {
+            text: 'Ver Archivos',
+            onPress: () => {
+              console.log('📂 Navigating back to Archivos');
+              navigation.goBack();
+            },
+          },
+          {
+            text: 'Subir Otro',
+            onPress: () => {
+              console.log('🔄 Resetting form for another upload');
+              setTitle('');
+              setDate('');
+              setDescription('');
+              setFileName('');
+              setFileUri('');
+              setFileSize(0);
+              setUploadedFile(null);
+              setUploadProgress(0);
+            },
+          },
+        ]
+      );
     } catch (err) {
-      console.error('Upload error', err);
-      Alert.alert('Error', err.message || 'La subida falló');
+      console.error('❌ Save error:', err);
+      Alert.alert('Error', `No se pudo guardar: ${err.message}`);
     } finally {
       setIsSubmitting(false);
-      setUploading(false);
-      setUploadProgress(0);
     }
+  };
+
+  const handleRemoveFile = () => {
+    setFileName('');
+    setFileUri('');
+    setFileSize(0);
+    setUploadedFile(null);
+    setUploadProgress(0);
+    console.log('🗑️ File removed');
   };
 
   return (
@@ -347,16 +286,19 @@ export default function UploadDocumentScreen({ route, navigation }) {
           Añade el documento que quieras subir.
         </Text>
 
-        <TouchableOpacity style={styles.uploadBox} onPress={handlePickFile}>
-          <View style={styles.uploadInner}>
-            <View style={styles.iconPlaceholder} />
-            <View style={styles.uploadButton}>
-              <Text style={styles.uploadButtonText}>Subir archivo</Text>
+        {/* Show upload button ONLY if not uploading and no file uploaded yet */}
+        {!uploading && !uploadedFile && (
+          <TouchableOpacity style={styles.uploadBox} onPress={handlePickFile}>
+            <View style={styles.uploadInner}>
+              <View style={styles.iconPlaceholder} />
+              <View style={styles.uploadButton}>
+                <Text style={styles.uploadButtonText}>Subir archivo</Text>
+              </View>
             </View>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        )}
 
-        {/* Uploading progress card */}
+        {/* Uploading progress card - replaces upload button during upload */}
         {uploading && (
           <View style={styles.uploadingCard}>
             <Text style={styles.uploadingTitle}>Uploading...</Text>
@@ -371,8 +313,8 @@ export default function UploadDocumentScreen({ route, navigation }) {
           </View>
         )}
 
-        {/* Uploaded file card */}
-        {uploadedFile && (
+        {/* Uploaded file card - replaces uploading card when done */}
+        {uploadedFile && !uploading && (
           <View style={styles.uploadedCard}>
             <View style={styles.uploadedRow}>
               <View style={{ width: 36, height: 36, justifyContent: 'center', alignItems: 'center' }}>
@@ -427,10 +369,10 @@ export default function UploadDocumentScreen({ route, navigation }) {
           <TouchableOpacity
             style={[
               styles.submitButton,
-              (!fileName || isSubmitting) && styles.submitButtonDisabled,
+              (!uploadedFile || !title.trim() || isSubmitting) && styles.submitButtonDisabled,
             ]}
             onPress={handleSubmit}
-            disabled={!fileName || isSubmitting}
+            disabled={!uploadedFile || !title.trim() || isSubmitting}
           >
             {isSubmitting ? (
               <ActivityIndicator color="#FFF8F4" size="small" />
