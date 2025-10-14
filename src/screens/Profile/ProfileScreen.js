@@ -23,6 +23,10 @@ const COLORS = {
   edit: '#4E3A2F',
 };
 
+const AVATAR_SIZE = 150;
+const AVATAR_RING_PADDING = 6;
+const AVATAR_RING_SIZE = AVATAR_SIZE + AVATAR_RING_PADDING * 2;
+
 const ProfileScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const storageUsed = 0.65; // mock UI
@@ -44,9 +48,8 @@ const ProfileScreen = ({ navigation }) => {
           {/* Reemplaza por tu imagen */}
           <Image
             style={styles.avatar}
-            source={{
-              uri: 'https://dummyimage.com/200x200/ffffff/cccccc.png&text=',
-            }}
+            source={require('../../assets/images/tortuga.png')}
+            resizeMode="cover"
           />
         </View>
         <TouchableOpacity style={styles.editBtn} activeOpacity={0.85}>
@@ -137,11 +140,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   avatarRing: {
-    padding: 10,
-    borderRadius: 999,
+    width: AVATAR_RING_SIZE,
+    height: AVATAR_RING_SIZE,
+    borderRadius: AVATAR_RING_SIZE / 2,
+    padding: AVATAR_RING_PADDING,
     backgroundColor: COLORS.card,
     borderWidth: 3,
     borderColor: COLORS.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
     elevation: 5,
     shadowColor: '#000',
     shadowOpacity: 0.12,
@@ -149,9 +156,9 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
   },
   avatar: {
-    width: 120,
-    height: 120,
-    borderRadius: 999,
+    width: '100%',
+    height: '100%',
+    borderRadius: AVATAR_SIZE / 2,
     backgroundColor: '#F2F2F2',
   },
   editBtn: {

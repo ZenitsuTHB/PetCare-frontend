@@ -49,7 +49,7 @@ const LoginScreen = ({ navigation }) => {
   return (
     <LinearGradient>
       <SafeAreaView style={{ flex: 1 }}>
-        <StatusBar backgroundColor="#FB999A" barStyle="dark-content" />
+        <StatusBar backgroundColor="#FA8081" barStyle="dark-content" />
 
         {/* Header Component */}
         <Header
