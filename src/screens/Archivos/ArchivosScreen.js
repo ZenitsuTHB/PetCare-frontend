@@ -1,19 +1,59 @@
 // src/screens/Archivos/ArchivosScreen.js
-import React, { useState } from 'react';
-import { View, StyleSheet, StatusBar, ScrollView, Text } from 'react-native';
-import { BackButton, QRModal } from '../../components';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, StyleSheet, StatusBar, ScrollView, Alert, Platform, Linking } from 'react-native';
+import { BackButton, QRModal, DocumentCard } from '../../components';
 import PageHeader from '../../components/Headers/PageHeader';
 import EmptyState from '../../components/EmptyState/EmptyState';
 import Button from '../../components/Button/Button';
 import PetDetailsFooter from '../../components/Footers/PetDetailsFooter';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
 export default function ArchivosScreen({ route, navigation }) {
   const { petName, pet } = route.params; // Recibir datos de la mascota
   const [qrModalVisible, setQrModalVisible] = useState(false);
   const [activeTab, setActiveTab] = useState('archivos'); // Tab activo por defecto
+  const [documents, setDocuments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Datos para simular que no hay archivos (empty state)
-  const hasFiles = false; // Cambiar a true cuando haya archivos
+  // Load documents from AsyncStorage
+  const loadDocuments = useCallback(async () => {
+    try {
+      console.log('📂 Loading documents for pet:', pet?.id || petName);
+      const docKey = `documents:${pet?.id || petName || 'default'}`;
+      const docsStr = await AsyncStorage.getItem(docKey);
+      
+      if (docsStr) {
+        const docs = JSON.parse(docsStr);
+        console.log('✅ Loaded documents:', docs.length);
+        setDocuments(docs);
+      } else {
+        console.log('📭 No documents found');
+        setDocuments([]);
+      }
+    } catch (err) {
+      console.error('❌ Error loading documents:', err);
+      setDocuments([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [pet, petName]);
+
+  // Load documents when screen comes into focus
+  useEffect(() => {
+    loadDocuments();
+    
+    // Reload documents when screen comes back into focus
+    const unsubscribe = navigation.addListener('focus', () => {
+      console.log('🔄 Screen focused, reloading documents...');
+      loadDocuments();
+    });
+
+    return unsubscribe;
+  }, [loadDocuments, navigation]);
+
+  const hasFiles = documents.length > 0;
 
   const handleArchivosPress = () => {
     console.log('Archivos pressed');
@@ -34,8 +74,93 @@ export default function ArchivosScreen({ route, navigation }) {
 
   const handleAddDocument = () => {
     console.log('Añadir documento pressed');
-    // Navegar a la pantalla de subir documento
     navigation.navigate('UploadDocument', { petName, pet });
+  };
+
+  const handleDownloadDocument = async (document) => {
+    console.log('📥 Download requested for:', document.fileName);
+    
+    // Show info that this is test mode with temporary files
+    Alert.alert(
+      'Modo de prueba',
+      'Los archivos se guardan temporalmente y serán limpiados automáticamente por el sistema.\n\nCuando se integre con el backend, los archivos se almacenarán en el servidor y estarán disponibles permanentemente.',
+      [
+        { text: 'Entendido', style: 'cancel' },
+        {
+          text: 'Intentar abrir',
+          onPress: async () => {
+            try {
+              if (Platform.OS === 'web') {
+                if (document.fileUri) {
+                  window.open(document.fileUri, '_blank');
+                } else {
+                  Alert.alert('Error', 'No se encontró la URL del archivo');
+                }
+              } else {
+                // Try to check and share the file
+                if (!document.fileUri) {
+                  Alert.alert('Archivo no disponible', 'No se encontró la URI del archivo');
+                  return;
+                }
+
+                // Check if file still exists
+                try {
+                  const fileInfo = await FileSystem.getInfoAsync(document.fileUri);
+                  if (!fileInfo.exists) {
+                    Alert.alert(
+                      'Archivo temporal eliminado',
+                      'El sistema ya limpió este archivo temporal. Esto es normal en modo de prueba sin backend.'
+                    );
+                    return;
+                  }
+                } catch (checkErr) {
+                  console.warn('⚠️ Could not check file:', checkErr);
+                }
+
+                // Try to share
+                const isAvailable = await Sharing.isAvailableAsync();
+                if (isAvailable) {
+                  await Sharing.shareAsync(document.fileUri, {
+                    mimeType: 'application/pdf',
+                    dialogTitle: document.title || 'Compartir documento',
+                  });
+                  console.log('✅ File shared successfully');
+                } else {
+                  Alert.alert('Info', 'No se puede compartir archivos en este dispositivo');
+                }
+              }
+            } catch (err) {
+              console.error('❌ Download/share error:', err);
+              Alert.alert(
+                'Archivo no disponible',
+                'El archivo temporal ya no está disponible (limpiado por el sistema).\n\nEn producción con backend, los archivos estarán siempre disponibles.'
+              );
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleDocumentPress = (document) => {
+    console.log('📄 Document pressed:', document.title);
+    // Could navigate to a document detail screen or preview
+    Alert.alert(
+      document.title,
+      `${document.description || 'Sin descripción'}\n\nFecha: ${document.date || 'Sin fecha'}\nTamaño: ${formatFileSize(document.fileSize)}`,
+      [
+        { text: 'Cerrar', style: 'cancel' },
+        { text: 'Descargar', onPress: () => handleDownloadDocument(document) }
+      ]
+    );
+  };
+
+  const formatFileSize = (bytes) => {
+    if (!bytes || bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
   };
 
   // Configuración del empty state personalizado
@@ -61,20 +186,19 @@ export default function ArchivosScreen({ route, navigation }) {
     </View>
   );
 
-  // Simular lista de archivos para cuando hasFiles = true
+  // Render list of documents using DocumentCard
   const renderFilesList = () => (
     <View style={styles.filesListContainer}>
-      {/* Simulando archivos para mostrar el scroll */}
-      {Array.from({ length: 10 }, (_, index) => (
-        <View key={index} style={styles.fileItem}>
-          <View style={styles.fileContent}>
-            <View style={styles.fileIcon} />
-            <View style={styles.fileInfo}>
-              <Text style={styles.fileName}>Documento {index + 1}.pdf</Text>
-              <Text style={styles.fileDate}>Subido hace 2 días</Text>
-            </View>
-          </View>
-        </View>
+      {documents.map((doc) => (
+        <DocumentCard
+          key={doc.id}
+          title={doc.title}
+          uploadedBy="Subido por ti"
+          date={doc.uploadedAt || doc.date}
+          fileType="PDF"
+          onDownload={() => handleDownloadDocument(doc)}
+          onPress={() => handleDocumentPress(doc)}
+        />
       ))}
 
       {/* Botón de agregar documento también cuando hay archivos */}
@@ -191,44 +315,6 @@ const styles = StyleSheet.create({
   filesListContainer: {
     flex: 1,
     paddingTop: 8,
-  },
-  fileItem: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    marginBottom: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  fileContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  fileIcon: {
-    width: 40,
-    height: 40,
-    backgroundColor: '#FA8081',
-    borderRadius: 8,
-    marginRight: 12,
-  },
-  fileInfo: {
-    flex: 1,
-  },
-  fileName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333333',
-    marginBottom: 4,
-  },
-  fileDate: {
-    fontSize: 14,
-    color: '#666666',
   },
   bottomSpacer: {
     height: 80, // Espacio para que el footer no tape el último elemento

@@ -6,6 +6,7 @@ export { default as Button } from './Button/Button';
 export { default as Dropdown } from './Dropdown/Dropdown';
 export { default as PetCard } from './Cards/PetCard';
 export { default as ConsultationCard } from './Cards/ConsultationCard';
+export { default as DocumentCard } from './Cards/DocumentCard';
 export { default as ConfirmationModal } from './Modal/ConfirmationModal';
 export { default as QRModal } from './Modal/QRModal';
 export { default as Footer } from './Footers/Footer';

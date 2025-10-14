@@ -191,7 +191,12 @@ export default function UploadDocumentScreen({ route, navigation }) {
     console.log('💾 Starting document save...');
 
     try {
-      // Save document metadata to AsyncStorage
+      // For testing: We DON'T copy files to permanent storage
+      // Files will remain in temp cache and be cleaned up by system
+      // When integrating with API, files will be uploaded to server instead
+      console.log('⚠️ Using temporary file URI (will be auto-cleaned by system)');
+
+      // Save document metadata to AsyncStorage (for testing only)
       const docKey = `documents:${pet?.id || petName || 'default'}`;
       console.log('💾 Saving to AsyncStorage key:', docKey);
       
@@ -202,7 +207,7 @@ export default function UploadDocumentScreen({ route, navigation }) {
       const newDoc = {
         id: Date.now().toString(),
         fileName: uploadedFile.name,
-        fileUri,
+        fileUri, // Temporary URI - will be cleaned by system
         fileSize: uploadedFile.size,
         title: title.trim(),
         date: date.trim(),
@@ -223,24 +228,10 @@ export default function UploadDocumentScreen({ route, navigation }) {
         `"${title}" ha sido guardado exitosamente`,
         [
           {
-            text: 'Ver Archivos',
+            text: 'OK',
             onPress: () => {
               console.log('📂 Navigating back to Archivos');
               navigation.goBack();
-            },
-          },
-          {
-            text: 'Subir Otro',
-            onPress: () => {
-              console.log('🔄 Resetting form for another upload');
-              setTitle('');
-              setDate('');
-              setDescription('');
-              setFileName('');
-              setFileUri('');
-              setFileSize(0);
-              setUploadedFile(null);
-              setUploadProgress(0);
             },
           },
         ]
