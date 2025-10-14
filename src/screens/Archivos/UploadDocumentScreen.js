@@ -44,11 +44,37 @@ export default function UploadDocumentScreen({ route, navigation }) {
     return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
   };
 
+  // Helper function to get file icon and color based on file type
+  const getFileIcon = (fileName) => {
+    if (!fileName) return { name: 'document-text', color: '#FA8081' };
+    
+    const ext = fileName.toLowerCase().split('.').pop();
+    switch (ext) {
+      case 'png':
+      case 'jpg':
+      case 'jpeg':
+      case 'gif':
+      case 'bmp':
+      case 'svg':
+        return { name: 'image', color: '#7C9A5F' };
+      case 'pdf':
+        return { name: 'document-text', color: '#D95D5D' };
+      case 'doc':
+      case 'docx':
+        return { name: 'document', color: '#5B8DBE' };
+      case 'xls':
+      case 'xlsx':
+        return { name: 'grid', color: '#4B9B6C' };
+      default:
+        return { name: 'document-attach', color: '#FA8081' };
+    }
+  };
+
   const handlePickFile = async () => {
     try {
       console.log('🔍 Starting file picker...');
       const res = await DocumentPicker.getDocumentAsync({
-        type: 'application/pdf',
+        type: ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'],
         copyToCacheDirectory: false,
       });
       
@@ -64,9 +90,14 @@ export default function UploadDocumentScreen({ route, navigation }) {
         const file = res.assets[0];
         console.log('✅ File picked (new API):', file);
         
-        const isPdf = file.mimeType === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
-        if (!isPdf) {
-          Alert.alert('Error', 'Solo se permiten archivos PDF por ahora');
+        // Accept PDF and images
+        const allowedTypes = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
+        const allowedExtensions = ['.pdf', '.png', '.jpeg', '.jpg'];
+        const isValidType = allowedTypes.includes(file.mimeType) || 
+                           allowedExtensions.some(ext => file.name.toLowerCase().endsWith(ext));
+        
+        if (!isValidType) {
+          Alert.alert('Error', 'Solo se permiten archivos PDF, PNG, JPEG y JPG');
           return;
         }
 
@@ -97,10 +128,13 @@ export default function UploadDocumentScreen({ route, navigation }) {
         // Old API (backward compatibility)
         const name = res.name || '';
         const mime = res.mimeType || '';
-        const isPdf = mime === 'application/pdf' || name.toLowerCase().endsWith('.pdf');
+        const allowedTypes = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
+        const allowedExtensions = ['.pdf', '.png', '.jpeg', '.jpg'];
+        const isValidType = allowedTypes.includes(mime) || 
+                           allowedExtensions.some(ext => name.toLowerCase().endsWith(ext));
         
-        if (!isPdf) {
-          Alert.alert('Error', 'Solo se permiten archivos PDF por ahora');
+        if (!isValidType) {
+          Alert.alert('Error', 'Solo se permiten archivos PDF, PNG, JPEG y JPG');
           return;
         }
 
@@ -309,7 +343,11 @@ export default function UploadDocumentScreen({ route, navigation }) {
           <View style={styles.uploadedCard}>
             <View style={styles.uploadedRow}>
               <View style={{ width: 36, height: 36, justifyContent: 'center', alignItems: 'center' }}>
-                <Ionicons name="document-text" size={32} color="#FA8081" />
+                <Ionicons 
+                  name={getFileIcon(uploadedFile.name).name} 
+                  size={32} 
+                  color={getFileIcon(uploadedFile.name).color} 
+                />
               </View>
               <View style={{ flex: 1, marginLeft: 8 }}>
                 <Text style={styles.uploadedName}>{uploadedFile.name}</Text>
