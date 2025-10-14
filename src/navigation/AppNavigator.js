@@ -32,7 +32,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Historial" component={HistorialScreen} />
         <Stack.Screen name="Archivos" component={ArchivosScreen} />
-  <Stack.Screen name="UploadDocument" component={UploadDocumentScreen} />
+        <Stack.Screen name="UploadDocument" component={UploadDocumentScreen} />
         <Stack.Screen
           name="NewPetForm"
           component={NewPetFormScreen}

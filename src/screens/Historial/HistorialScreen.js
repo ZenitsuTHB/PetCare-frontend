@@ -18,15 +18,17 @@ export default function HistorialScreen({ route, navigation }) {
     {
       id: 1,
       title: 'Consulta de rutina',
-      description: 'Revisión general, vacunación antirrábica y desparasitación. Todo en perfecto estado.',
-      date: '15/09/2025'
+      description:
+        'Revisión general, vacunación antirrábica y desparasitación. Todo en perfecto estado.',
+      date: '15/09/2025',
     },
     {
       id: 2,
       title: 'Control post-cirugía',
-      description: 'Revisión de sutura tras esterilización. Cicatrización correcta, sin complicaciones.',
-      date: '28/08/2025'
-    }
+      description:
+        'Revisión de sutura tras esterilización. Cicatrización correcta, sin complicaciones.',
+      date: '28/08/2025',
+    },
   ];
 
   const handleArchivosPress = () => {
@@ -77,7 +79,7 @@ export default function HistorialScreen({ route, navigation }) {
             emptyStateProps={emptyStateProps}
           >
             {hasConsultations && (
-              <ScrollView 
+              <ScrollView
                 style={styles.consultationsContainer}
                 showsVerticalScrollIndicator={false}
               >

@@ -76,9 +76,9 @@ export const validateChip = (chip) => {
   console.log('Chip prefix:', prefix);
   const validPrefixes = [981, 990, 985, 977]; // Array de números enteros
   if (!validPrefixes.includes(prefix)) {
-    return { 
+    return {
       isValid: false,
-      message: "El chip no tiene un prefijo válido"
+      message: 'El chip no tiene un prefijo válido',
     };
   }
 

@@ -14,7 +14,7 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 const QRModal = ({ visible, onClose, petName = 'tu mascota' }) => {
   const [imageError, setImageError] = useState(false);
-  
+
   console.log('QRModal render - visible:', visible, 'petName:', petName);
 
   const handleImageError = (error) => {
@@ -64,7 +64,9 @@ const QRModal = ({ visible, onClose, petName = 'tu mascota' }) => {
               {imageError ? (
                 <View style={[styles.qrImage, styles.errorContainer]}>
                   <Text style={styles.errorText}>⚠️ Error cargando QR</Text>
-                  <Text style={styles.errorSubtext}>Intenta cerrar y abrir de nuevo</Text>
+                  <Text style={styles.errorSubtext}>
+                    Intenta cerrar y abrir de nuevo
+                  </Text>
                 </View>
               ) : (
                 <Image

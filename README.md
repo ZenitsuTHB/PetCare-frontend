@@ -249,6 +249,7 @@ npx expo start --clear
 #### Configuración Metro para Hot Reload Óptimo
 
 El proyecto ya incluye configuración optimizada en `metro.config.js`:
+
 - `watchFolders` configurado para monitorear cambios
 - `resetCache` habilitado para mejor detección
 - Source maps mejorados para debugging
