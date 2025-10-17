@@ -15,6 +15,9 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { BackButton } from '../../components';
 import PetDetailsFooter from '../../components/Footers/PetDetailsFooter';
+import { useFiles } from '../../contexts/FilesContext';
+import { usePets } from '../../contexts/PetContext';
+import { getPetIdSync } from '../../utils/petUtils';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -23,6 +26,11 @@ import '../../utils/debugStorage'; // Load debug tools
 
 export default function UploadDocumentScreen({ route, navigation }) {
   const { petName, pet } = route.params || {};
+  const { addFile } = useFiles();
+  const { getPetIdImmediate } = usePets();
+  
+  // Obtener ID único de la mascota
+  const petId = getPetIdImmediate(pet, petName) || getPetIdSync(pet, petName);
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
   const [description, setDescription] = useState('');
@@ -219,25 +227,13 @@ export default function UploadDocumentScreen({ route, navigation }) {
     }
 
     console.log('✅ Validation passed');
-    console.log('� Submit data:', { title, date, description, uploadedFile, fileUri });
+    console.log('📋 Submit data:', { title, date, description, uploadedFile, fileUri });
 
     setIsSubmitting(true);
     console.log('💾 Starting document save...');
 
     try {
-      // For testing: We DON'T copy files to permanent storage
-      // Files will remain in temp cache and be cleaned up by system
-      // When integrating with API, files will be uploaded to server instead
-      console.log('⚠️ Using temporary file URI (will be auto-cleaned by system)');
-
-      // Save document metadata to AsyncStorage (for testing only)
-      const docKey = `documents:${pet?.id || petName || 'default'}`;
-      console.log('💾 Saving to AsyncStorage key:', docKey);
-      
-      const existingDocsStr = await AsyncStorage.getItem(docKey);
-      const existingDocs = existingDocsStr ? JSON.parse(existingDocsStr) : [];
-      console.log('📚 Existing documents:', existingDocs.length);
-
+      // Create new document object
       const newDoc = {
         id: Date.now().toString(),
         fileName: uploadedFile.name,
@@ -251,11 +247,10 @@ export default function UploadDocumentScreen({ route, navigation }) {
         petName: pet?.name || petName,
       };
 
-      existingDocs.push(newDoc);
-      await AsyncStorage.setItem(docKey, JSON.stringify(existingDocs));
+      // Save using FilesContext
+      await addFile(petId, newDoc);
 
       console.log('✅ Document saved:', newDoc);
-      console.log('� Total documents for pet:', existingDocs.length);
 
       Alert.alert(
         '✅ Documento guardado',
@@ -442,6 +437,8 @@ export default function UploadDocumentScreen({ route, navigation }) {
         onArchivosPress={() => navigation.navigate('Archivos', { petName, pet })}
         onQRPress={() => navigation.navigate('PetDetails', { petName, pet })}
         onHistorialPress={() => navigation.navigate('Historial', { petName, pet })}
+        pet={pet}
+        petName={petName}
       />
     </KeyboardAvoidingView>
   );

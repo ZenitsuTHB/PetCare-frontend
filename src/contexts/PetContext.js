@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getPetId, migratePetToUniqueId, generateUniqueId } from '../utils/petUtils';
 
 const PetContext = createContext();
 
@@ -24,12 +25,18 @@ export const PetProvider = ({ children }) => {
     try {
       const storedPets = await AsyncStorage.getItem('pets');
       if (storedPets) {
-        setPets(JSON.parse(storedPets));
+        const parsedPets = JSON.parse(storedPets);
+        console.log('=== LOADED PETS FROM STORAGE ===');
+        console.log('Loaded pets:', parsedPets);
+        
+        // Migrar mascotas a IDs únicos si es necesario
+        const migratedPets = await migratePetsToUniqueIds(parsedPets);
+        setPets(migratedPets);
       } else {
-        // Datos de prueba si no hay mascotas guardadas
+        // Datos de prueba si no hay mascotas guardadas con IDs únicos
         const testPets = [
           {
-            id: '1',
+            id: generateUniqueId(),
             name: 'Max',
             species: 'Perro',
             breed: 'Golden Retriever',
@@ -42,7 +49,7 @@ export const PetProvider = ({ children }) => {
             notes: 'Muy juguetón y amigable',
           },
           {
-            id: '2',
+            id: generateUniqueId(),
             name: 'Luna',
             species: 'Gato',
             breed: 'Persa',
@@ -65,6 +72,32 @@ export const PetProvider = ({ children }) => {
     }
   };
 
+  // Migrar mascotas existentes a IDs únicos
+  const migratePetsToUniqueIds = async (petsArray) => {
+    let hasChanges = false;
+    const migratedPets = [];
+
+    for (const pet of petsArray) {
+      if (!pet.id || typeof pet.id !== 'string' || pet.id.length < 10) {
+        console.log(`Migrating pet ${pet.name} to unique ID...`);
+        const uniqueId = generateUniqueId();
+        const migratedPet = { ...pet, id: uniqueId, _migrated: true, _oldId: pet.id };
+        migratedPets.push(migratedPet);
+        hasChanges = true;
+      } else {
+        migratedPets.push(pet);
+      }
+    }
+
+    // Guardar si hubo cambios
+    if (hasChanges) {
+      console.log('Saving migrated pets:', migratedPets);
+      await AsyncStorage.setItem('pets', JSON.stringify(migratedPets));
+    }
+
+    return migratedPets;
+  };
+
   // Guardar mascotas en AsyncStorage
   const savePets = async (newPets) => {
     try {
@@ -74,10 +107,10 @@ export const PetProvider = ({ children }) => {
     }
   };
 
-  // Agregar nueva mascota
+  // Agregar nueva mascota con ID único
   const addPet = async (petData) => {
     const newPet = {
-      id: Date.now().toString(), // ID único simple
+      id: generateUniqueId(), // ID único UUID
       ...petData,
       registrationDate: new Date().toLocaleDateString('es-ES'), // Fecha actual
     };
@@ -86,6 +119,31 @@ export const PetProvider = ({ children }) => {
     setPets(updatedPets);
     await savePets(updatedPets);
     return newPet;
+  };
+
+  // Obtener mascota por ID
+  const getPetById = (petId) => {
+    return pets.find(pet => pet.id === petId) || null;
+  };
+
+  // Obtener ID de mascota (para compatibilidad con FilesContext)
+  const getPetIdImmediate = (pet, petName) => {
+    if (pet?.id) {
+      return pet.id;
+    }
+    
+    // Buscar en mascotas registradas por características únicas
+    const foundPet = pets.find(p => 
+      p.name === (pet?.name || petName) && 
+      (p.chip === pet?.chip || p.birthdate === pet?.birthdate)
+    );
+    
+    if (foundPet) {
+      return foundPet.id;
+    }
+    
+    // Si no se encuentra, devolver null para forzar creación/registro
+    return null;
   };
 
   // Actualizar mascota existente
@@ -117,6 +175,8 @@ export const PetProvider = ({ children }) => {
     updatePet,
     deletePet,
     refreshPets: loadPets,
+    getPetById,
+    getPetIdImmediate,
   };
 
   return <PetContext.Provider value={value}>{children}</PetContext.Provider>;

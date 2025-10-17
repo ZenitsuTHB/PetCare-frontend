@@ -6,6 +6,9 @@ import PageHeader from '../../components/Headers/PageHeader';
 import EmptyState from '../../components/EmptyState/EmptyState';
 import Button from '../../components/Button/Button';
 import PetDetailsFooter from '../../components/Footers/PetDetailsFooter';
+import { useFiles } from '../../contexts/FilesContext';
+import { usePets } from '../../contexts/PetContext';
+import { getPetIdSync } from '../../utils/petUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
@@ -14,45 +17,15 @@ export default function ArchivosScreen({ route, navigation }) {
   const { petName, pet } = route.params; // Recibir datos de la mascota
   const [qrModalVisible, setQrModalVisible] = useState(false);
   const [activeTab, setActiveTab] = useState('archivos'); // Tab activo por defecto
-  const [documents, setDocuments] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { getPetFiles, addFile, removeFile, petFiles } = useFiles();
+  const { getPetIdImmediate } = usePets();
+  
+  // Obtener archivos del contexto usando ID único
+  const petId = getPetIdImmediate(pet, petName) || getPetIdSync(pet, petName);
+  const petData = getPetFiles(petId);
+  const documents = petData.files || [];
 
-  // Load documents from AsyncStorage
-  const loadDocuments = useCallback(async () => {
-    try {
-      console.log('📂 Loading documents for pet:', pet?.id || petName);
-      const docKey = `documents:${pet?.id || petName || 'default'}`;
-      const docsStr = await AsyncStorage.getItem(docKey);
-      
-      if (docsStr) {
-        const docs = JSON.parse(docsStr);
-        console.log('✅ Loaded documents:', docs.length);
-        setDocuments(docs);
-      } else {
-        console.log('📭 No documents found');
-        setDocuments([]);
-      }
-    } catch (err) {
-      console.error('❌ Error loading documents:', err);
-      setDocuments([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [pet, petName]);
-
-  // Load documents when screen comes into focus
-  useEffect(() => {
-    loadDocuments();
-    
-    // Reload documents when screen comes back into focus
-    const unsubscribe = navigation.addListener('focus', () => {
-      console.log('🔄 Screen focused, reloading documents...');
-      loadDocuments();
-    });
-
-    return unsubscribe;
-  }, [loadDocuments, navigation]);
-
+  // Verificar si hay archivos
   const hasFiles = documents.length > 0;
 
   const handleArchivosPress = () => {
@@ -280,6 +253,8 @@ export default function ArchivosScreen({ route, navigation }) {
           onArchivosPress={handleArchivosPress}
           onQRPress={handleQRPress}
           onHistorialPress={handleHistorialPress}
+          pet={pet}
+          petName={petName}
         />
       </View>
 
