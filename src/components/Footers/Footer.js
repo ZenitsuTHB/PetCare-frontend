@@ -10,29 +10,42 @@ import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { Easing } from 'react-native';
 
 const NavItem = ({ tabName, label, icon, isActive, onPress }) => {
+  // Nodos de animación separados para evitar conflictos
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const underlineAnim = useRef(new Animated.Value(isActive ? 1 : 0)).current;
+  const opacityAnim = useRef(new Animated.Value(isActive ? 1 : 0.7)).current;
 
   useEffect(() => {
+    // Animación de escala (usando nativeDriver)
     if (isActive) {
-      // Animación de "pop" en el icono al activarse
       Animated.sequence([
         Animated.spring(scaleAnim, {
-          toValue: 1.2,
+          toValue: 1.15,
           useNativeDriver: true,
+          tension: 300,
+          friction: 10,
         }),
         Animated.spring(scaleAnim, {
           toValue: 1,
           useNativeDriver: true,
+          tension: 300,
+          friction: 10,
         }),
       ]).start();
     }
 
-    // Animación suave para el subrayado
+    // Animación de opacidad (usando nativeDriver)
+    Animated.timing(opacityAnim, {
+      toValue: isActive ? 1 : 0.7,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+
+    // Animación del subrayado (NO usando nativeDriver)
     Animated.timing(underlineAnim, {
       toValue: isActive ? 1 : 0,
       duration: 250,
-      Easing: Easing.in(Easing.ease),
+      easing: Easing.bezier(0.4, 0, 0.2, 1),
       useNativeDriver: false,
     }).start();
   }, [isActive]);
@@ -43,7 +56,12 @@ const NavItem = ({ tabName, label, icon, isActive, onPress }) => {
       onPress={onPress}
       activeOpacity={0.8}
     >
-      <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+      <Animated.View
+        style={{
+          opacity: opacityAnim,
+          transform: [{ scale: scaleAnim }],
+        }}
+      >
         {icon === 'notifications-outline' || icon === 'person-outline' ? (
           <Ionicons
             name={icon}
@@ -62,11 +80,14 @@ const NavItem = ({ tabName, label, icon, isActive, onPress }) => {
         {label}
       </Text>
 
-      {/* Subrayado animado */}
+      {/* Subrayado animado - separado del nodo transform */}
       <Animated.View
         style={[
           styles.underline,
-          { opacity: underlineAnim, transform: [{ scaleX: underlineAnim }] },
+          {
+            opacity: underlineAnim,
+            transform: [{ scaleX: underlineAnim }],
+          },
         ]}
       />
     </TouchableOpacity>

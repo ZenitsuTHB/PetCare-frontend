@@ -79,17 +79,22 @@ const NotificationsScreen = ({ navigation }) => {
           }
           renderItem={({ item }) => (
             <View style={{ marginBottom: 12 }}>
-              <NotificationCard
-                title={item.title}
-                description={item.description}
-                dateText={item.dateText}
-                timeText={item.timeText}
-                variant={item.variant}
-                showToggle={!!item.showToggle}
-                toggleValue={!!item.toggle}
-                onToggle={(val) => handleToggle(item.id, val)}
-                onClose={() => handleRemove(item.id)}
-              />
+              <TouchableOpacity
+                onPress={() => navigation.navigate('NotificationDetail', { notification: item })}
+                activeOpacity={0.7}
+              >
+                <NotificationCard
+                  title={item.title}
+                  description={item.description}
+                  dateText={item.dateText}
+                  timeText={item.timeText}
+                  variant={item.variant}
+                  showToggle={!!item.showToggle}
+                  toggleValue={!!item.toggle}
+                  onToggle={(val) => handleToggle(item.id, val)}
+                  onClose={() => handleRemove(item.id)}
+                />
+              </TouchableOpacity>
             </View>
           )}
         />
@@ -99,7 +104,9 @@ const NotificationsScreen = ({ navigation }) => {
       <View style={styles.bottomArea}>
         <TouchableOpacity
           style={styles.cta}
-          onPress={() => console.log('Nuevo recordatorio')}
+          onPress={() => navigation.navigate('ReminderTimer', { 
+            notification: { title: 'Nuevo recordatorio', variant: 'user' } 
+          })}
           accessibilityRole="button"
           accessibilityLabel="Crear nuevo recordatorio"
         >

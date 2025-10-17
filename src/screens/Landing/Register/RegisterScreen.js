@@ -11,8 +11,8 @@ import {
   Platform,
   StatusBar,
   ScrollView,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { registerUser } from '../../../api/auth';
 import Header from '../../../components/Headers/Header';
 import LinearGradient from '../../../components/Utils/LinearGradient';

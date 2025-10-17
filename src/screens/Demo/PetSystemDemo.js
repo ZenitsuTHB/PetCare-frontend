@@ -4,9 +4,9 @@ import {
   Text,
   StyleSheet,
   StatusBar,
-  SafeAreaView,
   ScrollView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Button from '../../components/Button/Button';
 import { usePets } from '../../contexts/PetContext';
 

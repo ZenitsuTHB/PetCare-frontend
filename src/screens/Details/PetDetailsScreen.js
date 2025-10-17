@@ -51,7 +51,7 @@ const PetDetailsScreen = ({ route, navigation }) => {
   const handleArchivosPress = () => {
     console.log('Archivos pressed');
     setActiveTab('archivos');
-    navigation.navigate('Archivos', { pet });
+    navigation.navigate('Archivos', { petName: pet.name, pet });
   };
 
   const handleQRPress = () => {
@@ -134,6 +134,8 @@ const PetDetailsScreen = ({ route, navigation }) => {
           onArchivosPress={handleArchivosPress}
           onQRPress={handleQRPress}
           onHistorialPress={handleHistorialPress}
+          pet={pet}
+          petName={pet?.name}
         />
       </View>
 

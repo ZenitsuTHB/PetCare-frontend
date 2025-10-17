@@ -9,33 +9,49 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Easing } from 'react-native';
+import { useFiles } from '../../contexts/FilesContext';
+import { usePets } from '../../contexts/PetContext';
+import { getPetIdSync } from '../../utils/petUtils';
 
 const COLORS = { card: '#FFF', text: '#121212', primary: '#FA8081' };
 
-const TabItem = ({ icon, label, isActive, onPress, isQRTab = false }) => {
+const TabItem = ({ icon, label, isActive, onPress, isQRTab = false, badge }) => {
+  // Crear referencias únicas para cada instancia del componente
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const underlineAnim = useRef(new Animated.Value(isActive ? 1 : 0)).current;
+  const opacityAnim = useRef(new Animated.Value(isActive ? 1 : 0.7)).current;
 
   useEffect(() => {
+    // Animación de escala (solo para iconos, usando nativeDriver)
     if (isActive && !isQRTab) {
-      // Animación de "pop" en el icono al activarse (excepto para QR)
       Animated.sequence([
         Animated.spring(scaleAnim, {
-          toValue: 1.2,
+          toValue: 1.15,
           useNativeDriver: true,
+          tension: 300,
+          friction: 10,
         }),
         Animated.spring(scaleAnim, {
           toValue: 1,
           useNativeDriver: true,
+          tension: 300,
+          friction: 10,
         }),
       ]).start();
     }
 
-    // Animación suave para el subrayado
+    // Animación de opacidad (usando nativeDriver)
+    Animated.timing(opacityAnim, {
+      toValue: isActive ? 1 : 0.7,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+
+    // Animación del subrayado (NO usando nativeDriver para layout)
     Animated.timing(underlineAnim, {
       toValue: isActive ? 1 : 0,
       duration: 250,
-      easing: Easing.in(Easing.ease),
+      easing: Easing.bezier(0.4, 0, 0.2, 1),
       useNativeDriver: false,
     }).start();
   }, [isActive, isQRTab]);
@@ -47,19 +63,35 @@ const TabItem = ({ icon, label, isActive, onPress, isQRTab = false }) => {
       activeOpacity={0.85}
     >
       <Animated.View
-        style={{ transform: [{ scale: isQRTab ? 1 : scaleAnim }] }}
+        style={{ 
+          transform: [{ scale: isQRTab ? 1 : scaleAnim }],
+          opacity: opacityAnim
+        }}
       >
         {icon && (
-          <Ionicons
-            name={icon}
-            size={22}
-            color={isActive ? COLORS.primary : COLORS.text}
-          />
+          <View style={styles.iconContainer}>
+            <Ionicons
+              name={icon}
+              size={22}
+              color={isActive ? COLORS.primary : COLORS.text}
+            />
+            {badge > 0 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{badge}</Text>
+              </View>
+            )}
+          </View>
         )}
       </Animated.View>
-      <Text style={[styles.label, isActive && styles.labelActive]}>
+      <Animated.Text 
+        style={[
+          styles.label, 
+          isActive && styles.labelActive,
+          { opacity: opacityAnim }
+        ]}
+      >
         {label}
-      </Text>
+      </Animated.Text>
 
       {/* Subrayado animado */}
       <Animated.View
@@ -80,7 +112,17 @@ const PetDetailsFooter = ({
   onArchivosPress,
   onQRPress,
   onHistorialPress,
+  petId, // Mantener por compatibilidad
+  pet, // Objeto de la mascota
+  petName, // Nombre de la mascota
 }) => {
+  const { getFilesCount } = useFiles();
+  const { getPetIdImmediate } = usePets();
+  
+  // Usar sistema de IDs únicos para asegurar consistencia
+  const computedPetId = petId || getPetIdImmediate(pet, petName) || getPetIdSync(pet, petName);
+  const filesCount = computedPetId ? getFilesCount(computedPetId) : 0;
+
   return (
     <View style={styles.wrapper}>
       {/* Archivos */}
@@ -89,6 +131,7 @@ const PetDetailsFooter = ({
         label="Archivos"
         isActive={activeTab === 'archivos'}
         onPress={onArchivosPress}
+        badge={filesCount}
       />
 
       {/* Etiqueta centrada (Generar QR) */}
@@ -150,6 +193,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative', // Para el subrayado animado
+  },
+  iconContainer: {
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badge: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    backgroundColor: COLORS.primary,
+    borderRadius: 8,
+    minWidth: 16,
+    height: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 4,
+  },
+  badgeText: {
+    color: 'white',
+    fontSize: 10,
+    fontWeight: 'bold',
   },
   label: { fontSize: 12, color: COLORS.text, marginTop: 2 }, // Mismo marginTop que Footer
   labelActive: { color: COLORS.primary, fontWeight: '600' },

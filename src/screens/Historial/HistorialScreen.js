@@ -34,7 +34,7 @@ export default function HistorialScreen({ route, navigation }) {
   const handleArchivosPress = () => {
     console.log('Archivos pressed');
     setActiveTab('archivos');
-    navigation.navigate('Archivos', { pet: route.params?.pet });
+    navigation.navigate('Archivos', { petName, pet });
   };
 
   const handleQRPress = () => {
@@ -102,6 +102,8 @@ export default function HistorialScreen({ route, navigation }) {
           onArchivosPress={handleArchivosPress}
           onQRPress={handleQRPress}
           onHistorialPress={handleHistorialPress}
+          pet={pet}
+          petName={petName}
         />
       </View>
 

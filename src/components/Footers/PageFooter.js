@@ -17,29 +17,42 @@ const TabItem = ({
   onPress,
   isQRTab = false,
 }) => {
+  // Nodos de animación separados para evitar conflictos
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const underlineAnim = useRef(new Animated.Value(isActive ? 1 : 0)).current;
+  const opacityAnim = useRef(new Animated.Value(isActive ? 1 : 0.7)).current;
 
   useEffect(() => {
+    // Animación de escala (usando nativeDriver)
     if (isActive && !isQRTab) {
-      // Animación de "pop" en el icono al activarse (excepto para QR)
       Animated.sequence([
         Animated.spring(scaleAnim, {
-          toValue: 1.2,
+          toValue: 1.15,
           useNativeDriver: true,
+          tension: 300,
+          friction: 10,
         }),
         Animated.spring(scaleAnim, {
           toValue: 1,
           useNativeDriver: true,
+          tension: 300,
+          friction: 10,
         }),
       ]).start();
     }
 
-    // Animación suave para el subrayado
+    // Animación de opacidad (usando nativeDriver)
+    Animated.timing(opacityAnim, {
+      toValue: isActive ? 1 : 0.7,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+
+    // Animación del subrayado (NO usando nativeDriver)
     Animated.timing(underlineAnim, {
       toValue: isActive ? 1 : 0,
       duration: 250,
-      easing: Easing.in(Easing.ease),
+      easing: Easing.bezier(0.4, 0, 0.2, 1),
       useNativeDriver: false,
     }).start();
   }, [isActive, isQRTab]);
@@ -47,7 +60,10 @@ const TabItem = ({
   return (
     <TouchableOpacity style={styles.tab} onPress={onPress} activeOpacity={0.8}>
       <Animated.View
-        style={{ transform: [{ scale: isQRTab ? 1 : scaleAnim }] }}
+        style={{
+          opacity: opacityAnim,
+          transform: [{ scale: isQRTab ? 1 : scaleAnim }],
+        }}
       >
         {icon && (
           <MaterialIcons
@@ -61,7 +77,7 @@ const TabItem = ({
         {label}
       </Text>
 
-      {/* Subrayado animado */}
+      {/* Subrayado animado - separado del nodo transform */}
       <Animated.View
         style={[
           styles.underline,
