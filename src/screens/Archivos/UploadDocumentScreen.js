@@ -252,19 +252,9 @@ export default function UploadDocumentScreen({ route, navigation }) {
 
       console.log('✅ Document saved:', newDoc);
 
-      Alert.alert(
-        '✅ Documento guardado',
-        `"${title}" ha sido guardado exitosamente`,
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              console.log('📂 Navigating back to Archivos');
-              navigation.goBack();
-            },
-          },
-        ]
-      );
+      // Navegar automáticamente a la página de archivos
+      console.log('📂 Navigating to Archivos page automatically');
+      navigation.navigate('Archivos', { petName, pet });
     } catch (err) {
       console.error('❌ Save error:', err);
       Alert.alert('Error', `No se pudo guardar: ${err.message}`);
