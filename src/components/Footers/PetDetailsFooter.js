@@ -16,29 +16,42 @@ import { getPetIdSync } from '../../utils/petUtils';
 const COLORS = { card: '#FFF', text: '#121212', primary: '#FA8081' };
 
 const TabItem = ({ icon, label, isActive, onPress, isQRTab = false, badge }) => {
+  // Crear referencias únicas para cada instancia del componente
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const underlineAnim = useRef(new Animated.Value(isActive ? 1 : 0)).current;
+  const opacityAnim = useRef(new Animated.Value(isActive ? 1 : 0.7)).current;
 
   useEffect(() => {
+    // Animación de escala (solo para iconos, usando nativeDriver)
     if (isActive && !isQRTab) {
-      // Animación de "pop" en el icono al activarse (excepto para QR)
       Animated.sequence([
         Animated.spring(scaleAnim, {
-          toValue: 1.2,
+          toValue: 1.15,
           useNativeDriver: true,
+          tension: 300,
+          friction: 10,
         }),
         Animated.spring(scaleAnim, {
           toValue: 1,
           useNativeDriver: true,
+          tension: 300,
+          friction: 10,
         }),
       ]).start();
     }
 
-    // Animación suave para el subrayado
+    // Animación de opacidad (usando nativeDriver)
+    Animated.timing(opacityAnim, {
+      toValue: isActive ? 1 : 0.7,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+
+    // Animación del subrayado (NO usando nativeDriver para layout)
     Animated.timing(underlineAnim, {
       toValue: isActive ? 1 : 0,
       duration: 250,
-      easing: Easing.in(Easing.ease),
+      easing: Easing.bezier(0.4, 0, 0.2, 1),
       useNativeDriver: false,
     }).start();
   }, [isActive, isQRTab]);
@@ -50,7 +63,10 @@ const TabItem = ({ icon, label, isActive, onPress, isQRTab = false, badge }) => 
       activeOpacity={0.85}
     >
       <Animated.View
-        style={{ transform: [{ scale: isQRTab ? 1 : scaleAnim }] }}
+        style={{ 
+          transform: [{ scale: isQRTab ? 1 : scaleAnim }],
+          opacity: opacityAnim
+        }}
       >
         {icon && (
           <View style={styles.iconContainer}>
@@ -67,9 +83,15 @@ const TabItem = ({ icon, label, isActive, onPress, isQRTab = false, badge }) => 
           </View>
         )}
       </Animated.View>
-      <Text style={[styles.label, isActive && styles.labelActive]}>
+      <Animated.Text 
+        style={[
+          styles.label, 
+          isActive && styles.labelActive,
+          { opacity: opacityAnim }
+        ]}
+      >
         {label}
-      </Text>
+      </Animated.Text>
 
       {/* Subrayado animado */}
       <Animated.View

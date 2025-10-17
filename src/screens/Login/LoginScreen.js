@@ -14,7 +14,7 @@ import {
 import { loginUser } from '../../api/auth';
 import Header from '../../components/Headers/Header';
 import LinearGradient from '../../components/Utils/LinearGradient';
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');

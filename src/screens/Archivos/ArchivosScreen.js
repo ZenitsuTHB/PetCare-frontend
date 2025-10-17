@@ -53,92 +53,173 @@ export default function ArchivosScreen({ route, navigation }) {
   const handleDownloadDocument = async (document) => {
     console.log('📥 Download requested for:', document.fileName);
     
-    // Show info that this is test mode with temporary files
-    Alert.alert(
-      'Modo de prueba',
-      'Los archivos se guardan temporalmente y serán limpiados automáticamente por el sistema.\n\nCuando se integre con el backend, los archivos se almacenarán en el servidor y estarán disponibles permanentemente.',
-      [
-        { text: 'Entendido', style: 'cancel' },
-        {
-          text: 'Intentar abrir',
-          onPress: async () => {
-            try {
-              if (Platform.OS === 'web') {
-                if (document.fileUri) {
-                  window.open(document.fileUri, '_blank');
-                } else {
-                  Alert.alert('Error', 'No se encontró la URL del archivo');
-                }
-              } else {
-                // Try to check and share the file
-                if (!document.fileUri) {
-                  Alert.alert('Archivo no disponible', 'No se encontró la URI del archivo');
-                  return;
-                }
+    if (!document.fileUri) {
+      Alert.alert('Error', 'No se encontró el archivo para descargar');
+      return;
+    }
 
-                // Check if file still exists
-                try {
-                  const fileInfo = await FileSystem.getInfoAsync(document.fileUri);
-                  if (!fileInfo.exists) {
-                    Alert.alert(
-                      'Archivo temporal eliminado',
-                      'El sistema ya limpió este archivo temporal. Esto es normal en modo de prueba sin backend.'
-                    );
-                    return;
-                  }
-                } catch (checkErr) {
-                  console.warn('⚠️ Could not check file:', checkErr);
-                }
+    try {
+      // Verificar si el archivo existe
+      const fileInfo = await FileSystem.getInfoAsync(document.fileUri);
+      if (!fileInfo.exists) {
+        Alert.alert(
+          'Archivo no disponible',
+          'El archivo temporal ya no está disponible. En modo de prueba, los archivos se limpian automáticamente.',
+          [{ text: 'Entendido', style: 'default' }]
+        );
+        return;
+      }
 
-                // Try to share
-                const isAvailable = await Sharing.isAvailableAsync();
-                if (isAvailable) {
-                  // Determine MIME type from file extension
-                  const getMimeType = (fileName) => {
-                    if (!fileName) return 'application/octet-stream';
-                    const ext = fileName.toLowerCase().split('.').pop();
-                    const mimeTypes = {
-                      'pdf': 'application/pdf',
-                      'png': 'image/png',
-                      'jpg': 'image/jpeg',
-                      'jpeg': 'image/jpeg',
-                    };
-                    return mimeTypes[ext] || 'application/octet-stream';
-                  };
-
-                  await Sharing.shareAsync(document.fileUri, {
-                    mimeType: getMimeType(document.fileName),
-                    dialogTitle: document.title || 'Compartir documento',
-                  });
-                  console.log('✅ File shared successfully');
-                } else {
-                  Alert.alert('Info', 'No se puede compartir archivos en este dispositivo');
-                }
-              }
-            } catch (err) {
-              console.error('❌ Download/share error:', err);
-              Alert.alert(
-                'Archivo no disponible',
-                'El archivo temporal ya no está disponible (limpiado por el sistema).\n\nEn producción con backend, los archivos estarán siempre disponibles.'
-              );
-            }
-          },
-        },
-      ]
-    );
+      if (Platform.OS === 'web') {
+        // En web, intentar descargar el archivo
+        try {
+          // Crear un enlace de descarga
+          const link = window.document.createElement('a');
+          link.href = document.fileUri;
+          link.download = document.fileName || 'documento';
+          link.style.display = 'none';
+          window.document.body.appendChild(link);
+          link.click();
+          window.document.body.removeChild(link);
+          
+          Alert.alert('✅ Descarga iniciada', `"${document.title || document.fileName}" se está descargando...`);
+        } catch (webError) {
+          console.error('Web download error:', webError);
+          // Fallback: abrir en nueva ventana
+          window.open(document.fileUri, '_blank');
+          Alert.alert('✅ Archivo abierto', 'El archivo se ha abierto en una nueva ventana');
+        }
+      } else {
+        // En móvil, usar sharing para "descargar" (guardar/compartir)
+        const isAvailable = await Sharing.isAvailableAsync();
+        if (isAvailable) {
+          await Sharing.shareAsync(document.fileUri, {
+            mimeType: getMimeType(document.fileName),
+            dialogTitle: `Descargar ${document.title || document.fileName}`,
+          });
+        } else {
+          Alert.alert('Error', 'No se puede descargar archivos en este dispositivo');
+        }
+      }
+    } catch (error) {
+      console.error('❌ Download error:', error);
+      Alert.alert(
+        'Error de descarga',
+        'No se pudo descargar el archivo. El archivo temporal puede haber sido eliminado.',
+        [{ text: 'Entendido', style: 'default' }]
+      );
+    }
   };
 
-  const handleDocumentPress = (document) => {
+  const handleDocumentPress = async (document) => {
     console.log('📄 Document pressed:', document.title);
-    // Could navigate to a document detail screen or preview
-    Alert.alert(
-      document.title,
-      `${document.description || 'Sin descripción'}\n\nFecha: ${document.date || 'Sin fecha'}\nTamaño: ${formatFileSize(document.fileSize)}`,
-      [
-        { text: 'Cerrar', style: 'cancel' },
-        { text: 'Descargar', onPress: () => handleDownloadDocument(document) }
-      ]
-    );
+    
+    // Si es una imagen, intentar abrir directamente
+    const imageTypes = ['png', 'jpg', 'jpeg', 'gif', 'bmp'];
+    const fileExtension = document.fileName?.split('.').pop()?.toLowerCase();
+    const isImage = imageTypes.includes(fileExtension);
+    
+    if (Platform.OS === 'web') {
+      // En web, abrir directamente el archivo
+      if (document.fileUri) {
+        window.open(document.fileUri, '_blank');
+      } else {
+        Alert.alert('Error', 'No se puede visualizar el archivo: URI no disponible');
+      }
+    } else {
+      // En móvil, mostrar opciones
+      Alert.alert(
+        document.title,
+        `${document.description || 'Sin descripción'}\n\nFecha: ${document.date || 'Sin fecha'}\nTamaño: ${formatFileSize(document.fileSize)}`,
+        [
+          { text: 'Cerrar', style: 'cancel' },
+          { 
+            text: isImage ? 'Ver imagen' : 'Abrir', 
+            onPress: () => handleViewDocument(document) 
+          },
+          { text: 'Descargar', onPress: () => handleDownloadDocument(document) }
+        ]
+      );
+    }
+  };
+
+  const handleViewDocument = async (document) => {
+    console.log('👀 Viewing document:', document.fileName);
+    
+    if (!document.fileUri) {
+      Alert.alert('Error', 'No se encontró el archivo');
+      return;
+    }
+
+    try {
+      // Verificar si el archivo existe
+      const fileInfo = await FileSystem.getInfoAsync(document.fileUri);
+      if (!fileInfo.exists) {
+        Alert.alert(
+          'Archivo no disponible',
+          'El archivo temporal ya no está disponible. Los archivos se limpian automáticamente por el sistema.',
+          [{ text: 'Entendido', style: 'default' }]
+        );
+        return;
+      }
+
+      // Intentar abrir el archivo con una aplicación externa
+      if (Platform.OS === 'ios') {
+        // En iOS usar Linking para abrir con aplicación predeterminada
+        const canOpen = await Linking.canOpenURL(document.fileUri);
+        if (canOpen) {
+          await Linking.openURL(document.fileUri);
+        } else {
+          // Fallback: compartir el archivo
+          await Sharing.shareAsync(document.fileUri);
+        }
+      } else {
+        // En Android, usar sharing que permite abrir con aplicaciones
+        await Sharing.shareAsync(document.fileUri);
+      }
+    } catch (error) {
+      console.error('Error viewing document:', error);
+      Alert.alert(
+        'No se puede abrir',
+        'No se pudo abrir el archivo. Intenta descargarlo o abrirlo con otra aplicación.',
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          { text: 'Compartir', onPress: () => handleShareDocument(document) }
+        ]
+      );
+    }
+  };
+
+  const handleShareDocument = async (document) => {
+    try {
+      if (document.fileUri && await FileSystem.getInfoAsync(document.fileUri).then(info => info.exists)) {
+        await Sharing.shareAsync(document.fileUri, {
+          mimeType: getMimeType(document.fileName),
+          dialogTitle: `Compartir ${document.title}`
+        });
+      } else {
+        Alert.alert('Error', 'Archivo no disponible para compartir');
+      }
+    } catch (error) {
+      console.error('Error sharing document:', error);
+      Alert.alert('Error', 'No se pudo compartir el archivo');
+    }
+  };
+
+  const getMimeType = (fileName) => {
+    const extension = fileName?.split('.').pop()?.toLowerCase();
+    const mimeTypes = {
+      'pdf': 'application/pdf',
+      'png': 'image/png',
+      'jpg': 'image/jpeg',
+      'jpeg': 'image/jpeg',
+      'gif': 'image/gif',
+      'doc': 'application/msword',
+      'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'xls': 'application/vnd.ms-excel',
+      'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    };
+    return mimeTypes[extension] || 'application/octet-stream';
   };
 
   const formatFileSize = (bytes) => {

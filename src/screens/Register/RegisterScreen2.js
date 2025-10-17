@@ -15,7 +15,7 @@ import {
 import { Picker } from '@react-native-picker/picker';
 import Header from '../../components/Headers/Header';
 import ProvincePicker from '../../components/Utils/ProvincePicker';
-import { SafeAreaView } from 'react-native-web';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from '../../components/Utils/LinearGradient';
 import { validateRegistrationCompleteForm } from '../../utils/validation';
 

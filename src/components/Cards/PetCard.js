@@ -1,11 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   Image,
   TouchableOpacity,
-  Animated,
   Pressable,
   Platform,
 } from 'react-native';
@@ -30,11 +29,6 @@ const PetCard = ({
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [isPressed, setIsPressed] = useState(false);
-
-  // Valores animados para el efecto flotante
-  const animatedValue = useRef(new Animated.Value(0)).current;
-  const shadowOpacity = useRef(new Animated.Value(0.15)).current;
 
   const handleConfirmDelete = () => {
     setDeleteModalVisible(false);
@@ -43,75 +37,16 @@ const PetCard = ({
     }
   };
 
-  // Animaciones de click/press
-  const handlePressIn = () => {
-    setIsPressed(true);
-    Animated.parallel([
-      Animated.spring(animatedValue, {
-        toValue: 1,
-        useNativeDriver: true,
-        tension: 200,
-        friction: 6,
-      }),
-      Animated.timing(shadowOpacity, {
-        toValue: 0.35,
-        duration: 250,
-        useNativeDriver: false,
-      }),
-    ]).start();
-  };
-
-  const handlePressOut = () => {
-    setIsPressed(false);
-    Animated.parallel([
-      Animated.spring(animatedValue, {
-        toValue: 0,
-        useNativeDriver: true,
-        tension: 200,
-        friction: 6,
-      }),
-      Animated.timing(shadowOpacity, {
-        toValue: 0.15,
-        duration: 250,
-        useNativeDriver: false,
-      }),
-    ]).start();
-  };
-
-  // Estilos animados
-  const animatedStyle = {
-    transform: [
-      {
-        translateY: animatedValue.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, -12], // Levanta la card 12 unidades
-        }),
-      },
-      {
-        scale: animatedValue.interpolate({
-          inputRange: [0, 1],
-          outputRange: [1, 1.05], // Escala más notoria (5%)
-        }),
-      },
-    ],
-  };
-
-  const shadowStyle = {
-    shadowOpacity: shadowOpacity,
-  };
-
   return (
     <View style={styles.cardContainer}>
-      <Pressable
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
+      <TouchableOpacity
         onPress={onPress}
-        style={styles.pressableWrapper}
-        disabled={dropdownVisible || deleteModalVisible} // Deshabilita cuando hay modales abiertos
+        style={[styles.pressableWrapper, styles.card]}
+        disabled={dropdownVisible || deleteModalVisible}
+        activeOpacity={0.7}
         accessibilityRole="button"
         accessibilityLabel={`Abrir perfil de ${petName}`}
       >
-        <Animated.View style={[styles.card, animatedStyle, shadowStyle]}>
           {/* Imagen redonda */}
           <Image
             source={imageSource || require('../../assets/images/hamgster.jpg')}
@@ -211,8 +146,7 @@ const PetCard = ({
               />
             </Menu>
           </View>
-        </Animated.View>
-      </Pressable>
+      </TouchableOpacity>
 
       {/* Modal de confirmación para eliminar */}
       <ConfirmationModal
