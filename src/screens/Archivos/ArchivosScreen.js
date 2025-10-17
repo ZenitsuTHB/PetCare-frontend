@@ -120,21 +120,8 @@ export default function ArchivosScreen({ route, navigation }) {
                 // Try to share
                 const isAvailable = await Sharing.isAvailableAsync();
                 if (isAvailable) {
-                  // Determine MIME type from file extension
-                  const getMimeType = (fileName) => {
-                    if (!fileName) return 'application/octet-stream';
-                    const ext = fileName.toLowerCase().split('.').pop();
-                    const mimeTypes = {
-                      'pdf': 'application/pdf',
-                      'png': 'image/png',
-                      'jpg': 'image/jpeg',
-                      'jpeg': 'image/jpeg',
-                    };
-                    return mimeTypes[ext] || 'application/octet-stream';
-                  };
-
                   await Sharing.shareAsync(document.fileUri, {
-                    mimeType: getMimeType(document.fileName),
+                    mimeType: 'application/pdf',
                     dialogTitle: document.title || 'Compartir documento',
                   });
                   console.log('✅ File shared successfully');
@@ -202,29 +189,17 @@ export default function ArchivosScreen({ route, navigation }) {
   // Render list of documents using DocumentCard
   const renderFilesList = () => (
     <View style={styles.filesListContainer}>
-      {documents.map((doc) => {
-        // Determine file type from fileName
-        const getFileType = (fileName) => {
-          if (!fileName) return 'FILE';
-          const ext = fileName.split('.').pop().toUpperCase();
-          if (['JPG', 'JPEG'].includes(ext)) return 'JPEG';
-          if (ext === 'PNG') return 'PNG';
-          if (ext === 'PDF') return 'PDF';
-          return ext;
-        };
-
-        return (
-          <DocumentCard
-            key={doc.id}
-            title={doc.title}
-            uploadedBy="Subido por ti"
-            date={doc.uploadedAt || doc.date}
-            fileType={getFileType(doc.fileName)}
-            onDownload={() => handleDownloadDocument(doc)}
-            onPress={() => handleDocumentPress(doc)}
-          />
-        );
-      })}
+      {documents.map((doc) => (
+        <DocumentCard
+          key={doc.id}
+          title={doc.title}
+          uploadedBy="Subido por ti"
+          date={doc.uploadedAt || doc.date}
+          fileType="PDF"
+          onDownload={() => handleDownloadDocument(doc)}
+          onPress={() => handleDocumentPress(doc)}
+        />
+      ))}
 
       {/* Botón de agregar documento también cuando hay archivos */}
       <View style={styles.buttonContainer}>

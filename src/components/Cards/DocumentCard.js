@@ -29,32 +29,6 @@ const DocumentCard = ({
     }
   };
 
-  // Determine icon and color based on file type
-  const getFileIcon = () => {
-    const type = fileType.toUpperCase();
-    switch (type) {
-      case 'PNG':
-      case 'JPG':
-      case 'JPEG':
-      case 'GIF':
-      case 'BMP':
-      case 'SVG':
-        return { name: 'image-outline', color: '#7C9A5F' };
-      case 'PDF':
-        return { name: 'document-text-outline', color: '#D95D5D' };
-      case 'DOC':
-      case 'DOCX':
-        return { name: 'document-outline', color: '#5B8DBE' };
-      case 'XLS':
-      case 'XLSX':
-        return { name: 'grid-outline', color: '#4B9B6C' };
-      default:
-        return { name: 'document-attach-outline', color: '#4E5641' };
-    }
-  };
-
-  const fileIcon = getFileIcon();
-
   return (
     <TouchableOpacity 
       style={styles.card}
@@ -66,7 +40,7 @@ const DocumentCard = ({
         <View style={styles.header}>
           <View style={styles.titleRow}>
             <View style={styles.iconContainer}>
-              <Ionicons name={fileIcon.name} size={24} color={fileIcon.color} />
+              <Ionicons name="document-text-outline" size={20} color="#4E5641" />
             </View>
             <View style={styles.titleContainer}>
               <Text style={styles.title} numberOfLines={2}>
