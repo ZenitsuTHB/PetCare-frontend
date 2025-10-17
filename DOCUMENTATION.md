@@ -519,7 +519,15 @@ console.log('Migration completed:', hasChanges);
 
 ## 📝 Changelog
 
-### Version 2.0.0 (Current)
+### Version 2.1.0 (Current) - Notification System
+- ✅ Complete notification flow with detail and timer screens
+- ✅ Professional reminder system with countdown functionality
+- ✅ Multi-type notification support (vet, bonvet, user)
+- ✅ Frequency-based recurring reminders
+- ✅ Interactive timer with custom time inputs
+- ✅ Seamless navigation flow integration
+
+### Version 2.0.0 - File Management System
 - ✅ UUID v4 identification system
 - ✅ Global file management with React Context
 - ✅ Automatic data migration
@@ -533,5 +541,125 @@ console.log('Migration completed:', hasChanges);
 - Name-based identification
 
 ---
+
+## 🔔 Notification System Implementation (v2.1.0)
+
+### Overview
+Complete notification management system with three-tier architecture: List → Detail → Timer. Implements professional UX patterns for healthcare reminders and veterinary appointments.
+
+### Architecture
+
+#### NotificationDetailScreen
+**Purpose**: Expandable notification view with contextual actions
+**Key Features**:
+- Dynamic color schemes based on notification type
+- Interactive toggle for user-editable notifications
+- Action buttons: Create reminder, Edit, Share
+- Contextual information display
+
+```javascript
+// Notification types with visual identity
+const variants = {
+  vet: { bg: '#F5FCE9', border: '#A8B88B' },    // Medical appointments
+  bonvet: { bg: '#FFEADD', border: '#FFBA92' }, // Platform tips
+  user: { bg: '#FDD8D8', border: '#FA8081' }    // Personal reminders
+};
+```
+
+#### ReminderTimerScreen
+**Purpose**: Professional timer system with recurring options
+**Technical Implementation**:
+- Real-time countdown with `useEffect` and `useRef`
+- Custom time input (hours, minutes, seconds)
+- Quick preset buttons (5m, 15m, 30m, 1h)
+- Frequency selector for recurring reminders
+- Automatic completion alerts
+
+```javascript
+// Core timer logic
+useEffect(() => {
+  if (isRunning && totalSeconds > 0) {
+    intervalRef.current = setInterval(() => {
+      setTotalSeconds(prev => {
+        if (prev <= 1) {
+          setIsRunning(false);
+          Alert.alert('¡Tiempo cumplido!', 'El recordatorio ha terminado');
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }
+  return () => clearInterval(intervalRef.current);
+}, [isRunning, totalSeconds]);
+```
+
+### Navigation Flow
+```
+NotificationsScreen (List)
+    ↓ tap notification card
+NotificationDetailScreen (Detail)
+    ↓ "Create reminder" button
+ReminderTimerScreen (Timer)
+    ↓ save/complete
+Back to Notifications
+```
+
+### UI/UX Patterns
+
+#### Visual Consistency
+- Maintains app color palette (#FA8081 primary)
+- SafeAreaView implementation for modern devices
+- TouchableOpacity with 0.7 opacity for feedback
+- Consistent spacing and typography
+
+#### Interaction Design
+- Card-based navigation with clear touch targets
+- Progressive disclosure (List → Detail → Action)
+- Immediate visual feedback on all interactions
+- Accessible button labels and hit areas
+
+#### State Management
+- Timer state with persistent UI updates
+- Form validation for time inputs
+- Loading states for actions
+- Error handling for edge cases
+
+### Technical Specifications
+
+#### File Structure
+```
+src/screens/Notifications/
+├── NotificationsScreen.js      (Updated: added navigation)
+├── NotificationDetailScreen.js (New: detail view)
+└── ReminderTimerScreen.js      (New: timer system)
+```
+
+#### Dependencies
+- `@react-navigation/native` for screen transitions
+- `react-native-safe-area-context` for device compatibility
+- `@expo/vector-icons` for consistent iconography
+- Custom `BackButton` component for navigation
+
+#### Performance Considerations
+- Efficient timer cleanup with useRef
+- Minimal re-renders with proper state structure
+- Touch feedback without heavy animations
+- Memory management for timer intervals
+
+### Integration Points
+
+#### Backend Readiness
+- Structured data models for API integration
+- UUID support for notification identification
+- Standardized frequency patterns
+- Error states for network failures
+
+#### Future Enhancements
+- Push notification integration
+- Notification persistence with AsyncStorage
+- Sync with device calendar
+- Advanced scheduling options
+- Analytics tracking for reminder effectiveness
 
 *This documentation was last updated on October 17, 2025*
