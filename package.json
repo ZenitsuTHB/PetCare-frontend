@@ -7,7 +7,23 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\""
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:api": "jest __tests__/api"
+  },
+  "jest": {
+    "preset": "react-native",
+    "setupFilesAfterEnv": [
+      "<rootDir>/__tests__/setup.js"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.test.js"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(react-native|@react-native|expo|@expo|@react-navigation)/)"
+    ]
   },
   "dependencies": {
     "@ant-design/icons-react-native": "^2.3.2",
@@ -40,8 +56,11 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@testing-library/react-native": "^13.3.3",
+    "jest": "^30.2.0",
     "prettier": "^3.6.2",
-    "react-native-svg-transformer": "^1.5.1"
+    "react-native-svg-transformer": "^1.5.1",
+    "react-test-renderer": "^19.1.0"
   },
   "private": true
 }
