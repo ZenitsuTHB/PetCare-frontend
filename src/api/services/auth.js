@@ -188,3 +188,4 @@ export const refreshToken = async (token) => {
 };
 
 
+export { buildGenericSuccessResult, buildErrorResult };

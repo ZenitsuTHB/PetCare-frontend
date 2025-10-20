@@ -89,10 +89,9 @@ export default function NewPetFormScreen({ navigation, route }) {
       });
     } catch (error) {
       console.error('Error deleting pet:', error);
-      Alert.alert(
-        'Error',
-        'No se pudo eliminar la mascota. Inténtalo de nuevo.'
-      );
+      const message =
+        (error && error.message) || 'No se pudo eliminar la mascota. Intentalo de nuevo.';
+      Alert.alert('Error', message);
     }
   };
 
@@ -175,7 +174,8 @@ export default function NewPetFormScreen({ navigation, route }) {
         }, 500);
       }
     } catch (err) {
-      Alert.alert('Ups', 'No se pudo guardar. Intenta nuevamente.');
+      const message = (err && err.message) || 'No se pudo guardar. Intenta nuevamente.';
+      Alert.alert('Ups', message);
       console.error(err);
     } finally {
       setSubmitting(false);
