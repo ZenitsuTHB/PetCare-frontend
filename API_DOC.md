@@ -17,9 +17,10 @@ The PetCare application uses a REST API architecture for backend communication. 
 **Timeout:** 10 seconds
 
 **Default Headers:**
+
 ```javascript
 {
-  Accept: 'application/json'
+  Accept: 'application/json';
 }
 ```
 
@@ -122,6 +123,7 @@ All responses are normalized to a consistent structure:
 **Content-Type:** `application/x-www-form-urlencoded`
 
 **Input Mapping:**
+
 ```javascript
 {
   firstName     → nombre
@@ -138,6 +140,7 @@ All responses are normalized to a consistent structure:
 ```
 
 **Success Response:**
+
 ```javascript
 {
   success: true,
@@ -155,6 +158,7 @@ All responses are normalized to a consistent structure:
 ```
 
 **Error Response:**
+
 ```javascript
 {
   success: false,
@@ -179,6 +183,7 @@ All responses are normalized to a consistent structure:
 **Content-Type:** `application/x-www-form-urlencoded`
 
 **Input Mapping:**
+
 ```javascript
 {
   email    → correo (lowercased)
@@ -187,6 +192,7 @@ All responses are normalized to a consistent structure:
 ```
 
 **Success Response:**
+
 ```javascript
 {
   success: true,
@@ -203,12 +209,13 @@ All responses are normalized to a consistent structure:
 ```
 
 **Usage Example:**
+
 ```javascript
 import { login } from '../api/services/auth';
 
 const response = await login({
   email: 'user@example.com',
-  password: 'password123'
+  password: 'password123',
 });
 
 if (response.success) {
@@ -226,13 +233,15 @@ if (response.success) {
 **HTTP:** `GET /auth/me`
 
 **Headers:**
+
 ```javascript
 {
-  Authorization: "Bearer {token}"
+  Authorization: 'Bearer {token}';
 }
 ```
 
 **Success Response:**
+
 ```javascript
 {
   success: true,
@@ -253,13 +262,15 @@ if (response.success) {
 **HTTP:** `POST /auth/logout`
 
 **Headers:**
+
 ```javascript
 {
-  Authorization: "Bearer {token}"
+  Authorization: 'Bearer {token}';
 }
 ```
 
 **Success Response:**
+
 ```javascript
 {
   success: true,
@@ -278,13 +289,15 @@ if (response.success) {
 **HTTP:** `POST /auth/refresh`
 
 **Headers:**
+
 ```javascript
 {
-  Authorization: "Bearer {token}"
+  Authorization: 'Bearer {token}';
 }
 ```
 
 **Success Response:**
+
 ```javascript
 {
   success: true,
@@ -338,6 +351,7 @@ const toNumber = (value) => {
 #### 3. **Payload Builders**
 
 **Create Pet Payload:**
+
 ```javascript
 {
   name      → nombre
@@ -352,6 +366,7 @@ const toNumber = (value) => {
 ```
 
 **Update Pet Payload:**
+
 ```javascript
 {
   name      → nombre
@@ -375,13 +390,15 @@ const toNumber = (value) => {
 **HTTP:** `GET /pets`
 
 **Headers:**
+
 ```javascript
 {
-  Authorization: "Bearer {token}"
+  Authorization: 'Bearer {token}';
 }
 ```
 
 **Success Response:**
+
 ```javascript
 {
   success: true,
@@ -407,6 +424,7 @@ const toNumber = (value) => {
 ```
 
 **Usage Example:**
+
 ```javascript
 import { listPets } from '../api/services/pets';
 
@@ -428,13 +446,15 @@ const fetchPets = async () => {
 **HTTP:** `GET /pets/{id}`
 
 **Headers:**
+
 ```javascript
 {
-  Authorization: "Bearer {token}"
+  Authorization: 'Bearer {token}';
 }
 ```
 
 **Success Response:**
+
 ```javascript
 {
   success: true,
@@ -465,6 +485,7 @@ const fetchPets = async () => {
 **Content-Type:** `application/x-www-form-urlencoded`
 
 **Headers:**
+
 ```javascript
 {
   Authorization: "Bearer {token}",
@@ -473,6 +494,7 @@ const fetchPets = async () => {
 ```
 
 **Input Example:**
+
 ```javascript
 {
   name: "Max",
@@ -487,11 +509,13 @@ const fetchPets = async () => {
 ```
 
 **Request Body (Form URL Encoded):**
+
 ```
 nombre=Max&especie=Perro&raza=Golden%20Retriever&genero=Macho&fecha_nacimiento=2020-05-15&chip=123456789&peso=30.5&notas=Vacunas%20al%20d%C3%ADa
 ```
 
 **Success Response:**
+
 ```javascript
 {
   success: true,
@@ -507,19 +531,20 @@ nombre=Max&especie=Perro&raza=Golden%20Retriever&genero=Macho&fecha_nacimiento=2
 ```
 
 **Usage Example:**
+
 ```javascript
 import { createPet } from '../api/services/pets';
 
 const handleCreatePet = async () => {
   const newPet = {
-    name: "Max",
-    species: "Perro",
-    breed: "Golden Retriever",
-    gender: "Macho",
-    birthdate: "15/05/2020",
-    chip: "123456789",
+    name: 'Max',
+    species: 'Perro',
+    breed: 'Golden Retriever',
+    gender: 'Macho',
+    birthdate: '15/05/2020',
+    chip: '123456789',
     weight: 30.5,
-    notes: "Vacunas al día"
+    notes: 'Vacunas al día',
   };
 
   const response = await createPet(newPet, userToken);
@@ -542,6 +567,7 @@ const handleCreatePet = async () => {
 **Content-Type:** `application/x-www-form-urlencoded`
 
 **Headers:**
+
 ```javascript
 {
   Authorization: "Bearer {token}",
@@ -550,6 +576,7 @@ const handleCreatePet = async () => {
 ```
 
 **Input Example:**
+
 ```javascript
 {
   name: "Max",
@@ -565,6 +592,7 @@ const handleCreatePet = async () => {
 **Note:** The `chip` field is **not included** in update operations (immutable).
 
 **Success Response:**
+
 ```javascript
 {
   success: true,
@@ -581,15 +609,16 @@ const handleCreatePet = async () => {
 ```
 
 **Usage Example:**
+
 ```javascript
 import { updatePet } from '../api/services/pets';
 
 const handleUpdatePet = async (petId) => {
   const updates = {
-    name: "Max",
-    breed: "Labrador",
+    name: 'Max',
+    breed: 'Labrador',
     weight: 32,
-    notes: "Vacunas al día. Chequeo anual completado."
+    notes: 'Vacunas al día. Chequeo anual completado.',
   };
 
   const response = await updatePet(petId, updates, userToken);
@@ -608,13 +637,15 @@ const handleUpdatePet = async (petId) => {
 **HTTP:** `DELETE /pets/{id}`
 
 **Headers:**
+
 ```javascript
 {
-  Authorization: "Bearer {token}"
+  Authorization: 'Bearer {token}';
 }
 ```
 
 **Success Response:**
+
 ```javascript
 {
   success: true,
@@ -625,6 +656,7 @@ const handleUpdatePet = async (petId) => {
 ```
 
 **Usage Example:**
+
 ```javascript
 import { deletePet } from '../api/services/pets';
 
@@ -653,6 +685,7 @@ const handleDeletePet = async (petId) => {
 **Content-Type:** `multipart/form-data` (auto-set by XMLHttpRequest)
 
 **Parameters:**
+
 ```javascript
 {
   fileUri: string,      // Required: Local file URI
@@ -669,8 +702,15 @@ const handleDeletePet = async (petId) => {
 **Implementation Details:**
 
 ```javascript
-export const uploadDocument = ({ 
-  fileUri, fileName, title, date, description, petId, token, onProgress 
+export const uploadDocument = ({
+  fileUri,
+  fileName,
+  title,
+  date,
+  description,
+  petId,
+  token,
+  onProgress,
 }) => {
   return new Promise((resolve, reject) => {
     const url = `${API_URL}/upload_document.php`;
@@ -727,6 +767,7 @@ export const uploadDocument = ({
 ```
 
 **Usage Example:**
+
 ```javascript
 import { uploadDocument } from '../api/documents';
 
@@ -743,7 +784,7 @@ const handleUpload = async () => {
       onProgress: (percent) => {
         console.log(`Upload progress: ${percent}%`);
         setUploadProgress(percent);
-      }
+      },
     });
 
     if (response.success) {
@@ -804,7 +845,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, loginUser, registerUser, logoutUser }}>
+    <AuthContext.Provider
+      value={{ user, token, loginUser, registerUser, logoutUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -852,10 +895,10 @@ export const PetProvider = ({ children }) => {
   const value = {
     pets,
     loading,
-    addPet,      // Create new pet
-    updatePet,   // Update existing pet
-    deletePet,   // Delete pet
-    refreshPets: loadPets,  // Manually refresh pet list
+    addPet, // Create new pet
+    updatePet, // Update existing pet
+    deletePet, // Delete pet
+    refreshPets: loadPets, // Manually refresh pet list
   };
 
   return <PetContext.Provider value={value}>{children}</PetContext.Provider>;
@@ -895,7 +938,9 @@ const normalizePet = (input) => ({
   chip: String(input.chip ?? input.numero_chip ?? ''),
   notes: input.notes ?? input.notas ?? '',
   photoUri: input.photoUri ?? input.foto_uri ?? '',
-  registrationDate: formatDateToDisplay(input.registrationDate ?? input.created_at),
+  registrationDate: formatDateToDisplay(
+    input.registrationDate ?? input.created_at
+  ),
   consent: input.consent ?? input.autorizado ?? true,
 });
 ```
@@ -907,14 +952,14 @@ Converts ISO dates (YYYY-MM-DD) to display format (DD/MM/YYYY):
 ```javascript
 const formatDateToDisplay = (value) => {
   if (!value) return '';
-  
+
   // Handle ISO format: 2020-05-15 → 15/05/2020
   const isoMatch = value.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (isoMatch) {
     const [, year, month, day] = isoMatch;
     return `${day}/${month}/${year}`;
   }
-  
+
   return value;
 };
 ```
@@ -925,19 +970,20 @@ const formatDateToDisplay = (value) => {
 import { usePets } from '../../contexts/PetContext';
 
 function PetListScreen() {
-  const { pets, loading, addPet, updatePet, deletePet, refreshPets } = usePets();
+  const { pets, loading, addPet, updatePet, deletePet, refreshPets } =
+    usePets();
 
   const handleAddPet = async () => {
     try {
       const newPet = await addPet({
-        name: "Max",
-        species: "Perro",
-        breed: "Golden Retriever",
-        gender: "Macho",
-        birthdate: "15/05/2020",
+        name: 'Max',
+        species: 'Perro',
+        breed: 'Golden Retriever',
+        gender: 'Macho',
+        birthdate: '15/05/2020',
         weight: 30,
-        chip: "123456789",
-        notes: "Vacunas al día"
+        chip: '123456789',
+        notes: 'Vacunas al día',
       });
       console.log('Pet added:', newPet);
     } catch (error) {
@@ -949,7 +995,7 @@ function PetListScreen() {
     try {
       const updated = await updatePet(petId, {
         weight: 32,
-        notes: "Updated notes"
+        notes: 'Updated notes',
       });
       console.log('Pet updated:', updated);
     } catch (error) {
@@ -1036,14 +1082,14 @@ const response = await login({ email, password });
 if (!response.success) {
   // Display error message
   Alert.alert('Error', response.message);
-  
+
   // Handle validation errors
   if (response.errors) {
     Object.entries(response.errors).forEach(([field, messages]) => {
       console.error(`${field}:`, messages.join(', '));
     });
   }
-  
+
   // Handle specific status codes
   if (response.status === 401) {
     // Unauthorized
@@ -1091,9 +1137,9 @@ if (!response.success) {
 test('Login with valid credentials', async () => {
   const response = await login({
     email: 'test@example.com',
-    password: 'password123'
+    password: 'password123',
   });
-  
+
   expect(response.success).toBe(true);
   expect(response.token).toBeDefined();
   expect(response.user).toBeDefined();
@@ -1107,9 +1153,9 @@ test('Register new user', async () => {
     email: 'john@example.com',
     password: 'password123',
     confirmPassword: 'password123',
-    termsAccepted: true
+    termsAccepted: true,
   });
-  
+
   expect(response.success).toBe(true);
   expect(response.user.correo).toBe('john@example.com');
 });
@@ -1117,7 +1163,7 @@ test('Register new user', async () => {
 // Test upload with progress
 test('Upload document with progress tracking', async () => {
   const progressValues = [];
-  
+
   await uploadDocument({
     fileUri: 'file:///test.pdf',
     fileName: 'test.pdf',
@@ -1125,9 +1171,9 @@ test('Upload document with progress tracking', async () => {
     token: 'test_token',
     onProgress: (percent) => {
       progressValues.push(percent);
-    }
+    },
   });
-  
+
   expect(progressValues.length).toBeGreaterThan(0);
   expect(progressValues[progressValues.length - 1]).toBe(100);
 });
@@ -1140,6 +1186,7 @@ test('Upload document with progress tracking', async () => {
 ### Recommended Enhancements
 
 1. **Add Request/Response Interceptors**
+
    ```javascript
    api.interceptors.request.use((config) => {
      // Add token automatically
@@ -1152,6 +1199,7 @@ test('Upload document with progress tracking', async () => {
    ```
 
 2. **Implement Token Refresh Logic**
+
    ```javascript
    api.interceptors.response.use(
      (response) => response,
@@ -1167,6 +1215,7 @@ test('Upload document with progress tracking', async () => {
    ```
 
 3. **Add TypeScript Definitions**
+
    ```typescript
    interface LoginResponse {
      success: boolean;
@@ -1182,7 +1231,7 @@ test('Upload document with progress tracking', async () => {
 
 5. **Add API Versioning**
    ```javascript
-   baseURL: 'https://pablomonteserin.com/sites/borrame-bonvet/api/v1'
+   baseURL: 'https://pablomonteserin.com/sites/borrame-bonvet/api/v1';
    ```
 
 ---
@@ -1191,31 +1240,31 @@ test('Upload document with progress tracking', async () => {
 
 ### Key Architectural Decisions
 
-| Aspect | Choice | Reason |
-|--------|--------|--------|
-| HTTP Client | Axios + XMLHttpRequest | Axios for clean API, XHR for upload progress |
-| Data Format | URL-encoded for auth/pets, FormData for uploads | Backend requirements |
-| Response Format | Normalized structure | Consistent error handling |
-| Error Handling | Try-catch with detailed error objects | Better debugging and UX |
-| State Management | React Context (Auth + Pets) | Global state with caching |
-| Data Persistence | AsyncStorage | Offline support and caching |
-| Date Format | DD/MM/YYYY (display) ↔ YYYY-MM-DD (API) | User-friendly display, ISO standard for API |
+| Aspect           | Choice                                          | Reason                                       |
+| ---------------- | ----------------------------------------------- | -------------------------------------------- |
+| HTTP Client      | Axios + XMLHttpRequest                          | Axios for clean API, XHR for upload progress |
+| Data Format      | URL-encoded for auth/pets, FormData for uploads | Backend requirements                         |
+| Response Format  | Normalized structure                            | Consistent error handling                    |
+| Error Handling   | Try-catch with detailed error objects           | Better debugging and UX                      |
+| State Management | React Context (Auth + Pets)                     | Global state with caching                    |
+| Data Persistence | AsyncStorage                                    | Offline support and caching                  |
+| Date Format      | DD/MM/YYYY (display) ↔ YYYY-MM-DD (API)        | User-friendly display, ISO standard for API  |
 
 ### API Endpoints Summary
 
-| Endpoint | Method | Purpose | Auth Required |
-|----------|--------|---------|---------------|
-| `/auth/register` | POST | User registration | No |
-| `/auth/login` | POST | User login | No |
-| `/auth/me` | GET | Get current user | Yes |
-| `/auth/logout` | POST | Logout user | Yes |
-| `/auth/refresh` | POST | Refresh token | Yes |
-| `/pets` | GET | List all pets | Yes |
-| `/pets/{id}` | GET | Get single pet | Yes |
-| `/pets` | POST | Create new pet | Yes |
-| `/pets/{id}` | PUT | Update pet | Yes |
-| `/pets/{id}` | DELETE | Delete pet | Yes |
-| `/upload_document.php` | POST | Upload document | Optional |
+| Endpoint               | Method | Purpose           | Auth Required |
+| ---------------------- | ------ | ----------------- | ------------- |
+| `/auth/register`       | POST   | User registration | No            |
+| `/auth/login`          | POST   | User login        | No            |
+| `/auth/me`             | GET    | Get current user  | Yes           |
+| `/auth/logout`         | POST   | Logout user       | Yes           |
+| `/auth/refresh`        | POST   | Refresh token     | Yes           |
+| `/pets`                | GET    | List all pets     | Yes           |
+| `/pets/{id}`           | GET    | Get single pet    | Yes           |
+| `/pets`                | POST   | Create new pet    | Yes           |
+| `/pets/{id}`           | PUT    | Update pet        | Yes           |
+| `/pets/{id}`           | DELETE | Delete pet        | Yes           |
+| `/upload_document.php` | POST   | Upload document   | Optional      |
 
 ---
 
@@ -1224,6 +1273,7 @@ test('Upload document with progress tracking', async () => {
 ### Setup Steps
 
 1. **Install Dependencies:**
+
    ```bash
    npm install axios @react-native-async-storage/async-storage
    ```
@@ -1233,6 +1283,7 @@ test('Upload document with progress tracking', async () => {
    - Set `API_BASE_URL` to your backend URL
 
 3. **Wrap App with Providers:**
+
    ```javascript
    import { AuthProvider } from './src/contexts/AutContext';
    import { PetProvider } from './src/contexts/PetContext';
@@ -1241,9 +1292,7 @@ test('Upload document with progress tracking', async () => {
      return (
        <AuthProvider>
          <PetProvider>
-           <NavigationContainer>
-             {/* Your app */}
-           </NavigationContainer>
+           <NavigationContainer>{/* Your app */}</NavigationContainer>
          </PetProvider>
        </AuthProvider>
      );
@@ -1251,6 +1300,7 @@ test('Upload document with progress tracking', async () => {
    ```
 
 4. **Use Contexts in Components:**
+
    ```javascript
    import { useContext } from 'react';
    import { AuthContext } from './contexts/AutContext';
@@ -1291,5 +1341,6 @@ curl -X POST https://pablomonteserin.com/sites/borrame-bonvet/pets \
 **Maintainer:** PetCare Development Team
 
 **Changelog:**
+
 - **v1.1 (Oct 20, 2025):** Added Pet Management API documentation, PetContext integration, offline support details
 - **v1.0 (Oct 20, 2025):** Initial documentation with Authentication and Document Upload APIs

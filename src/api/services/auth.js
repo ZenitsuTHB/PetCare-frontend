@@ -23,7 +23,11 @@ const toFormUrlEncoded = (payload) =>
 
 const buildRegisterPayload = (input = {}) => {
   const termsValue =
-    input.termsAccepted ?? input.terminos ?? input.terms ?? input.agree ?? false;
+    input.termsAccepted ??
+    input.terminos ??
+    input.terms ??
+    input.agree ??
+    false;
 
   const payload = sanitizePayload({
     nombre: input.firstName,
@@ -37,7 +41,9 @@ const buildRegisterPayload = (input = {}) => {
     provincia: input.province,
     cp: input.postalCode,
     terminos:
-      typeof termsValue === 'boolean' ? Number(termsValue) : sanitizeValue(termsValue),
+      typeof termsValue === 'boolean'
+        ? Number(termsValue)
+        : sanitizeValue(termsValue),
   });
 
   return payload;
@@ -186,6 +192,5 @@ export const refreshToken = async (token) => {
     return buildErrorResult(error);
   }
 };
-
 
 export { buildGenericSuccessResult, buildErrorResult };

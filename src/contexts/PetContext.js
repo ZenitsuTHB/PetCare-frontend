@@ -74,7 +74,9 @@ const normalizePet = (input = {}) => {
     birthdate: formatDateToDisplay(birthdateRaw),
     gender: input.gender ?? input.genero ?? '',
     weight: toStringOrEmpty(input.weight ?? input.peso),
-    chip: toStringOrEmpty(input.chip ?? input.numero_chip ?? input.numeroChip ?? ''),
+    chip: toStringOrEmpty(
+      input.chip ?? input.numero_chip ?? input.numeroChip ?? ''
+    ),
     notes: input.notes ?? input.notas ?? '',
     photoUri:
       input.photoUri ??
@@ -172,7 +174,10 @@ export const PetProvider = ({ children }) => {
         setPets(remotePets);
         await savePets(remotePets);
       } else {
-        console.warn('No se pudo obtener la lista de mascotas:', response.message);
+        console.warn(
+          'No se pudo obtener la lista de mascotas:',
+          response.message
+        );
         await hydrateFromCache();
       }
     } catch (error) {
@@ -237,9 +242,13 @@ export const PetProvider = ({ children }) => {
     const updatedPetRaw = extractPetFromResponse(response.data);
     const payloadForNormalization = {
       ...petData,
-      ...(updatedPetRaw && typeof updatedPetRaw === 'object' ? updatedPetRaw : {}),
+      ...(updatedPetRaw && typeof updatedPetRaw === 'object'
+        ? updatedPetRaw
+        : {}),
       id:
-        (updatedPetRaw && typeof updatedPetRaw === 'object' && updatedPetRaw.id !== undefined)
+        updatedPetRaw &&
+        typeof updatedPetRaw === 'object' &&
+        updatedPetRaw.id !== undefined
           ? updatedPetRaw.id
           : petId,
     };

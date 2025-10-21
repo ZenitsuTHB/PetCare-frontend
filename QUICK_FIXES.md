@@ -3,6 +3,7 @@
 ## 🔴 Priority 1: Token Persistence (15 minutes)
 
 ### Current Problem
+
 ```javascript
 // Token is lost on app restart
 const [token, setToken] = useState(null);
@@ -11,6 +12,7 @@ const [token, setToken] = useState(null);
 ### Solution: Add SecureStore
 
 #### Step 1: Install
+
 ```bash
 npx expo install expo-secure-store
 ```
@@ -84,12 +86,12 @@ export const AuthProvider = ({ children }) => {
     const loadSavedAuth = async () => {
       const savedToken = await loadToken();
       const savedUser = await loadUser();
-      
+
       if (savedToken && savedUser) {
         setToken(savedToken);
         setUser(savedUser);
       }
-      
+
       setIsLoading(false);
     };
 
@@ -107,7 +109,7 @@ export const AuthProvider = ({ children }) => {
         // Save to SecureStore
         await saveToken(tokenValue);
         await saveUser(resolvedUser);
-        
+
         // Update state
         setToken(tokenValue);
         setUser(resolvedUser);
@@ -127,7 +129,7 @@ export const AuthProvider = ({ children }) => {
         // Save to SecureStore
         await saveToken(tokenValue);
         await saveUser(res.user);
-        
+
         // Update state
         setToken(tokenValue);
         setUser(res.user);
@@ -140,17 +142,17 @@ export const AuthProvider = ({ children }) => {
   const logoutUser = async () => {
     // Call API
     await authApi.logout(token);
-    
+
     // Clear SecureStore
     await clearAuth();
-    
+
     // Clear state
     setUser(null);
     setToken(null);
   };
 
   return (
-    <AuthContext.Provider 
+    <AuthContext.Provider
       value={{ user, token, loginUser, registerUser, logoutUser, isLoading }}
     >
       {children}
@@ -184,6 +186,7 @@ function App() {
 ## 🟡 Priority 2: Request Interceptors (10 minutes)
 
 ### Current Problem
+
 ```javascript
 // Must pass token to every call
 await listPets(token);
@@ -214,7 +217,7 @@ api.interceptors.request.use(
   async (config) => {
     // Get token from SecureStore
     const token = await SecureStore.getItemAsync('userToken');
-    
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -266,6 +269,7 @@ export default api;
 #### Update API functions to NOT require token
 
 **Before:**
+
 ```javascript
 export const listPets = async (token) => {
   try {
@@ -278,6 +282,7 @@ export const listPets = async (token) => {
 ```
 
 **After:**
+
 ```javascript
 export const listPets = async () => {
   try {
@@ -292,12 +297,14 @@ export const listPets = async () => {
 #### Update usage in components
 
 **Before:**
+
 ```javascript
 const { token } = useContext(AuthContext);
 const response = await listPets(token);
 ```
 
 **After:**
+
 ```javascript
 // Token is auto-injected!
 const response = await listPets();
@@ -414,13 +421,13 @@ export const uploadDocument = async ({
 
 ## 📊 Impact Summary
 
-| Fix | Time | Benefit | Priority |
-|-----|------|---------|----------|
-| Token Persistence | 15 min | Users stay logged in | 🔴 Critical |
-| Request Interceptors | 10 min | Cleaner code, auto-auth | 🟡 High |
-| Retry Logic | 10 min | Better reliability | 🟡 Medium |
-| Axios Upload | 5 min | Consistency | 🟢 Low |
-| **Total** | **40 min** | **Production-ready** | - |
+| Fix                  | Time       | Benefit                 | Priority    |
+| -------------------- | ---------- | ----------------------- | ----------- |
+| Token Persistence    | 15 min     | Users stay logged in    | 🔴 Critical |
+| Request Interceptors | 10 min     | Cleaner code, auto-auth | 🟡 High     |
+| Retry Logic          | 10 min     | Better reliability      | 🟡 Medium   |
+| Axios Upload         | 5 min      | Consistency             | 🟢 Low      |
+| **Total**            | **40 min** | **Production-ready**    | -           |
 
 ---
 

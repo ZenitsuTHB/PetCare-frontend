@@ -19,13 +19,13 @@ Edit `__tests__/api/api.test.js` (line 16):
 ```javascript
 const TEST_CONFIG = {
   testUser: {
-    email: 'YOUR_TEST_EMAIL@example.com',     // ← Change this
-    password: 'YOUR_TEST_PASSWORD',            // ← Change this
+    email: 'YOUR_TEST_EMAIL@example.com', // ← Change this
+    password: 'YOUR_TEST_PASSWORD', // ← Change this
     firstName: 'Test',
     lastName: 'User',
     // ... rest stays the same
   },
-  skipRegistration: true,  // Set to false if user doesn't exist yet
+  skipRegistration: true, // Set to false if user doesn't exist yet
 };
 ```
 
@@ -77,11 +77,13 @@ Time:        8.456s
 **Problem:** Can't connect to backend server.
 
 **Solutions:**
+
 1. Check if backend is running: https://pablomonteserin.com/sites/borrame-bonvet
 2. Verify your internet connection
 3. Check base URL in `src/api/services/config.js`
 
 **Test connection:**
+
 ```bash
 curl https://pablomonteserin.com/sites/borrame-bonvet/auth/login
 ```
@@ -93,6 +95,7 @@ curl https://pablomonteserin.com/sites/borrame-bonvet/auth/login
 **Problem:** Test credentials are wrong.
 
 **Solutions:**
+
 1. Create test user first:
    - Open your PetCare app
    - Register with email: `test@petcare.com`
@@ -109,7 +112,9 @@ curl https://pablomonteserin.com/sites/borrame-bonvet/auth/login
 **Problem:** Backend is slow or network is slow.
 
 **Solutions:**
+
 1. Increase timeout in test file:
+
    ```javascript
    const TEST_CONFIG = {
      // ...
@@ -129,6 +134,7 @@ curl https://pablomonteserin.com/sites/borrame-bonvet/auth/login
 **Problem:** Dependencies not installed.
 
 **Solution:**
+
 ```bash
 npm install --save-dev --legacy-peer-deps jest @testing-library/react-native react-test-renderer@19.1.0
 ```
@@ -174,6 +180,7 @@ Coverage report will be in: `coverage/lcov-report/index.html`
 Some features need manual testing in the app:
 
 ### Document Upload
+
 - [ ] Upload PDF file
 - [ ] Upload PNG image
 - [ ] Upload JPEG image
@@ -182,6 +189,7 @@ Some features need manual testing in the app:
 - [ ] Download and open file
 
 ### Authentication Flow
+
 - [ ] Register new user
 - [ ] Login with valid credentials
 - [ ] Login with invalid credentials
@@ -189,6 +197,7 @@ Some features need manual testing in the app:
 - [ ] Token persists after app restart (if implemented)
 
 ### Pet Management
+
 - [ ] Create new pet with all fields
 - [ ] Create pet with only required fields
 - [ ] Update pet information
@@ -212,7 +221,7 @@ Some features need manual testing in the app:
 2. Enable verbose logging:
    ```javascript
    // In src/api/services/config.js
-   api.interceptors.request.use(config => {
+   api.interceptors.request.use((config) => {
      console.log('📤', config.method.toUpperCase(), config.url);
      return config;
    });

@@ -29,9 +29,7 @@ Add to your `package.json`:
   "jest": {
     "preset": "react-native",
     "setupFilesAfterEnv": ["<rootDir>/__tests__/setup.js"],
-    "testMatch": [
-      "**/__tests__/**/*.test.js"
-    ],
+    "testMatch": ["**/__tests__/**/*.test.js"],
     "transformIgnorePatterns": [
       "node_modules/(?!(react-native|@react-native|expo|@expo|@react-navigation)/)"
     ]
@@ -44,11 +42,13 @@ Add to your `package.json`:
 Before running tests, create a test user on your backend:
 
 **Option A: Using the app**
+
 1. Open the app
 2. Register with email: `test@petcare.com`
 3. Password: `TestPassword123!`
 
 **Option B: Using API directly**
+
 ```bash
 curl -X POST https://pablomonteserin.com/sites/borrame-bonvet/auth/register \
   -H "Content-Type: application/x-www-form-urlencoded" \
@@ -62,7 +62,7 @@ Edit `__tests__/api/api.test.js`:
 ```javascript
 const TEST_CONFIG = {
   testUser: {
-    email: 'test@petcare.com',  // Your test user email
+    email: 'test@petcare.com', // Your test user email
     password: 'TestPassword123!', // Your test user password
     // ... other fields
   },
@@ -160,6 +160,7 @@ Received: false
 ```
 
 **Troubleshooting:**
+
 1. Check if backend server is running
 2. Verify test user credentials are correct
 3. Check console output for response details
@@ -180,6 +181,7 @@ Received: false
 ### Issue: "Network request failed"
 
 **Solution:**
+
 - Ensure backend server is running
 - Check base URL in `src/api/services/config.js`
 - Verify network connectivity
@@ -187,6 +189,7 @@ Received: false
 ### Issue: "401 Unauthorized"
 
 **Solution:**
+
 - Token might have expired
 - Re-run tests to get a fresh token
 - Check if logout was called before other tests
@@ -194,12 +197,14 @@ Received: false
 ### Issue: "User already exists"
 
 **Solution:**
+
 - Set `skipRegistration: true` in TEST_CONFIG
 - Or use a different test email
 
 ### Issue: "Cannot find module 'jest'"
 
 **Solution:**
+
 ```bash
 npm install --save-dev jest @testing-library/react-native
 ```
@@ -240,6 +245,7 @@ For endpoints that are difficult to test automatically:
 ### 1. Test Isolation
 
 Each test should be independent:
+
 - ✅ Don't rely on test execution order
 - ✅ Clean up created resources (use `DELETE`)
 - ✅ Use unique identifiers (timestamps)
@@ -248,17 +254,21 @@ Each test should be independent:
 
 ```javascript
 // ✅ Good
-test('POST /auth/login - Login with invalid credentials should return 401')
+test('POST /auth/login - Login with invalid credentials should return 401');
 
 // ❌ Bad
-test('login test')
+test('login test');
 ```
 
 ### 3. Test Both Success and Failure Cases
 
 ```javascript
-test('should succeed with valid data', async () => { /* ... */ });
-test('should fail with invalid data', async () => { /* ... */ });
+test('should succeed with valid data', async () => {
+  /* ... */
+});
+test('should fail with invalid data', async () => {
+  /* ... */
+});
 ```
 
 ### 4. Use Console Logs for Debugging
@@ -291,18 +301,18 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Run API tests
         run: npm run test:api
         env:

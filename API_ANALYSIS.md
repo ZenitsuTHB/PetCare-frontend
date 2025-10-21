@@ -11,12 +11,14 @@ The PetCare REST API implementation demonstrates **solid architectural patterns*
 ## ✅ Strengths
 
 ### 1. **Clean Architecture & Separation of Concerns**
+
 - ✅ Clear separation between configuration, services, and business logic
 - ✅ Reusable helper functions (`sanitizePayload`, `toFormUrlEncoded`, `buildErrorResult`)
 - ✅ Consistent file organization (`services/`, contexts)
 - ✅ Single responsibility principle followed
 
 ### 2. **Robust Error Handling**
+
 - ✅ Centralized error handling with `buildErrorResult()`
 - ✅ Axios error detection and extraction
 - ✅ Consistent error response format across all endpoints
@@ -24,6 +26,7 @@ The PetCare REST API implementation demonstrates **solid architectural patterns*
 - ✅ Validation error mapping
 
 ### 3. **Data Normalization & Sanitization**
+
 - ✅ Input sanitization before API calls
 - ✅ Output normalization for consistent consumption
 - ✅ Empty/null/undefined filtering
@@ -31,6 +34,7 @@ The PetCare REST API implementation demonstrates **solid architectural patterns*
 - ✅ Field mapping between frontend and backend schemas
 
 ### 4. **Security Considerations**
+
 - ✅ Bearer token authentication
 - ✅ Email lowercasing for consistency
 - ✅ Sensitive data not logged (good practice)
@@ -38,6 +42,7 @@ The PetCare REST API implementation demonstrates **solid architectural patterns*
 - ✅ HTTPS base URL
 
 ### 5. **Context Integration**
+
 - ✅ React Context pattern for global state
 - ✅ AuthContext manages authentication state
 - ✅ PetContext with offline support via AsyncStorage
@@ -45,12 +50,14 @@ The PetCare REST API implementation demonstrates **solid architectural patterns*
 - ✅ Custom hooks (`usePets`) for better DX
 
 ### 6. **Offline Support**
+
 - ✅ AsyncStorage caching in PetContext
 - ✅ Graceful degradation without network
 - ✅ Optimistic updates pattern
 - ✅ Token-based conditional syncing
 
 ### 7. **Developer Experience**
+
 - ✅ Clear function signatures
 - ✅ Consistent naming conventions
 - ✅ Well-documented code
@@ -65,11 +72,13 @@ The PetCare REST API implementation demonstrates **solid architectural patterns*
 **Issue:** Token is stored in React state (context), which is lost on app restart.
 
 **Current:**
+
 ```javascript
 const [token, setToken] = useState(null);
 ```
 
 **Recommendation:**
+
 ```javascript
 import * as SecureStore from 'expo-secure-store';
 
@@ -91,12 +100,14 @@ const loadToken = async () => {
 **Issue:** Token must be manually passed to every API call.
 
 **Current:**
+
 ```javascript
 await listPets(token);
 await createPet(data, token);
 ```
 
 **Recommendation:**
+
 ```javascript
 // In config.js
 api.interceptors.request.use((config) => {
@@ -130,6 +141,7 @@ api.interceptors.response.use(
 **Issue:** Network failures immediately fail the request.
 
 **Recommendation:**
+
 ```javascript
 import axiosRetry from 'axios-retry';
 
@@ -137,8 +149,10 @@ axiosRetry(api, {
   retries: 3,
   retryDelay: axiosRetry.exponentialDelay,
   retryCondition: (error) => {
-    return axiosRetry.isNetworkOrIdempotentRequestError(error) 
-      || error.response?.status === 429;
+    return (
+      axiosRetry.isNetworkOrIdempotentRequestError(error) ||
+      error.response?.status === 429
+    );
   },
 });
 ```
@@ -150,17 +164,21 @@ axiosRetry(api, {
 **Issue:** Using both Axios and XMLHttpRequest creates inconsistency.
 
 **Current State:**
+
 - Auth/Pets: Axios
 - Document Upload: XMLHttpRequest (for progress tracking)
 
 **Recommendation:**
+
 ```javascript
 // Axios DOES support upload progress!
 const response = await api.post('/upload', formData, {
   onUploadProgress: (progressEvent) => {
-    const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+    const percent = Math.round(
+      (progressEvent.loaded * 100) / progressEvent.total
+    );
     onProgress(percent);
-  }
+  },
 });
 ```
 
@@ -173,6 +191,7 @@ const response = await api.post('/upload', formData, {
 **Issue:** No type safety for API requests/responses.
 
 **Recommendation:**
+
 ```typescript
 interface LoginRequest {
   email: string;
@@ -186,7 +205,9 @@ interface LoginResponse {
   token?: string;
 }
 
-export const login = async (credentials: LoginRequest): Promise<LoginResponse> => {
+export const login = async (
+  credentials: LoginRequest
+): Promise<LoginResponse> => {
   // implementation
 };
 ```
@@ -208,6 +229,7 @@ export const login = async (credentials: LoginRequest): Promise<LoginResponse> =
 **Issue:** 10-second timeout hardcoded.
 
 **Recommendation:**
+
 ```javascript
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -233,6 +255,7 @@ export const api = axios.create({
 **Issue:** Error messages are in Spanish, but app might support multiple languages.
 
 **Recommendation:**
+
 ```javascript
 import i18n from '../i18n';
 
@@ -247,16 +270,23 @@ return {
 ### 10. **No Request Logging in Development** (Priority: LOW)
 
 **Recommendation:**
+
 ```javascript
 if (__DEV__) {
   api.interceptors.request.use((config) => {
-    console.log(`[API] ${config.method.toUpperCase()} ${config.url}`, config.data);
+    console.log(
+      `[API] ${config.method.toUpperCase()} ${config.url}`,
+      config.data
+    );
     return config;
   });
 
   api.interceptors.response.use(
     (response) => {
-      console.log(`[API] ${response.status} ${response.config.url}`, response.data);
+      console.log(
+        `[API] ${response.status} ${response.config.url}`,
+        response.data
+      );
       return response;
     },
     (error) => {
@@ -271,36 +301,39 @@ if (__DEV__) {
 
 ## 📊 Comparison with Industry Standards
 
-| Aspect | Current Implementation | Industry Best Practice | Status |
-|--------|------------------------|------------------------|--------|
-| Separation of Concerns | ✅ Excellent | Services separated | ✅ Met |
-| Error Handling | ✅ Good | Centralized, consistent | ✅ Met |
-| Token Management | ⚠️ In-memory only | Secure persistent storage | ⚠️ Needs work |
-| Request Interceptors | ❌ Not implemented | Auto-inject auth headers | ❌ Missing |
-| Retry Logic | ❌ Not implemented | Exponential backoff | ❌ Missing |
-| Type Safety | ❌ No TypeScript | TypeScript interfaces | ⚠️ Optional |
-| Unit Tests | ❌ Not implemented | >80% coverage | ❌ Missing |
-| API Versioning | ❌ Not implemented | /api/v1/ prefix | ⚠️ Nice to have |
-| Request Logging | ❌ Not implemented | Dev-mode logging | ⚠️ Nice to have |
-| Offline Support | ✅ Excellent | Cache + sync | ✅ Met |
+| Aspect                 | Current Implementation | Industry Best Practice    | Status          |
+| ---------------------- | ---------------------- | ------------------------- | --------------- |
+| Separation of Concerns | ✅ Excellent           | Services separated        | ✅ Met          |
+| Error Handling         | ✅ Good                | Centralized, consistent   | ✅ Met          |
+| Token Management       | ⚠️ In-memory only      | Secure persistent storage | ⚠️ Needs work   |
+| Request Interceptors   | ❌ Not implemented     | Auto-inject auth headers  | ❌ Missing      |
+| Retry Logic            | ❌ Not implemented     | Exponential backoff       | ❌ Missing      |
+| Type Safety            | ❌ No TypeScript       | TypeScript interfaces     | ⚠️ Optional     |
+| Unit Tests             | ❌ Not implemented     | >80% coverage             | ❌ Missing      |
+| API Versioning         | ❌ Not implemented     | /api/v1/ prefix           | ⚠️ Nice to have |
+| Request Logging        | ❌ Not implemented     | Dev-mode logging          | ⚠️ Nice to have |
+| Offline Support        | ✅ Excellent           | Cache + sync              | ✅ Met          |
 
 ---
 
 ## 🎯 Priority Recommendations
 
 ### **Must Have (Before Production)**
+
 1. ✅ Implement secure token storage (SecureStore)
 2. ✅ Add request/response interceptors
 3. ✅ Write comprehensive unit tests
 4. ✅ Add automatic token refresh logic
 
 ### **Should Have (Soon)**
+
 5. ⚠️ Migrate to TypeScript for type safety
 6. ⚠️ Add request retry logic with exponential backoff
 7. ⚠️ Consolidate to Axios-only (remove XMLHttpRequest)
 8. ⚠️ Localize error messages
 
 ### **Nice to Have (Future)**
+
 9. 📝 Add API versioning
 10. 📝 Implement request logging in dev mode
 11. 📝 Add rate limiting handling
@@ -310,15 +343,15 @@ if (__DEV__) {
 
 ## 🏆 Overall Score Breakdown
 
-| Category | Score | Weight | Weighted Score |
-|----------|-------|--------|----------------|
-| Architecture | 9/10 | 25% | 2.25 |
-| Security | 7/10 | 20% | 1.40 |
-| Error Handling | 9/10 | 15% | 1.35 |
-| Developer Experience | 8/10 | 15% | 1.20 |
-| Testing | 2/10 | 15% | 0.30 |
-| Production Readiness | 6/10 | 10% | 0.60 |
-| **Total** | **7.1/10** | **100%** | **7.1/10** |
+| Category             | Score      | Weight   | Weighted Score |
+| -------------------- | ---------- | -------- | -------------- |
+| Architecture         | 9/10       | 25%      | 2.25           |
+| Security             | 7/10       | 20%      | 1.40           |
+| Error Handling       | 9/10       | 15%      | 1.35           |
+| Developer Experience | 8/10       | 15%      | 1.20           |
+| Testing              | 2/10       | 15%      | 0.30           |
+| Production Readiness | 6/10       | 10%      | 0.60           |
+| **Total**            | **7.1/10** | **100%** | **7.1/10**     |
 
 ---
 
