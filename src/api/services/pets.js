@@ -18,30 +18,37 @@ const toNumber = (value) => {
   return Number.isNaN(parsed) ? undefined : parsed;
 };
 
-const sanitizeValue = (value) => (typeof value === 'string' ? value.trim() : value);
+const sanitizeValue = (value) =>
+  typeof value === 'string' ? value.trim() : value;
 
 const sanitizePayload = (payload) =>
   Object.fromEntries(
     Object.entries(payload)
       .map(([key, value]) => [key, sanitizeValue(value)])
-      .filter(([, value]) => value !== undefined && value !== null && value !== '')
+      .filter(
+        ([, value]) => value !== undefined && value !== null && value !== ''
+      )
   );
 
 const toFormUrlEncoded = (payload) =>
   Object.entries(payload)
-    .map(([key, value]) =>
-      `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
+    .map(
+      ([key, value]) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`
     )
     .join('&');
 
-const normalizeSpecies = (value) => {
-  if (!value) return undefined;
-
-  const normalized = String(value)
+const normalizeText = (value) =>
+  String(value)
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .trim()
     .toLowerCase();
+
+const normalizeSpecies = (value) => {
+  if (!value) return undefined;
+
+  const normalized = normalizeText(value);
 
   const speciesMap = {
     perro: 'perro',
@@ -66,11 +73,28 @@ const normalizeSpecies = (value) => {
   return speciesMap[normalized] ?? 'otro';
 };
 
+const normalizeGender = (value) => {
+  if (!value) return undefined;
+
+  const normalized = normalizeText(value);
+
+  const genderMap = {
+    macho: 'macho',
+    male: 'macho',
+    m: 'macho',
+    hembra: 'hembra',
+    female: 'hembra',
+    f: 'hembra',
+  };
+
+  return genderMap[normalized] ?? undefined;
+};
+
 const buildCreatePetPayload = (input = {}) => ({
   nombre: input.name?.trim(),
   especie: normalizeSpecies(input.species),
   raza: input.breed,
-  genero: input.gender,
+  genero: normalizeGender(input.gender),
   fecha_nacimiento: toIsoDate(input.birthdate),
   chip: input.chip,
   peso: toNumber(input.weight),
@@ -81,7 +105,7 @@ const buildUpdatePetPayload = (input = {}) => ({
   nombre: input.name?.trim(),
   especie: normalizeSpecies(input.species),
   raza: input.breed,
-  genero: input.gender,
+  genero: normalizeGender(input.gender),
   fecha_nacimiento: toIsoDate(input.birthdate),
   peso: toNumber(input.weight),
   notas: input.notes,
@@ -140,7 +164,10 @@ export const updatePet = async (id, payload = {}, token) => {
   };
 
   try {
-    const { data } = await api.put(`/pets/${id}`, body, { ...config, headers });
+    const { data } = await api.patch(`/pets/${id}`, body, {
+      ...config,
+      headers,
+    });
     return buildGenericSuccessResult(data);
   } catch (error) {
     return buildErrorResult(error);
