@@ -90,7 +90,8 @@ export default function NewPetFormScreen({ navigation, route }) {
     } catch (error) {
       console.error('Error deleting pet:', error);
       const message =
-        (error && error.message) || 'No se pudo eliminar la mascota. Intentalo de nuevo.';
+        (error && error.message) ||
+        'No se pudo eliminar la mascota. Intentalo de nuevo.';
       Alert.alert('Error', message);
     }
   };
@@ -174,7 +175,8 @@ export default function NewPetFormScreen({ navigation, route }) {
         }, 500);
       }
     } catch (err) {
-      const message = (err && err.message) || 'No se pudo guardar. Intenta nuevamente.';
+      const message =
+        (err && err.message) || 'No se pudo guardar. Intenta nuevamente.';
       Alert.alert('Ups', message);
       console.error(err);
     } finally {
@@ -327,7 +329,7 @@ export default function NewPetFormScreen({ navigation, route }) {
               <View style={styles.fieldContainerRow}>
                 <Select
                   label="Género *"
-                  placeholder="Macho o hembra"
+                  placeholder="macho o hembra"
                   value={values.gender}
                   error={touched.gender && errors.gender}
                   onPress={() => setSelectOpen('gender')}
@@ -458,7 +460,7 @@ export default function NewPetFormScreen({ navigation, route }) {
         <OptionsModal
           visible={selectOpen === 'gender'}
           title="Selecciona género"
-          options={['Macho', 'Hembra']}
+          options={['macho', 'hembra']}
           onClose={() => setSelectOpen(null)}
           onSelect={(val) => {
             setValues((s) => ({ ...s, gender: val }));

@@ -34,9 +34,41 @@ const toFormUrlEncoded = (payload) =>
     )
     .join('&');
 
+const normalizeSpecies = (value) => {
+  if (!value) return undefined;
+
+  const normalized = String(value)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toLowerCase();
+
+  const speciesMap = {
+    perro: 'perro',
+    dog: 'perro',
+    gato: 'gato',
+    cat: 'gato',
+    ave: 'ave',
+    pajaro: 'ave',
+    conejo: 'conejo',
+    rabbit: 'conejo',
+    hamster: 'hamster',
+    pez: 'pez',
+    fish: 'pez',
+    reptil: 'reptil',
+    reptile: 'reptil',
+    otro: 'otro',
+    otra: 'otro',
+    otros: 'otro',
+    other: 'otro',
+  };
+
+  return speciesMap[normalized] ?? 'otro';
+};
+
 const buildCreatePetPayload = (input = {}) => ({
   nombre: input.name?.trim(),
-  especie: input.species,
+  especie: normalizeSpecies(input.species),
   raza: input.breed,
   genero: input.gender,
   fecha_nacimiento: toIsoDate(input.birthdate),
@@ -47,7 +79,7 @@ const buildCreatePetPayload = (input = {}) => ({
 
 const buildUpdatePetPayload = (input = {}) => ({
   nombre: input.name?.trim(),
-  especie: input.species,
+  especie: normalizeSpecies(input.species),
   raza: input.breed,
   genero: input.gender,
   fecha_nacimiento: toIsoDate(input.birthdate),
