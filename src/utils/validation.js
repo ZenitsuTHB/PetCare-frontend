@@ -73,7 +73,6 @@ export const validateChip = (chip) => {
   // 2. Verifica prefijo usando números enteros
   const prefix = parseInt(chip.substring(0, 3), 10);
 
-  console.log('Chip prefix:', prefix);
   const validPrefixes = [981, 990, 985, 977]; // Array de números enteros
   if (!validPrefixes.includes(prefix)) {
     return {

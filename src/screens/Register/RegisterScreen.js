@@ -80,13 +80,13 @@ const RegisterScreen = ({ navigation }) => {
           title="Registro"
           subtitle={
             <>
-              Crea tu cuenta y empieza a organizar la informacion medica de tu
+              Crea tu cuenta y empieza a organizar la información médica de tu
               mascota de forma{' '}
               <Text style={styles.subtitleBold}>sencilla y segura</Text>.
             </>
           }
           showBackButton={true}
-          backButtonText="? Inicio"
+          backButtonText="← Inicio"
           onBackPress={() => navigation.goBack()}
         />
         <View style={styles.container}>
@@ -147,7 +147,7 @@ const RegisterScreen = ({ navigation }) => {
                       styles.input,
                       touched.email && errors.email && styles.inputError,
                     ]}
-                    placeholder="Tu correo electronico"
+                    placeholder="Tu correo electrónico"
                     placeholderTextColor="#62748E"
                     value={email}
                     onChangeText={setEmail}
@@ -161,13 +161,13 @@ const RegisterScreen = ({ navigation }) => {
                 </View>
 
                 <View style={styles.inputGroup}>
-                  <Text style={styles.inputLabel}>Contrasena *</Text>
+                  <Text style={styles.inputLabel}>Contraseña *</Text>
                   <TextInput
                     style={[
                       styles.input,
                       touched.password && errors.password && styles.inputError,
                     ]}
-                    placeholder="M�nimo 8 caracteres"
+                    placeholder="Mínimo 8 caracteres"
                     placeholderTextColor="#62748E"
                     value={password}
                     onChangeText={setPassword}
@@ -181,7 +181,7 @@ const RegisterScreen = ({ navigation }) => {
 
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>
-                    Confirmacion de contrase�a *
+                    Confirmación de contraseña *
                   </Text>
                   <TextInput
                     style={[
@@ -190,7 +190,7 @@ const RegisterScreen = ({ navigation }) => {
                         errors.confirmPassword &&
                         styles.inputError,
                     ]}
-                    placeholder="Debe coincidir con la contrasena"
+                    placeholder="Debe coincidir con la contraseña"
                     placeholderTextColor="#62748E"
                     value={confirmPassword}
                     onChangeText={setConfirmPassword}

@@ -32,20 +32,16 @@ export default function HistorialScreen({ route, navigation }) {
   ];
 
   const handleArchivosPress = () => {
-    console.log('Archivos pressed');
     setActiveTab('archivos');
     navigation.navigate('Archivos', { pet: route.params?.pet });
   };
 
   const handleQRPress = () => {
-    console.log('QR pressed in HistorialScreen');
     setActiveTab('qr');
     setQrModalVisible(true);
-    console.log('qrModalVisible set to true in HistorialScreen');
   };
 
   const handleHistorialPress = () => {
-    console.log('Historial pressed');
     setActiveTab('historial');
     // Ya estamos en historial, podrías agregar alguna animación o efecto
   };
@@ -74,7 +70,7 @@ export default function HistorialScreen({ route, navigation }) {
           {/* Content Container with Header and Conditional Content */}
           <ContentContainer
             title="Historial médico"
-            subtitle="Consulta los diagnósticos que constan en tu história clínica."
+            subtitle="Consulta los diagnósticos que constan en tu historia clínica."
             showEmptyState={!hasConsultations}
             emptyStateProps={emptyStateProps}
           >

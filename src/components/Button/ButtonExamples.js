@@ -13,7 +13,7 @@ const ButtonExamples = () => {
         size="medium"
         iconName="add"
         iconPosition="left"
-        onPress={() => console.log('Agregar mascota')}
+        onPress={() => {}}
         fullWidth
       />
 
@@ -22,7 +22,7 @@ const ButtonExamples = () => {
         title="Ver detalles"
         variant="secondary"
         size="medium"
-        onPress={() => console.log('Ver detalles')}
+        onPress={() => {}}
       />
 
       {/* 3. Botón outline - Acción menos importante */}
@@ -30,7 +30,7 @@ const ButtonExamples = () => {
         title="Cancelar"
         variant="outline"
         size="medium"
-        onPress={() => console.log('Cancelar')}
+        onPress={() => {}}
       />
 
       {/* 4. Botón ghost - Acción sutil */}
@@ -38,7 +38,7 @@ const ButtonExamples = () => {
         title="Omitir"
         variant="ghost"
         size="small"
-        onPress={() => console.log('Omitir')}
+        onPress={() => {}}
       />
 
       {/* 5. Botón de peligro - Acciones destructivas */}
@@ -48,7 +48,7 @@ const ButtonExamples = () => {
         size="medium"
         iconName="delete"
         iconPosition="left"
-        onPress={() => console.log('Eliminar')}
+        onPress={() => {}}
       />
 
       {/* 6. Botón con loading */}
@@ -57,7 +57,7 @@ const ButtonExamples = () => {
         variant="primary"
         size="medium"
         loading={true}
-        onPress={() => console.log('Guardando')}
+        onPress={() => {}}
       />
 
       {/* 7. Botón deshabilitado */}
@@ -66,7 +66,7 @@ const ButtonExamples = () => {
         variant="primary"
         size="medium"
         disabled={true}
-        onPress={() => console.log('Login')}
+        onPress={() => {}}
       />
 
       {/* 8. Botón solo icono */}
@@ -76,7 +76,7 @@ const ButtonExamples = () => {
         iconName="favorite"
         iconPosition="only"
         iconSize={24}
-        onPress={() => console.log('Like')}
+        onPress={() => {}}
       />
 
       {/* 9. Botón de navegación con icono derecho */}
@@ -86,7 +86,7 @@ const ButtonExamples = () => {
         size="medium"
         iconName="arrow-forward"
         iconPosition="right"
-        onPress={() => console.log('Siguiente')}
+        onPress={() => {}}
       />
 
       {/* 10. Botón personalizado */}
@@ -96,7 +96,7 @@ const ButtonExamples = () => {
         size="large"
         style={{ backgroundColor: '#4CAF50', borderRadius: 25 }}
         textStyle={{ fontSize: 18, fontWeight: 'bold' }}
-        onPress={() => console.log('Personalizado')}
+        onPress={() => {}}
       />
     </View>
   );

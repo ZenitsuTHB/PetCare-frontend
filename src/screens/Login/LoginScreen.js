@@ -31,7 +31,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Por favor completa todos los campos');
+      Alert.alert('Error', 'Por favor, completa todos los campos');
       return;
     }
 
@@ -56,15 +56,15 @@ const LoginScreen = ({ navigation }) => {
           resolvedUser?.correo ||
           'Usuario';
 
-        Alert.alert('Login exitoso', 'Bienvenido ' + userName);
+        Alert.alert('Inicio de sesión exitoso', 'Bienvenido ' + userName);
         navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
         return;
       } else {
-        Alert.alert('Error de autenticacion', response.message);
+        Alert.alert('Error de autenticación', response.message);
       }
     } catch (error) {
       console.error('Login error:', error);
-      Alert.alert('Error', 'Ocurrio un problema inesperado');
+      Alert.alert('Error', 'Ocurrió un problema inesperado');
     } finally {
       setLoading(false);
     }
@@ -76,10 +76,10 @@ const LoginScreen = ({ navigation }) => {
         <StatusBar backgroundColor="#FA8081" barStyle="dark-content" />
 
         <Header
-          title="Iniciar Sesion"
-          subtitle="Inicia sesion y sigue cuidando a quienes mas quieres."
+          title="Iniciar Sesión"
+          subtitle="Inicia sesión y sigue cuidando a quienes más quieres."
           showBackButton={true}
-          backButtonText="? Inicio"
+          backButtonText="← Inicio"
           onBackPress={() => navigation.goBack()}
         />
 
@@ -103,10 +103,10 @@ const LoginScreen = ({ navigation }) => {
               </View>
 
               <View style={styles.inputGroup}>
-                <Text style={styles.inputLabel}>Contrasena</Text>
+                <Text style={styles.inputLabel}>Contraseña</Text>
                 <TextInput
                   style={styles.input}
-                  placeholder="Introduce tu contrasena"
+                  placeholder="Introduce tu contraseña"
                   placeholderTextColor="#62748E"
                   value={password}
                   onChangeText={setPassword}
@@ -116,7 +116,7 @@ const LoginScreen = ({ navigation }) => {
 
               <TouchableOpacity style={styles.forgotPassword}>
                 <Text style={styles.forgotPasswordText}>
-                  ? Olvidaste tu contrasena?
+                  ¿Olvidaste tu contraseña?
                 </Text>
               </TouchableOpacity>
             </View>
@@ -129,7 +129,7 @@ const LoginScreen = ({ navigation }) => {
                   style={styles.loginButton}
                   onPress={handleLogin}
                 >
-                  <Text style={styles.loginButtonText}>Iniciar sesion</Text>
+                  <Text style={styles.loginButtonText}>Iniciar sesión</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -139,8 +139,8 @@ const LoginScreen = ({ navigation }) => {
               onPress={() => navigation.navigate('Register')}
             >
               <Text style={styles.registerText}>
-                ? Todavia no tienes cuenta?{' '}
-                <Text style={styles.registerLink}>Registrate ahora</Text>
+                ¿Todavía no tienes cuenta?{' '}
+                <Text style={styles.registerLink}>Regístrate ahora</Text>
               </Text>
             </TouchableOpacity>
           </View>

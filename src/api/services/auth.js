@@ -73,7 +73,7 @@ const buildSuccessResult = (data, fallbackPayload) => {
 
   return {
     success: container.success ?? true,
-    message: container.message ?? container.error ?? 'Operacion completada',
+    message: container.message ?? container.error ?? 'Operación completada',
     user: {
       ...userPayload,
       nombre,
@@ -92,7 +92,7 @@ const buildGenericSuccessResult = (data) => {
   const container = typeof data === 'object' && data !== null ? data : {};
   return {
     success: container.success ?? true,
-    message: container.message ?? container.error ?? 'Operacion completada',
+    message: container.message ?? container.error ?? 'Operación completada',
     data: container.data ?? container,
     raw: container,
   };

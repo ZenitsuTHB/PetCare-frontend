@@ -21,7 +21,7 @@ const COLORS = {
 const INITIAL_DATA = [
   {
     id: '1',
-    title: 'Visita médico',
+    title: 'Visita médica',
     dateText: 'Fecha: 12/03/2025',
     timeText: 'Hora: 11:00',
     variant: 'vet', // verde → no editable
@@ -99,7 +99,7 @@ const NotificationsScreen = ({ navigation }) => {
       <View style={styles.bottomArea}>
         <TouchableOpacity
           style={styles.cta}
-          onPress={() => console.log('Nuevo recordatorio')}
+          onPress={() => {}}
           accessibilityRole="button"
           accessibilityLabel="Crear nuevo recordatorio"
         >

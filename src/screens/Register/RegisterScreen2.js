@@ -78,7 +78,7 @@ const RegisterScreen2 = ({ navigation, route }) => {
       }
     } catch (error) {
       console.error('Registration error:', error);
-      Alert.alert('Error', 'Ocurrio un problema inesperado');
+      Alert.alert('Error', 'Ocurrió un problema inesperado');
     } finally {
       setLoading(false);
     }
@@ -97,13 +97,13 @@ const RegisterScreen2 = ({ navigation, route }) => {
           title="Registro"
           subtitle={
             <>
-              Crea tu cuenta y empieza a organizar la informacion medica de tu
+              Crea tu cuenta y empieza a organizar la información médica de tu
               mascota de forma{' '}
               <Text style={styles.subtitleBold}>sencilla y segura</Text>.
             </>
           }
           showBackButton={true}
-          backButtonText="? Inicio"
+          backButtonText="← Inicio"
           onBackPress={() => navigation.goBack()}
         />
 
@@ -122,7 +122,7 @@ const RegisterScreen2 = ({ navigation, route }) => {
                   <Text style={styles.inputLabel}>Domicilio</Text>
                   <TextInput
                     style={styles.input}
-                    placeholder="Direccion completa"
+                    placeholder="Dirección completa"
                     placeholderTextColor="#62748E"
                     value={address}
                     onChangeText={setAddress}
@@ -152,7 +152,7 @@ const RegisterScreen2 = ({ navigation, route }) => {
                     <Text style={styles.inputLabel}>C.P</Text>
                     <TextInput
                       style={styles.input}
-                      placeholder="Codigo postal"
+                      placeholder="Código postal"
                       placeholderTextColor="#62748E"
                       value={postalCode}
                       onChangeText={setPostalCode}
@@ -191,7 +191,7 @@ const RegisterScreen2 = ({ navigation, route }) => {
                   <Text style={styles.checkboxText}>
                     Acepto los{' '}
                     <Text style={styles.checkboxTextBold}>
-                      terminos y las condiciones
+                      términos y condiciones
                     </Text>
                   </Text>
                 </TouchableOpacity>

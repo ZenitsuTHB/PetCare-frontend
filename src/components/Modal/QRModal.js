@@ -15,24 +15,19 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 const QRModal = ({ visible, onClose, petName = 'tu mascota' }) => {
   const [imageError, setImageError] = useState(false);
 
-  console.log('QRModal render - visible:', visible, 'petName:', petName);
 
   const handleImageError = (error) => {
-    console.log('Image loading error:', error);
     setImageError(true);
   };
 
   const handleImageLoad = () => {
-    console.log('Image loaded successfully');
     setImageError(false);
   };
 
   if (!visible) {
-    console.log('QRModal not visible, returning null');
     return null;
   }
 
-  console.log('QRModal rendering modal content');
 
   return (
     <Modal

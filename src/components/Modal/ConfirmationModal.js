@@ -25,7 +25,6 @@ const ConfirmationModal = ({
   confirmVariant = 'danger',
   icon = 'exclamation',
 }) => {
-  console.log('ConfirmationModal render - visible:', visible);
 
   if (!visible) return null;
   return (

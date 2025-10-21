@@ -16,25 +16,21 @@ export default function ArchivosScreen({ route, navigation }) {
   const hasFiles = false; // Cambiar a true cuando haya archivos
 
   const handleArchivosPress = () => {
-    console.log('Archivos pressed');
     setActiveTab('archivos');
     // Ya estamos en archivos
   };
 
   const handleQRPress = () => {
-    console.log('QR pressed in ArchivosScreen');
     setActiveTab('qr');
     setQrModalVisible(true);
   };
 
   const handleHistorialPress = () => {
-    console.log('Historial pressed');
     setActiveTab('historial');
     navigation.navigate('Historial', { petName, pet });
   };
 
   const handleAddDocument = () => {
-    console.log('Añadir documento pressed');
     // TODO: Implementar funcionalidad para agregar documentos
     // Podrías abrir un selector de archivos, cámara, etc.
   };

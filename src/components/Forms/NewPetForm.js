@@ -36,9 +36,6 @@ export default function NewPetFormScreen({ navigation, route }) {
   const isEdit = !!pet;
   const { addPet, updatePet, deletePet } = usePets();
 
-  console.log('NewPetFormScreen - pet:', pet);
-  console.log('NewPetFormScreen - isEdit:', isEdit);
-  console.log('NewPetFormScreen - pet.id:', pet?.id);
 
   // Capturar el ID del pet al inicio para evitar problemas de scope
   const petId = pet?.id;
@@ -91,7 +88,7 @@ export default function NewPetFormScreen({ navigation, route }) {
       console.error('Error deleting pet:', error);
       const message =
         (error && error.message) ||
-        'No se pudo eliminar la mascota. Intentalo de nuevo.';
+        'No se pudo eliminar la mascota. Inténtalo de nuevo.';
       Alert.alert('Error', message);
     }
   };

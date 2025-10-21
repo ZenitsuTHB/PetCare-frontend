@@ -19,17 +19,14 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleNewPet = () => {
-    console.log('Nueva mascota pressed');
     navigation.navigate('NewPetForm');
   };
 
   const handleNotifications = () => {
-    console.log('Notificaciones pressed');
     navigation.navigate('Notifications');
   };
 
   const handleProfile = () => {
-    console.log('Perfil pressed');
     navigation.navigate('Profile');
   };
 
@@ -40,7 +37,6 @@ const HomeScreen = ({ navigation }) => {
   const handleDeletePet = async (petId) => {
     try {
       await deletePet(petId);
-      console.log('Pet deleted successfully');
     } catch (error) {
       console.error('Error deleting pet:', error);
       Alert.alert(
@@ -55,10 +51,8 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleShowQR = (pet) => {
-    console.log('handleShowQR called with pet:', pet);
     setSelectedPet(pet);
     setQrModalVisible(true);
-    console.log('qrModalVisible set to true');
   };
 
   // Configuración del empty state
@@ -153,7 +147,7 @@ const HomeScreen = ({ navigation }) => {
         {/* Footer */}
         <Footer
           activeTab="pets"
-          onPetsPress={() => console.log('Pets pressed')}
+          onPetsPress={() => navigation.navigate('Home')}
           onNotificationsPress={handleNotifications}
           onProfilePress={handleProfile}
         />

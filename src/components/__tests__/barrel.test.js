@@ -1,4 +1,4 @@
-// Test simple para verificar que las exportaciones funcionan
+// Test para verificar que las exportaciones del barrel funcionan
 import {
   EmptyState,
   PageHeader,
@@ -9,12 +9,20 @@ import {
   WaveBackground,
 } from '../index';
 
-// Verificar que todos los componentes se exportan correctamente
-console.log('✅ Barrel exports working:');
-console.log('EmptyState:', typeof EmptyState);
-console.log('PageHeader:', typeof PageHeader);
-console.log('ContentContainer:', typeof ContentContainer);
-console.log('Footer:', typeof Footer);
-console.log('Header:', typeof Header);
-console.log('ProvincePicker:', typeof ProvincePicker);
-console.log('WaveBackground:', typeof WaveBackground);
+describe('components barrel exports', () => {
+  it('debe exponer todos los componentes esperados', () => {
+    const components = {
+      EmptyState,
+      PageHeader,
+      ContentContainer,
+      Footer,
+      Header,
+      ProvincePicker,
+      WaveBackground,
+    };
+
+    Object.entries(components).forEach(([name, component]) => {
+      expect(component).toBeDefined();
+    });
+  });
+});

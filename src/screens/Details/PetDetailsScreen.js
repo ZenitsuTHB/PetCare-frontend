@@ -49,19 +49,16 @@ const PetDetailsScreen = ({ route, navigation }) => {
 
   // Handlers para el footer
   const handleArchivosPress = () => {
-    console.log('Archivos pressed');
     setActiveTab('archivos');
     navigation.navigate('Archivos', { pet });
   };
 
   const handleQRPress = () => {
-    console.log('QR pressed in PetDetailsScreen');
     setActiveTab('qr');
     setQrModalVisible(true);
   };
 
   const handleHistorialPress = () => {
-    console.log('Historial pressed');
     setActiveTab('historial');
     navigation.navigate('Historial', { petName: pet.name, pet });
   };
